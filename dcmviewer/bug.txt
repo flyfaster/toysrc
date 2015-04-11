@@ -1,0 +1,132 @@
+2005/12/03
+When compiling dicomlib, modify a line in ServiceBase.cpp
+Old version: 			const UINT32 BytesInThisChunk= std::min(BytesLeftToSend,MaxPDULength-6);
+
+//onega 20051203 begin
+			const UINT32 BytesInThisChunk=(std::min)(BytesLeftToSend,MaxPDULength-6);
+
+//onega 20051203 end
+2004/November/01
+when opening BigEndianExplicit DICOM file, a bug with VR comparing is found, it is fixed by 
+	void Decoder::DecodeVRAndLength(Tag tag, VR& vr, UINT32& length)
+	{
+		if(ts_.isExplicitVR())		//then get VR from stream
+		{
+			UINT16 w = 0;
+			buffer_ >> w;
+			//onega 20041201 begin
+			if(ts_.isBigEndian())	
+				w = ntohs(w);		
+			//onega 20041201 end
+			vr=VR(w);
+			
+			if (vr == VR_UN || vr == VR_SQ || vr == VR_OW || vr == VR_OB || vr == VR_UT)//see Part5 / 7.1.2
+			{
+				buffer_ >> w;		//	2 bytes unused
+				buffer_>>length;	//4 bytes of length info
+			}
+			else
+			{
+				buffer_>>w;			//only 2 bytes of length info
+				length = w;
+			}
+		}
+		else						//VR is implicit, look up in data dictionary
+		{
+			vr=GetVR(tag);		//look up in data dictionary.
+			buffer_ >> length;		//4 bytes of length info.
+		}
+	}
+	
+	
+2004/October/11
+When decoding (0008,0020) DA [1994.11.05] , dicomlib failed
+I modify the following to fix the bug
+void Decoder::DecodeElement()
+{
+case VR_DA://date, 8 bytes fixed date format.
+{//Multiplicity!!!
+/*if(length!=8)
+throw DecoderError("Date must be 8 bytes long.");*/
+string s(length,' ');
+buffer_>>s;
+
+StripTrailingWhitespace(s);
+
+// parse multiplicity using boost::tokenizer
+
+typedef boost::tokenizer > tokenizer;
+boost::char_separator
+sep("\\","",boost::keep_empty_tokens);//strings are seperated by
+backslashes;
+tokenizer tokens(s, sep);
+
+for (tokenizer::iterator tok_iter = tokens.begin();tok_iter !=
+tokens.end(); ++tok_iter)
+{
+try
+{
+//old implementation
+//boost::gregorian::date
+d(boost::gregorian::from_undelimited_string(*tok_iter));
+//dataset_.template Put(tag,d);
+////////////begin of modification by onega
+						std::string dstr = *tok_iter;
+						if(dstr.find(".")==dstr.npos)
+						{
+							boost::gregorian::date
+								d(boost::gregorian::from_undelimited_string(*tok_iter));
+							dataset_.template Put<VR_DA>(tag,d);
+						}
+						else
+						{
+							boost::gregorian::date d(boost::gregorian::from_string(dstr));
+							dataset_.template Put<VR_DA>(tag,d);
+						}
+
+////////////end of modification by onega
+}
+catch(std::out_of_range& e)
+{ //currently, if we have a bad date then we
+//just don't put it onto the data set. I'm
+//not sure whether this is the best thing to do
+//or not.
+cerr << "Bad date: " << *tok_iter;
+}
+}
+
+}
+break;
+}
+2004/9/27
+when working as c_store scp, accept file C:\sp\RT_Images\RD.1.3.6.1.4.1.2452.1.1.149000.20020730132901.4.dcm error.
+ 	msvcr71d.dll!_heap_alloc_dbg(unsigned int nSize=4294967295, int nBlockUse=1, const char * szFileName=0x00000000, int nLine=0)  Line 380 + 0x1e	C
+ 	msvcr71d.dll!_nh_malloc_dbg(unsigned int nSize=4294967295, int nhFlag=0, int nBlockUse=1, const char * szFileName=0x00000000, int nLine=0)  Line 260 + 0x15	C
+ 	msvcr71d.dll!_malloc_dbg(unsigned int nSize=4294967295, int nBlockUse=1, const char * szFileName=0x00000000, int nLine=0)  Line 176 + 0x1b	C
+ 	mfc71d.dll!operator new(unsigned int nSize=4294967295)  Line 343 + 0x10	C++
+ 	dcmviewer.exe!std::_Allocate<unsigned char>(unsigned int _Count=4294967295, unsigned char * __formal=0x00000000)  Line 34 + 0x9	C++
+ 	dcmviewer.exe!std::allocator<unsigned char>::allocate(unsigned int _Count=4294967295)  Line 137 + 0xb	C++
+ 	dcmviewer.exe!std::vector<unsigned char,std::allocator<unsigned char> >::_Buy(unsigned int _Capacity=4294967295)  Line 778 + 0xc	C++
+ 	dcmviewer.exe!std::vector<unsigned char,std::allocator<unsigned char> >::_Construct_n(unsigned int _Count=4294967295, const unsigned char & _Val=0)  Line 375 + 0xc	C++
+ 	dcmviewer.exe!std::vector<unsigned char,std::allocator<unsigned char> >::vector<unsigned char,std::allocator<unsigned char> >(unsigned int _Count=4294967295)  Line 313	C++
+>	dcmviewer.exe!dicom::Decoder::DecodeElement()  Line 345 + 0xf	C++
+ 	dcmviewer.exe!dicom::Decoder::Decode()  Line 497 + 0x8	C++
+ 	dcmviewer.exe!dicom::ReadFromBuffer(dicom::Buffer & buffer={...}, dicom::DataSet & data={...}, dicom::TS transfer_syntax={...})  Line 510	C++
+ 	dcmviewer.exe!dicom::ServiceBase::ParseRawVRIntoDataSet(dicom::PDataTF & p_data_tf={...}, dicom::DataSet & ds={...})  Line 224 + 0x27	C++
+ 	dcmviewer.exe!dicom::ServiceBase::Read(dicom::DataSet & ds={...}, dicom::TS ts={...})  Line 164	C++
+ 	dcmviewer.exe!dicom::HandleCStore(boost::function3<void,dicom::ServiceBase &,dicom::DataSet const &,dicom::DataSet &,std::allocator<boost::function_base> > handler={...}, dicom::ServiceBase & pdu={...}, const dicom::DataSet & command={...}, const dicom::UID & classUID={...})  Line 56	C++
+ 	dcmviewer.exe!dicom::Implementation::ThreadSpecificServer::Dispatch(dicom::DataSet & command={...})  Line 158 + 0x2e	C++
+ 	dcmviewer.exe!dicom::Implementation::ThreadSpecificServer::ProcessRequest()  Line 208	C++
+ 	dcmviewer.exe!dicom::Implementation::ThreadSpecificServer::HandleData()  Line 79	C++
+ 	dcmviewer.exe!dicom::Implementation::ThreadSpecificServer::operator()()  Line 58	C++
+ 	dcmviewer.exe!boost::detail::function::void_function_obj_invoker0<dicom::Implementation::ThreadSpecificServer,void>::invoke(boost::detail::function::any_pointer function_obj_ptr={...})  Line 129	C++
+ 	boost_thread-vc71-mt-gd-1_31.dll!boost::function0<void,std::allocator<boost::function_base> >::operator()()  Line 317 + 0x11	C++
+ 	boost_thread-vc71-mt-gd-1_31.dll!thread_proxy(void * param=0x01bcfb5c)  Line 75	C++
+ 	msvcr71d.dll!_threadstartex(void * ptd=0x01311038)  Line 241 + 0xd	C
+
+The bug was fixed at Decoder.cpp line 249 		if (vr == VR_SQ || (vr==VR_UN && length == UNDEFINED_LENGTH) )//is this correct?
+
+according to PS03_05(DICOM 2003 Part 5: Data Structures and Encoding) 
+6.2.2 Notes 4. The length field of the Value Representation of UN may contain the value of 
+unknown length, in which case the contents can be assumed to be encoded with implicit VR. 
+See section 7.5.1 to determine how to parse Data Elements with an unknown length.

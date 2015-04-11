@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<VisualStudioPropertySheet
+	ProjectType="Visual C++"
+	Version="8.00"
+	Name="quotescapture"
+	>
+	<Tool
+		Name="VCCLCompilerTool"
+		AdditionalIncludeDirectories="D:\svn\quotescapture\sqlite3;&quot;D:\opensource\cppunit-1.12.1\include&quot;;D:\opensource\boost_1_39_0"
+		PreprocessorDefinitions="WINVER=0x0500"
+		ProgramDataBaseFileName="$(OutDir)\$(TargetName).pdb"
+		WarningLevel="3"
+	/>
+	<Tool
+		Name="VCLinkerTool"
+		ShowProgress="2"
+		AdditionalLibraryDirectories="&quot;D:\opensource\cppunit-1.12.1\lib&quot;;D:\opensource\boost_1_39_0\stage\lib"
+		GenerateDebugInformation="true"
+		GenerateMapFile="true"
+		MapFileName="$(TargetDir)$(TargetName).map"
+		MapExports="true"
+	/>
+	<UserMacro
+		Name="WX_SETUP_Release"
+		Value="D:\opensource\wxWidgets-2.8.10\lib\vc_libvc90\mswu"
+	/>
+	<UserMacro
+		Name="WX_SETUP_Debug"
+		Value="D:\opensource\wxWidgets-2.8.10\lib\vc_libvc90\mswud"
+	/>
+</VisualStudioPropertySheet>

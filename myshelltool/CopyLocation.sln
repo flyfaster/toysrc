@@ -1,0 +1,33 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CopyLocation", "CopyLocation.vcproj", "{E25D2B27-E0CB-4A89-895D-907F9D2D100C}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Release MinDependency = Release MinDependency
+		Release MinSize = Release MinSize
+		Unicode Debug = Unicode Debug
+		Unicode Release MinDependency = Unicode Release MinDependency
+		Unicode Release MinSize = Unicode Release MinSize
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{E25D2B27-E0CB-4A89-895D-907F9D2D100C}.Debug.ActiveCfg = Debug|Win32
+		{E25D2B27-E0CB-4A89-895D-907F9D2D100C}.Debug.Build.0 = Debug|Win32
+		{E25D2B27-E0CB-4A89-895D-907F9D2D100C}.Release MinDependency.ActiveCfg = Release MinDependency|Win32
+		{E25D2B27-E0CB-4A89-895D-907F9D2D100C}.Release MinDependency.Build.0 = Release MinDependency|Win32
+		{E25D2B27-E0CB-4A89-895D-907F9D2D100C}.Release MinSize.ActiveCfg = Release MinSize|Win32
+		{E25D2B27-E0CB-4A89-895D-907F9D2D100C}.Release MinSize.Build.0 = Release MinSize|Win32
+		{E25D2B27-E0CB-4A89-895D-907F9D2D100C}.Unicode Debug.ActiveCfg = Unicode Debug|Win32
+		{E25D2B27-E0CB-4A89-895D-907F9D2D100C}.Unicode Debug.Build.0 = Unicode Debug|Win32
+		{E25D2B27-E0CB-4A89-895D-907F9D2D100C}.Unicode Release MinDependency.ActiveCfg = Unicode Release MinDependency|Win32
+		{E25D2B27-E0CB-4A89-895D-907F9D2D100C}.Unicode Release MinDependency.Build.0 = Unicode Release MinDependency|Win32
+		{E25D2B27-E0CB-4A89-895D-907F9D2D100C}.Unicode Release MinSize.ActiveCfg = Unicode Release MinSize|Win32
+		{E25D2B27-E0CB-4A89-895D-907F9D2D100C}.Unicode Release MinSize.Build.0 = Unicode Release MinSize|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,44 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "stockclient", "stockclient.vcproj", "{A033BAFE-8B83-4987-B944-8A8289C9CEDE}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7C8DBE48-1216-4D6D-836B-8B7A66B1263B} = {7C8DBE48-1216-4D6D-836B-8B7A66B1263B}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BED5B3C6-C824-4130-9005-6DDDE5B43226}"
+	ProjectSection(SolutionItems) = preProject
+		LocalTestRun.testrunconfig = LocalTestRun.testrunconfig
+		stockclient.vsmdi = stockclient.vsmdi
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "StockClientUT", "StockClientUT\StockClientUT.vcproj", "{0F98B88D-9544-49F9-8107-FA53EF2325A4}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7C8DBE48-1216-4D6D-836B-8B7A66B1263B} = {7C8DBE48-1216-4D6D-836B-8B7A66B1263B}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "stockclientdll", "stockclientdll.vcproj", "{7C8DBE48-1216-4D6D-836B-8B7A66B1263B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A033BAFE-8B83-4987-B944-8A8289C9CEDE}.Debug|Win32.ActiveCfg = Debug|Win32
+		{A033BAFE-8B83-4987-B944-8A8289C9CEDE}.Debug|Win32.Build.0 = Debug|Win32
+		{A033BAFE-8B83-4987-B944-8A8289C9CEDE}.Release|Win32.ActiveCfg = Release|Win32
+		{A033BAFE-8B83-4987-B944-8A8289C9CEDE}.Release|Win32.Build.0 = Release|Win32
+		{0F98B88D-9544-49F9-8107-FA53EF2325A4}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0F98B88D-9544-49F9-8107-FA53EF2325A4}.Debug|Win32.Build.0 = Debug|Win32
+		{0F98B88D-9544-49F9-8107-FA53EF2325A4}.Release|Win32.ActiveCfg = Release|Win32
+		{0F98B88D-9544-49F9-8107-FA53EF2325A4}.Release|Win32.Build.0 = Release|Win32
+		{7C8DBE48-1216-4D6D-836B-8B7A66B1263B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{7C8DBE48-1216-4D6D-836B-8B7A66B1263B}.Debug|Win32.Build.0 = Debug|Win32
+		{7C8DBE48-1216-4D6D-836B-8B7A66B1263B}.Release|Win32.ActiveCfg = Release|Win32
+		{7C8DBE48-1216-4D6D-836B-8B7A66B1263B}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

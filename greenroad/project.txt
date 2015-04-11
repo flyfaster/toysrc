@@ -1,0 +1,20 @@
+link problem: c1189 must use /MD switch with _AFXDLL project
+solution:	make a copy of greenroad.vcproj file, open it in a text editor, remove _AFXDLL; in each
+
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="2"
+						PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_UNICODE;$(NoInherit)"/>
+				</FileConfiguration>
+				
+depends on 	activation.jar
+			commons-httpclient-2.0-final.jar
+			commons-logging.jar
+			imap.jar
+			JDAVMail.0.9.006.jar
+			jdom.jar
+			mail.jar
+			mailapi.jar
+			smtp.jar

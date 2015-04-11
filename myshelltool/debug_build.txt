@@ -1,0 +1,268 @@
+------ Build started: Project: CopyLocation, Configuration: Debug Win32 ------
+
+Compiling...
+StdAfx.cpp
+Note: including file: D:\Apps\vs2003\Vc7\atlmfc\include\statreg.cpp
+statreg.cpp is obsolete. Please remove it from your project.
+Note: including file: D:\Apps\vs2003\Vc7\atlmfc\include\atlimpl.cpp
+atlimpl.cpp is obsolete. Please remove it from your project.
+Compiling...
+SheelToolConfig.cpp
+d:\Onega\test\myshelltool\SheelToolConfig.cpp(3) : warning C4005: '_ATL_STATIC_REGISTRY' : macro redefinition
+        d:\Apps\vs2003\Vc7\atlmfc\include\atldef.h(119) : see previous definition of '_ATL_STATIC_REGISTRY'
+Note: including file: d:\onega\test\myshelltool\SheelToolConfig.h
+Note: including file:  d:\onega\test\myshelltool\resource.h
+Note: including file:  D:\Apps\vs2003\Vc7\atlmfc\include\atlhost.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\mshtml.h
+Note: including file:    d:\apps\vs2003\vc7\platformsdk\include\dimm.h
+Note: including file:     D:\Apps\vs2003\Vc7\PlatformSDK\include\imm.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\mshtmhst.h
+Note: including file:    d:\apps\vs2003\vc7\platformsdk\include\docobj.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\exdisp.h
+Note: including file:   D:\Apps\vs2003\Vc7\atlmfc\include\atlwin.h
+Note: including file:    D:\Apps\vs2003\Vc7\PlatformSDK\include\commctrl.h
+Note: including file:     D:\Apps\vs2003\Vc7\PlatformSDK\include\prsht.h
+Note: including file:     D:\Apps\vs2003\Vc7\PlatformSDK\include\pshpack1.h
+Note: including file:     D:\Apps\vs2003\Vc7\PlatformSDK\include\poppack.h
+Note: including file:     D:\Apps\vs2003\Vc7\PlatformSDK\include\pshpack1.h
+Note: including file:     D:\Apps\vs2003\Vc7\PlatformSDK\include\poppack.h
+Note: including file:     D:\Apps\vs2003\Vc7\PlatformSDK\include\pshpack1.h
+Note: including file:     D:\Apps\vs2003\Vc7\PlatformSDK\include\poppack.h
+Note: including file:     D:\Apps\vs2003\Vc7\PlatformSDK\include\pshpack1.h
+Note: including file:     D:\Apps\vs2003\Vc7\PlatformSDK\include\poppack.h
+Note: including file:    D:\Apps\vs2003\Vc7\atlmfc\include\atlsimpstr.h
+Note: including file:     D:\Apps\vs2003\Vc7\atlmfc\include\atlmem.h
+Note: including file:      D:\Apps\vs2003\Vc7\atlmfc\include\atlcommem.h
+d:\Onega\test\myshelltool\SheelToolConfig.cpp(27) : warning C4101: 'hf' : unreferenced local variable
+d:\onega\test\myshelltool\sheeltoolconfig.cpp(32) : warning C4700: local variable 'hwnd' used without having been initialized
+Compiling...
+CopyLocationShl.cpp
+Note: including file: d:\onega\test\myshelltool\CopyLocation.h
+Note: including file: d:\onega\test\myshelltool\CopyLocationShl.h
+Note: including file:  d:\onega\test\myshelltool\resource.h
+Note: including file:  D:\Apps\vs2003\Vc7\PlatformSDK\include\shlobj.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\commctrl.h
+Note: including file:    D:\Apps\vs2003\Vc7\PlatformSDK\include\prsht.h
+Note: including file:    D:\Apps\vs2003\Vc7\PlatformSDK\include\pshpack1.h
+Note: including file:    D:\Apps\vs2003\Vc7\PlatformSDK\include\poppack.h
+Note: including file:    D:\Apps\vs2003\Vc7\PlatformSDK\include\pshpack1.h
+Note: including file:    D:\Apps\vs2003\Vc7\PlatformSDK\include\poppack.h
+Note: including file:    D:\Apps\vs2003\Vc7\PlatformSDK\include\pshpack1.h
+Note: including file:    D:\Apps\vs2003\Vc7\PlatformSDK\include\poppack.h
+Note: including file:    D:\Apps\vs2003\Vc7\PlatformSDK\include\pshpack1.h
+Note: including file:    D:\Apps\vs2003\Vc7\PlatformSDK\include\poppack.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\shlguid.h
+Note: including file:    D:\Apps\vs2003\Vc7\PlatformSDK\include\isguids.h
+Note: including file:    D:\Apps\vs2003\Vc7\PlatformSDK\include\exdisp.h
+Note: including file:     d:\apps\vs2003\vc7\platformsdk\include\docobj.h
+Note: including file:    D:\Apps\vs2003\Vc7\PlatformSDK\include\shldisp.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\pshpack1.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\shobjidl.h
+Note: including file:    d:\apps\vs2003\vc7\platformsdk\include\prsht.h
+Note: including file:    D:\Apps\vs2003\Vc7\PlatformSDK\include\prsht.h
+Note: including file:    D:\Apps\vs2003\Vc7\PlatformSDK\include\pshpack8.h
+Note: including file:    D:\Apps\vs2003\Vc7\PlatformSDK\include\poppack.h
+Note: including file:    D:\Apps\vs2003\Vc7\PlatformSDK\include\commctrl.h
+Note: including file:    D:\Apps\vs2003\Vc7\PlatformSDK\include\pshpack8.h
+Note: including file:    D:\Apps\vs2003\Vc7\PlatformSDK\include\poppack.h
+Note: including file:    D:\Apps\vs2003\Vc7\PlatformSDK\include\pshpack8.h
+Note: including file:    D:\Apps\vs2003\Vc7\PlatformSDK\include\poppack.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\pshpack8.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\poppack.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\pshpack8.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\poppack.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\pshpack8.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\poppack.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\pshpack8.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\poppack.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\pshpack8.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\poppack.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\pshpack8.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\poppack.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\pshpack8.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\poppack.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\pshpack1.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\poppack.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\pshpack8.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\poppack.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\pshpack8.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\poppack.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\pshpack8.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\poppack.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\pshpack8.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\poppack.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\pshpack8.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\poppack.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\pshpack8.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\poppack.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\poppack.h
+Note: including file:  D:\Apps\vs2003\Vc7\include\comdef.h
+Note: including file:   D:\Apps\vs2003\Vc7\include\comip.h
+Note: including file:    D:\Apps\vs2003\Vc7\include\new.h
+Note: including file:   d:\apps\vs2003\vc7\include\comdefsp.h
+Note: including file:  D:\Apps\vs2003\Vc7\PlatformSDK\include\ShlGuid.h
+Note: including file: D:\Apps\vs2003\Vc7\include\sstream
+Note: including file: d:\onega\test\myshelltool\SheelToolConfig.h
+Note: including file:  d:\onega\test\myshelltool\resource.h
+Note: including file:  D:\Apps\vs2003\Vc7\atlmfc\include\atlhost.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\mshtml.h
+Note: including file:    d:\apps\vs2003\vc7\platformsdk\include\dimm.h
+Note: including file:     D:\Apps\vs2003\Vc7\PlatformSDK\include\imm.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\mshtmhst.h
+Note: including file:   D:\Apps\vs2003\Vc7\atlmfc\include\atlwin.h
+Note: including file:    D:\Apps\vs2003\Vc7\PlatformSDK\include\commctrl.h
+Note: including file:    D:\Apps\vs2003\Vc7\atlmfc\include\atlsimpstr.h
+Note: including file:     D:\Apps\vs2003\Vc7\atlmfc\include\atlmem.h
+Note: including file:      D:\Apps\vs2003\Vc7\atlmfc\include\atlcommem.h
+d:\Onega\test\myshelltool\CopyLocationShl.cpp(450) : warning C4800: 'DWORD' : forcing value to bool 'true' or 'false' (performance warning)
+d:\Onega\test\myshelltool\CopyLocationShl.cpp(462) : warning C4800: 'DWORD' : forcing value to bool 'true' or 'false' (performance warning)
+CopyLocation.cpp
+Note: including file: d:\onega\test\myshelltool\resource.h
+Note: including file: D:\Apps\vs2003\Vc7\PlatformSDK\include\initguid.h
+Note: including file:  D:\Apps\vs2003\Vc7\PlatformSDK\include\guiddef.h
+Note: including file: d:\onega\test\myshelltool\CopyLocation.h
+Note: including file: d:\onega\test\myshelltool\CopyLocation_i.c
+Note: including file: d:\onega\test\myshelltool\CopyLocationShl.h
+Note: including file:  d:\onega\test\myshelltool\resource.h
+Note: including file:  D:\Apps\vs2003\Vc7\PlatformSDK\include\shlobj.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\commctrl.h
+Note: including file:    D:\Apps\vs2003\Vc7\PlatformSDK\include\prsht.h
+Note: including file:    D:\Apps\vs2003\Vc7\PlatformSDK\include\pshpack1.h
+Note: including file:    D:\Apps\vs2003\Vc7\PlatformSDK\include\poppack.h
+Note: including file:    D:\Apps\vs2003\Vc7\PlatformSDK\include\pshpack1.h
+Note: including file:    D:\Apps\vs2003\Vc7\PlatformSDK\include\poppack.h
+Note: including file:    D:\Apps\vs2003\Vc7\PlatformSDK\include\pshpack1.h
+Note: including file:    D:\Apps\vs2003\Vc7\PlatformSDK\include\poppack.h
+Note: including file:    D:\Apps\vs2003\Vc7\PlatformSDK\include\pshpack1.h
+Note: including file:    D:\Apps\vs2003\Vc7\PlatformSDK\include\poppack.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\pshpack1.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\shobjidl.h
+Note: including file:    d:\apps\vs2003\vc7\platformsdk\include\prsht.h
+Note: including file:    D:\Apps\vs2003\Vc7\PlatformSDK\include\prsht.h
+Note: including file:    D:\Apps\vs2003\Vc7\PlatformSDK\include\pshpack8.h
+Note: including file:    D:\Apps\vs2003\Vc7\PlatformSDK\include\poppack.h
+Note: including file:    D:\Apps\vs2003\Vc7\PlatformSDK\include\commctrl.h
+Note: including file:    D:\Apps\vs2003\Vc7\PlatformSDK\include\pshpack8.h
+Note: including file:    D:\Apps\vs2003\Vc7\PlatformSDK\include\poppack.h
+Note: including file:    D:\Apps\vs2003\Vc7\PlatformSDK\include\pshpack8.h
+Note: including file:    D:\Apps\vs2003\Vc7\PlatformSDK\include\poppack.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\pshpack8.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\poppack.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\pshpack8.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\poppack.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\pshpack8.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\poppack.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\pshpack8.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\poppack.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\pshpack8.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\poppack.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\pshpack8.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\poppack.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\pshpack8.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\poppack.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\pshpack1.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\poppack.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\pshpack8.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\poppack.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\pshpack8.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\poppack.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\pshpack8.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\poppack.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\pshpack8.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\poppack.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\pshpack8.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\poppack.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\pshpack8.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\poppack.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\poppack.h
+Note: including file:  D:\Apps\vs2003\Vc7\include\comdef.h
+Note: including file:   D:\Apps\vs2003\Vc7\include\comip.h
+Note: including file:    D:\Apps\vs2003\Vc7\include\new.h
+Note: including file:   d:\apps\vs2003\vc7\include\comdefsp.h
+Note: including file:  D:\Apps\vs2003\Vc7\PlatformSDK\include\ShlGuid.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\isguids.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\exdisp.h
+Note: including file:    d:\apps\vs2003\vc7\platformsdk\include\docobj.h
+Note: including file:   D:\Apps\vs2003\Vc7\PlatformSDK\include\shldisp.h
+Note: including file: D:\Apps\vs2003\Vc7\include\sstream
+Note: including file: d:\onega\test\myshelltool\get_link_info.h
+d:\Onega\test\myshelltool\CopyLocation.cpp(109) : warning C4996: 'ATL::CRegKey::SetValue' was declared deprecated
+        d:\Apps\vs2003\Vc7\atlmfc\include\atlbase.h(4730) : see declaration of 'ATL::CRegKey::SetValue'
+Generating Code...
+Linking...
+CopyLocation.obj : warning LNK4229: invalid directive '/VERBOSE:LIB' encountered; ignored
+LINK : warning LNK4075: ignoring '/EDITANDCONTINUE' due to '/INCREMENTAL:NO' specification
+Searching libraries
+    Searching D:\Apps\vs2003\Vc7\lib\kernel32.lib:
+    Searching D:\Apps\vs2003\Vc7\PlatformSDK\lib\user32.lib:
+    Searching D:\Apps\vs2003\Vc7\PlatformSDK\lib\gdi32.lib:
+    Searching D:\Apps\vs2003\Vc7\PlatformSDK\lib\winspool.lib:
+    Searching D:\Apps\vs2003\Vc7\PlatformSDK\lib\comdlg32.lib:
+    Searching D:\Apps\vs2003\Vc7\PlatformSDK\lib\advapi32.lib:
+    Searching D:\Apps\vs2003\Vc7\PlatformSDK\lib\shell32.lib:
+    Searching D:\Apps\vs2003\Vc7\PlatformSDK\lib\ole32.lib:
+    Searching D:\Apps\vs2003\Vc7\PlatformSDK\lib\oleaut32.lib:
+    Searching D:\Apps\vs2003\Vc7\PlatformSDK\lib\uuid.lib:
+    Searching D:\Apps\vs2003\Vc7\PlatformSDK\lib\odbc32.lib:
+    Searching D:\Apps\vs2003\Vc7\PlatformSDK\lib\odbccp32.lib:
+    Searching D:\Apps\vs2003\Vc7\atlmfc\lib\atlsd.lib:
+    Searching D:\Apps\vs2003\Vc7\PlatformSDK\lib\shlwapi.lib:
+    Searching D:\Apps\vs2003\Vc7\lib\libcpmtd.lib:
+    Searching D:\Apps\vs2003\Vc7\lib\comsupp.lib:
+    Searching D:\Apps\vs2003\Vc7\lib\comsuppd.lib:
+    Searching D:\Apps\vs2003\Vc7\lib\LIBCMTD.lib:
+    Searching D:\Apps\vs2003\Vc7\lib\OLDNAMES.lib:
+    Searching D:\Apps\vs2003\Vc7\lib\kernel32.lib:
+    Searching D:\Apps\vs2003\Vc7\PlatformSDK\lib\user32.lib:
+    Searching D:\Apps\vs2003\Vc7\PlatformSDK\lib\gdi32.lib:
+    Searching D:\Apps\vs2003\Vc7\PlatformSDK\lib\winspool.lib:
+    Searching D:\Apps\vs2003\Vc7\PlatformSDK\lib\comdlg32.lib:
+    Searching D:\Apps\vs2003\Vc7\PlatformSDK\lib\advapi32.lib:
+    Searching D:\Apps\vs2003\Vc7\PlatformSDK\lib\shell32.lib:
+    Searching D:\Apps\vs2003\Vc7\PlatformSDK\lib\ole32.lib:
+    Searching D:\Apps\vs2003\Vc7\PlatformSDK\lib\oleaut32.lib:
+    Searching D:\Apps\vs2003\Vc7\PlatformSDK\lib\uuid.lib:
+    Searching D:\Apps\vs2003\Vc7\PlatformSDK\lib\odbc32.lib:
+    Searching D:\Apps\vs2003\Vc7\PlatformSDK\lib\odbccp32.lib:
+    Searching D:\Apps\vs2003\Vc7\atlmfc\lib\atlsd.lib:
+    Searching D:\Apps\vs2003\Vc7\PlatformSDK\lib\shlwapi.lib:
+    Searching D:\Apps\vs2003\Vc7\lib\libcpmtd.lib:
+    Searching D:\Apps\vs2003\Vc7\lib\comsupp.lib:
+    Searching D:\Apps\vs2003\Vc7\lib\comsuppd.lib:
+Finished searching libraries
+.\CopyLocation.def : warning LNK4222: exported symbol 'DllCanUnloadNow' should not be assigned an ordinal
+.\CopyLocation.def : warning LNK4222: exported symbol 'DllGetClassObject' should not be assigned an ordinal
+.\CopyLocation.def : warning LNK4222: exported symbol 'DllRegisterServer' should not be assigned an ordinal
+.\CopyLocation.def : warning LNK4222: exported symbol 'DllUnregisterServer' should not be assigned an ordinal
+CopyLocation.obj : warning LNK4229: invalid directive '/VERBOSE:LIB' encountered; ignored
+   Creating library .\Debug/CopyLocation.lib and object .\Debug/CopyLocation.exp
+Searching libraries
+    Searching D:\Apps\vs2003\Vc7\lib\kernel32.lib:
+    Searching D:\Apps\vs2003\Vc7\PlatformSDK\lib\user32.lib:
+    Searching D:\Apps\vs2003\Vc7\PlatformSDK\lib\gdi32.lib:
+    Searching D:\Apps\vs2003\Vc7\PlatformSDK\lib\winspool.lib:
+    Searching D:\Apps\vs2003\Vc7\PlatformSDK\lib\comdlg32.lib:
+    Searching D:\Apps\vs2003\Vc7\PlatformSDK\lib\advapi32.lib:
+    Searching D:\Apps\vs2003\Vc7\PlatformSDK\lib\shell32.lib:
+    Searching D:\Apps\vs2003\Vc7\PlatformSDK\lib\ole32.lib:
+    Searching D:\Apps\vs2003\Vc7\PlatformSDK\lib\oleaut32.lib:
+    Searching D:\Apps\vs2003\Vc7\PlatformSDK\lib\uuid.lib:
+    Searching D:\Apps\vs2003\Vc7\PlatformSDK\lib\odbc32.lib:
+    Searching D:\Apps\vs2003\Vc7\PlatformSDK\lib\odbccp32.lib:
+    Searching D:\Apps\vs2003\Vc7\atlmfc\lib\atlsd.lib:
+    Searching D:\Apps\vs2003\Vc7\PlatformSDK\lib\shlwapi.lib:
+    Searching D:\Apps\vs2003\Vc7\lib\libcpmtd.lib:
+    Searching D:\Apps\vs2003\Vc7\lib\comsupp.lib:
+    Searching D:\Apps\vs2003\Vc7\lib\comsuppd.lib:
+    Searching D:\Apps\vs2003\Vc7\lib\LIBCMTD.lib:
+    Searching D:\Apps\vs2003\Vc7\lib\OLDNAMES.lib:
+Finished searching libraries
+Performing registration
+
+Build log was saved at "file://d:\Onega\test\myshelltool\Debug\BuildLog.htm"
+CopyLocation - 0 error(s), 13 warning(s)
+
+
+---------------------- Done ----------------------
+
+    Build: 1 succeeded, 0 failed, 0 skipped

@@ -1,0 +1,35 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OzSvc", "OzSvc.vcproj", "{2B25A481-FFAC-4547-AB60-DBD1F74109FA}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OzSvcPS", "OzSvcPS.vcproj", "{AFE5F2E6-2CFB-413B-90EE-F10EB4A43842}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2B25A481-FFAC-4547-AB60-DBD1F74109FA} = {2B25A481-FFAC-4547-AB60-DBD1F74109FA}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		ConsoleDebug|Win32 = ConsoleDebug|Win32
+		ConsoleRelease|Win32 = ConsoleRelease|Win32
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2B25A481-FFAC-4547-AB60-DBD1F74109FA}.ConsoleDebug|Win32.ActiveCfg = ConsoleDebug|Win32
+		{2B25A481-FFAC-4547-AB60-DBD1F74109FA}.ConsoleDebug|Win32.Build.0 = ConsoleDebug|Win32
+		{2B25A481-FFAC-4547-AB60-DBD1F74109FA}.ConsoleRelease|Win32.ActiveCfg = ConsoleRelease|Win32
+		{2B25A481-FFAC-4547-AB60-DBD1F74109FA}.ConsoleRelease|Win32.Build.0 = ConsoleRelease|Win32
+		{2B25A481-FFAC-4547-AB60-DBD1F74109FA}.Debug|Win32.ActiveCfg = Debug|Win32
+		{2B25A481-FFAC-4547-AB60-DBD1F74109FA}.Debug|Win32.Build.0 = Debug|Win32
+		{2B25A481-FFAC-4547-AB60-DBD1F74109FA}.Release|Win32.ActiveCfg = Release|Win32
+		{2B25A481-FFAC-4547-AB60-DBD1F74109FA}.Release|Win32.Build.0 = Release|Win32
+		{AFE5F2E6-2CFB-413B-90EE-F10EB4A43842}.ConsoleDebug|Win32.ActiveCfg = ConsoleDebug|Win32
+		{AFE5F2E6-2CFB-413B-90EE-F10EB4A43842}.ConsoleRelease|Win32.ActiveCfg = ConsoleRelease|Win32
+		{AFE5F2E6-2CFB-413B-90EE-F10EB4A43842}.Debug|Win32.ActiveCfg = Debug|Win32
+		{AFE5F2E6-2CFB-413B-90EE-F10EB4A43842}.Release|Win32.ActiveCfg = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

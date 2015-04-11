@@ -1,0 +1,502 @@
+This project depends on following packages:
+boost 1.35
+Python 2.5
+Cryptopp5.52
+wxWidgets 2.8.7
+
+Build wxWidgets-2.8.4
+onega.zhang@a0067759 /cygdrive/i/wxWidgets-2.8.4/gcc-lib
+$ ../configure --with-expat --enable-monolithic --with-msw --with-regex --without-subdirs
+  --enable-shared=no  --enable-stl --enable-mediactrl   --enable-controls --enable-dataviewctrl
+ --enable-tabdialog
+onega.zhang@a0067759 /cygdrive/i/wxWidgets-2.8.4/gcc-lib
+$ make
+
+Linker command line:
+-------------- Build: Win32 Release in wx1 ---------------
+[100.0%] g++.exe -L../../wxWidgets-2.8.4/gcc-lib/lib/ -LH:/tmp/boost/bin.v2/libs/filesystem/build/gcc-3.4.4/release/link-static/threading-multi/ -Lh:/cygwin/lib  -o ./Release/wx1.exe Release/CopyThread.o Release/DeleteThread.o Release/mydlg.o Release/ConfigPage.o    -lwx_msw-2.8 -lwinspool -lcomdlg32 -ladvapi32 -lshell32 -lodbccp32 -loleaut32 -lcomctl32 -lshlwapi -lkernel32 -luser32 -lgdi32 -lexpat -luuid -lcomctl32 -lole32 -lboost_filesystem-gcc34-mt-1_34  -mwindows
+Process terminated with status 0 (0 minutes, 2 seconds)
+0 errors, 0 warnings
+
+
+1>Linking...
+1>Searching libraries
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\lib\kernel32.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\user32.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\gdi32.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\winspool.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\comdlg32.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\advapi32.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\shell32.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\ole32.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\oleaut32.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\lib\uuid.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\odbc32.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\odbccp32.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxbase28.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxbase28_net.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxbase28_xml.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxregex.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxexpat.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxjpeg.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxpng.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxtiff.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxzlib.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxmsw28_adv.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxmsw28_core.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxmsw28_html.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxmsw28_qa.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxmsw28_xrc.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxmsw28_aui.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxmsw28_richtext.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxmsw28_media.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\oleacc.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\lib\msvcprt.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\lib\MSVCRT.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\lib\OLDNAMES.lib:
+1>    Searching C:\Boost\lib\libboost_filesystem-vc80-mt-1_33_1.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\shlwapi.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\rpcrt4.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\comctl32.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxmsw28.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\lib\kernel32.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\user32.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\gdi32.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\winspool.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\comdlg32.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\advapi32.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\shell32.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\ole32.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\oleaut32.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\lib\uuid.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\odbc32.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\odbccp32.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxbase28.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxbase28_net.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxbase28_xml.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxregex.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxexpat.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxjpeg.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxpng.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxtiff.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxzlib.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxmsw28_adv.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxmsw28_core.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxmsw28_html.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxmsw28_qa.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxmsw28_xrc.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxmsw28_aui.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxmsw28_richtext.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxmsw28_media.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\oleacc.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\lib\msvcprt.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\lib\MSVCRT.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\lib\OLDNAMES.lib:
+1>    Searching C:\Boost\lib\libboost_filesystem-vc80-mt-1_33_1.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\shlwapi.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\rpcrt4.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\comctl32.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxmsw28.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\lib\kernel32.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\user32.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\gdi32.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\winspool.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\comdlg32.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\advapi32.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\shell32.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\ole32.lib:
+1>Finished searching libraries
+1>Searching libraries
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\lib\kernel32.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\user32.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\gdi32.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\winspool.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\comdlg32.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\advapi32.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\shell32.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\ole32.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\oleaut32.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\lib\uuid.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\odbc32.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\odbccp32.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxbase28.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxbase28_net.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxbase28_xml.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxregex.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxexpat.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxjpeg.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxpng.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxtiff.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxzlib.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxmsw28_adv.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxmsw28_core.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxmsw28_html.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxmsw28_qa.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxmsw28_xrc.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxmsw28_aui.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxmsw28_richtext.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxmsw28_media.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\oleacc.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\lib\msvcprt.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\lib\MSVCRT.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\lib\OLDNAMES.lib:
+1>    Searching C:\Boost\lib\libboost_filesystem-vc80-mt-1_33_1.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\shlwapi.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\rpcrt4.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\comctl32.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxmsw28.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\lib\kernel32.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\user32.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\gdi32.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\winspool.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\comdlg32.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\advapi32.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\shell32.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\ole32.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\oleaut32.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\lib\uuid.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\odbc32.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\odbccp32.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxbase28.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxbase28_net.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxbase28_xml.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxregex.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxexpat.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxjpeg.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxpng.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxtiff.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxzlib.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxmsw28_adv.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxmsw28_core.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxmsw28_html.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxmsw28_qa.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxmsw28_xrc.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxmsw28_aui.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxmsw28_richtext.lib:
+1>    Searching D:\apps\wxWidgets-2.8.4\lib\vc_lib\wxmsw28_media.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\oleacc.lib:
+1>    Searching C:\Program Files\Microsoft Visual Studio 8\VC\lib\msvcprt.lib:
+1>Finished searching libraries
+1>Embedding manifest...
+1>Build log was saved at "file://k:\onega\wx1\VC8Release\BuildLog.htm"
+1>wx1 - 0 error(s), 45 warning(s)
+========== Rebuild All: 1 succeeded, 0 failed, 0 skipped ==========
+
+
+Linking...
+Searching libraries
+    Searching c:\Program Files\Microsoft Visual Studio 8\VC\lib\kernel32.lib:
+    Searching c:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\user32.lib:
+    Searching c:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\gdi32.lib:
+    Searching c:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\winspool.lib:
+    Searching c:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\comdlg32.lib:
+    Searching c:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\advapi32.lib:
+    Searching c:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\shell32.lib:
+    Searching c:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\ole32.lib:
+    Searching c:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\oleaut32.lib:
+    Searching c:\Program Files\Microsoft Visual Studio 8\VC\lib\uuid.lib:
+    Searching c:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\odbc32.lib:
+    Searching c:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\odbccp32.lib:
+    Searching c:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\oleacc.lib:
+    Searching c:\Program Files\Microsoft Visual Studio 8\VC\lib\msvcprt.lib:
+    Searching c:\Program Files\Microsoft Visual Studio 8\VC\lib\MSVCRT.lib:
+    Searching c:\Program Files\Microsoft Visual Studio 8\VC\lib\OLDNAMES.lib:
+    Searching E:\opensource\boost\boost_1_34_1\stage\lib\libboost_filesystem-vc80-mt-1_34_1.lib:
+    Searching c:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\shlwapi.lib:
+    Searching c:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\rpcrt4.lib:
+    Searching c:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\comctl32.lib:
+    Searching e:\3rd\lib\vc_lib\wxmsw28.lib:
+    Searching E:\apps\wxWidgets-2.8.3\lib\vc_lib\wxexpat.lib:
+    Searching c:\Program Files\Microsoft Visual Studio 8\VC\lib\kernel32.lib:
+    Searching c:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\user32.lib:
+    Searching c:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\gdi32.lib:
+    Searching c:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\winspool.lib:
+    Searching c:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\comdlg32.lib:
+    Searching c:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\advapi32.lib:
+    Searching c:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\shell32.lib:
+    Searching c:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\ole32.lib:
+    Searching c:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\oleaut32.lib:
+    Searching c:\Program Files\Microsoft Visual Studio 8\VC\lib\uuid.lib:
+    Searching c:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\odbc32.lib:
+    Searching c:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\odbccp32.lib:
+    Searching c:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\oleacc.lib:
+    Searching c:\Program Files\Microsoft Visual Studio 8\VC\lib\msvcprt.lib:
+    Searching c:\Program Files\Microsoft Visual Studio 8\VC\lib\MSVCRT.lib:
+    Searching c:\Program Files\Microsoft Visual Studio 8\VC\lib\OLDNAMES.lib:
+    Searching E:\opensource\boost\boost_1_34_1\stage\lib\libboost_filesystem-vc80-mt-1_34_1.lib:
+    Searching c:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\shlwapi.lib:
+    Searching c:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\rpcrt4.lib:
+    Searching c:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\comctl32.lib:
+    Searching e:\3rd\lib\vc_lib\wxmsw28.lib:
+    Searching E:\apps\wxWidgets-2.8.3\lib\vc_lib\wxexpat.lib:
+    Searching c:\Program Files\Microsoft Visual Studio 8\VC\lib\kernel32.lib:
+    Searching c:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\user32.lib:
+    Searching c:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\gdi32.lib:
+    Searching c:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\winspool.lib:
+    Searching c:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\comdlg32.lib:
+    Searching c:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\advapi32.lib:
+    Searching c:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\shell32.lib:
+    Searching c:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\ole32.lib:
+    Searching c:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\oleaut32.lib:
+    Searching c:\Program Files\Microsoft Visual Studio 8\VC\lib\uuid.lib:
+    Searching c:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\odbc32.lib:
+    Searching c:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\odbccp32.lib:
+    Searching c:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\oleacc.lib:
+    Searching c:\Program Files\Microsoft Visual Studio 8\VC\lib\msvcprt.lib:
+    Searching c:\Program Files\Microsoft Visual Studio 8\VC\lib\MSVCRT.lib:
+    Searching c:\Program Files\Microsoft Visual Studio 8\VC\lib\OLDNAMES.lib:
+    Searching E:\opensource\boost\boost_1_34_1\stage\lib\libboost_filesystem-vc80-mt-1_34_1.lib:
+    Searching c:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\shlwapi.lib:
+    Searching c:\Program Files\Microsoft Visual Studio 8\VC\PlatformSDK\lib\rpcrt4.lib:
+Finished searching libraries
+Embedding manifest...
+Build log was saved at "file://i:\onega\wx1\VC8Release\BuildLog.htm"
+wx1 - 0 error(s), 30 warning(s)
+========== Rebuild All: 1 succeeded, 0 failed, 0 skipped ==========
+
+------ Build started: Project: GUICopy, Configuration: Release Win32 ------
+Compiling...
+CleanPage.cpp
+d:\src\boost\boost_1_36_0\boost\circular_buffer/base.hpp(180) : warning C4099: 'boost::cb_details::iterator' : type name first seen using 'class' now seen using 'struct'
+        d:\src\boost\boost_1_36_0\boost\circular_buffer/details.hpp(187) : see declaration of 'boost::cb_details::iterator'
+        d:\src\boost\boost_1_36_0\boost\circular_buffer/base.hpp(2478) : see reference to class template instantiation 'boost::circular_buffer<T,Alloc>' being compiled
+D:\src\wxWidgets-2.8.8\include\wx/wxchar.h(886) : warning C4273: '_snprintf' : inconsistent dll linkage
+        C:\Program Files\Microsoft Visual Studio 9.0\VC\include\stdio.h(358) : see previous definition of '_snprintf'
+Linking...
+Searching libraries
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\kernel32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\user32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\gdi32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\winspool.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\comdlg32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\advapi32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\shell32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\ole32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\oleaut32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\uuid.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\odbc32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\odbccp32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\oleacc.lib:
+    Searching C:\Program Files\Microsoft Visual Studio 9.0\VC\lib\msvcprt.lib:
+    Searching D:\src\boost\boost_1_36_0\stage\lib\libboost_date_time-vc90-mt-1_36.lib:
+    Searching D:\src\boost\boost_1_36_0\stage\lib\libboost_filesystem-vc90-mt-1_36.lib:
+    Searching D:\src\boost\boost_1_36_0\stage\lib\libboost_system-vc90-mt-1_36.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\psapi.lib:
+    Searching C:\Program Files\Microsoft Visual Studio 9.0\VC\lib\MSVCRT.lib:
+    Searching C:\Program Files\Microsoft Visual Studio 9.0\VC\lib\OLDNAMES.lib:
+    Searching C:\Python25\Libs\python25.lib:
+    Searching D:\src\boost\boost_1_36_0\stage\lib\boost_python-vc90-mt-1_36.lib:
+    Searching D:\src\boost\boost_1_36_0\stage\lib\libboost_program_options-vc90-mt-1_36.lib:
+    Searching D:\src\boost\boost_1_36_0\stage\lib\libboost_regex-vc90-mt-1_36.lib:
+    Searching D:\src\cryptopp\Win32\Output\Release\cryptlib.lib:
+cryptlib.lib(cryptlib.obj) : MSIL .netmodule or module compiled with /GL found; restarting link with /LTCG; add /LTCG to the link command line to improve linker performance
+Searching libraries
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\kernel32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\user32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\gdi32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\winspool.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\comdlg32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\advapi32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\shell32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\ole32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\oleaut32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\uuid.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\odbc32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\odbccp32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\oleacc.lib:
+    Searching C:\Program Files\Microsoft Visual Studio 9.0\VC\lib\msvcprt.lib:
+    Searching D:\src\boost\boost_1_36_0\stage\lib\libboost_date_time-vc90-mt-1_36.lib:
+    Searching D:\src\boost\boost_1_36_0\stage\lib\libboost_filesystem-vc90-mt-1_36.lib:
+    Searching D:\src\boost\boost_1_36_0\stage\lib\libboost_system-vc90-mt-1_36.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\psapi.lib:
+    Searching C:\Program Files\Microsoft Visual Studio 9.0\VC\lib\MSVCRT.lib:
+    Searching C:\Program Files\Microsoft Visual Studio 9.0\VC\lib\OLDNAMES.lib:
+    Searching C:\Python25\Libs\python25.lib:
+    Searching D:\src\boost\boost_1_36_0\stage\lib\boost_python-vc90-mt-1_36.lib:
+    Searching D:\src\boost\boost_1_36_0\stage\lib\libboost_program_options-vc90-mt-1_36.lib:
+    Searching D:\src\boost\boost_1_36_0\stage\lib\libboost_regex-vc90-mt-1_36.lib:
+    Searching D:\src\cryptopp\Win32\Output\Release\cryptlib.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\shlwapi.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\rpcrt4.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\comctl32.lib:
+    Searching D:\src\wxWidgets-2.8.8\lib\vc_libvc90\wxmsw28.lib:
+    Searching D:\src\wxWidgets-2.8.8\lib\vc_libvc90\wxexpat.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\kernel32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\user32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\gdi32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\winspool.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\comdlg32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\advapi32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\shell32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\ole32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\oleaut32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\uuid.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\odbc32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\odbccp32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\oleacc.lib:
+    Searching C:\Program Files\Microsoft Visual Studio 9.0\VC\lib\msvcprt.lib:
+    Searching D:\src\boost\boost_1_36_0\stage\lib\libboost_date_time-vc90-mt-1_36.lib:
+    Searching D:\src\boost\boost_1_36_0\stage\lib\libboost_filesystem-vc90-mt-1_36.lib:
+    Searching D:\src\boost\boost_1_36_0\stage\lib\libboost_system-vc90-mt-1_36.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\psapi.lib:
+    Searching C:\Program Files\Microsoft Visual Studio 9.0\VC\lib\MSVCRT.lib:
+    Searching C:\Program Files\Microsoft Visual Studio 9.0\VC\lib\OLDNAMES.lib:
+    Searching C:\Python25\Libs\python25.lib:
+    Searching D:\src\boost\boost_1_36_0\stage\lib\boost_python-vc90-mt-1_36.lib:
+    Searching D:\src\boost\boost_1_36_0\stage\lib\libboost_program_options-vc90-mt-1_36.lib:
+    Searching D:\src\boost\boost_1_36_0\stage\lib\libboost_regex-vc90-mt-1_36.lib:
+    Searching D:\src\cryptopp\Win32\Output\Release\cryptlib.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\shlwapi.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\rpcrt4.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\comctl32.lib:
+    Searching D:\src\wxWidgets-2.8.8\lib\vc_libvc90\wxmsw28.lib:
+    Searching D:\src\wxWidgets-2.8.8\lib\vc_libvc90\wxexpat.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\kernel32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\user32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\gdi32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\winspool.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\comdlg32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\advapi32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\shell32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\ole32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\oleaut32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\uuid.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\odbc32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\odbccp32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\oleacc.lib:
+    Searching C:\Program Files\Microsoft Visual Studio 9.0\VC\lib\msvcprt.lib:
+    Searching D:\src\boost\boost_1_36_0\stage\lib\libboost_date_time-vc90-mt-1_36.lib:
+    Searching D:\src\boost\boost_1_36_0\stage\lib\libboost_filesystem-vc90-mt-1_36.lib:
+    Searching D:\src\boost\boost_1_36_0\stage\lib\libboost_system-vc90-mt-1_36.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\psapi.lib:
+    Searching C:\Program Files\Microsoft Visual Studio 9.0\VC\lib\MSVCRT.lib:
+    Searching C:\Program Files\Microsoft Visual Studio 9.0\VC\lib\OLDNAMES.lib:
+    Searching C:\Python25\Libs\python25.lib:
+    Searching D:\src\boost\boost_1_36_0\stage\lib\boost_python-vc90-mt-1_36.lib:
+    Searching D:\src\boost\boost_1_36_0\stage\lib\libboost_program_options-vc90-mt-1_36.lib:
+    Searching D:\src\boost\boost_1_36_0\stage\lib\libboost_regex-vc90-mt-1_36.lib:
+    Searching D:\src\cryptopp\Win32\Output\Release\cryptlib.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\shlwapi.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\rpcrt4.lib:
+Finished searching libraries
+   Creating library .\VC9Release/GUICopy.lib and object .\VC9Release/GUICopy.exp
+Searching libraries
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\kernel32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\user32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\gdi32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\winspool.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\comdlg32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\advapi32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\shell32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\ole32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\oleaut32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\uuid.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\odbc32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\odbccp32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\oleacc.lib:
+    Searching C:\Program Files\Microsoft Visual Studio 9.0\VC\lib\msvcprt.lib:
+    Searching D:\src\boost\boost_1_36_0\stage\lib\libboost_date_time-vc90-mt-1_36.lib:
+    Searching D:\src\boost\boost_1_36_0\stage\lib\libboost_filesystem-vc90-mt-1_36.lib:
+    Searching D:\src\boost\boost_1_36_0\stage\lib\libboost_system-vc90-mt-1_36.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\psapi.lib:
+    Searching C:\Program Files\Microsoft Visual Studio 9.0\VC\lib\MSVCRT.lib:
+    Searching C:\Program Files\Microsoft Visual Studio 9.0\VC\lib\OLDNAMES.lib:
+    Searching C:\Python25\Libs\python25.lib:
+    Searching D:\src\boost\boost_1_36_0\stage\lib\boost_python-vc90-mt-1_36.lib:
+    Searching D:\src\boost\boost_1_36_0\stage\lib\libboost_program_options-vc90-mt-1_36.lib:
+    Searching D:\src\boost\boost_1_36_0\stage\lib\libboost_regex-vc90-mt-1_36.lib:
+    Searching D:\src\cryptopp\Win32\Output\Release\cryptlib.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\shlwapi.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\rpcrt4.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\comctl32.lib:
+    Searching D:\src\wxWidgets-2.8.8\lib\vc_libvc90\wxmsw28.lib:
+    Searching D:\src\wxWidgets-2.8.8\lib\vc_libvc90\wxexpat.lib:
+Finished searching libraries
+Generating code
+Finished generating code
+Searching libraries
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\kernel32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\user32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\gdi32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\winspool.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\comdlg32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\advapi32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\shell32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\ole32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\oleaut32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\uuid.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\odbc32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\odbccp32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\oleacc.lib:
+    Searching C:\Program Files\Microsoft Visual Studio 9.0\VC\lib\msvcprt.lib:
+    Searching D:\src\boost\boost_1_36_0\stage\lib\libboost_date_time-vc90-mt-1_36.lib:
+    Searching D:\src\boost\boost_1_36_0\stage\lib\libboost_filesystem-vc90-mt-1_36.lib:
+    Searching D:\src\boost\boost_1_36_0\stage\lib\libboost_system-vc90-mt-1_36.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\psapi.lib:
+    Searching C:\Program Files\Microsoft Visual Studio 9.0\VC\lib\MSVCRT.lib:
+    Searching C:\Program Files\Microsoft Visual Studio 9.0\VC\lib\OLDNAMES.lib:
+    Searching C:\Python25\Libs\python25.lib:
+    Searching D:\src\boost\boost_1_36_0\stage\lib\boost_python-vc90-mt-1_36.lib:
+    Searching D:\src\boost\boost_1_36_0\stage\lib\libboost_program_options-vc90-mt-1_36.lib:
+    Searching D:\src\boost\boost_1_36_0\stage\lib\libboost_regex-vc90-mt-1_36.lib:
+    Searching D:\src\cryptopp\Win32\Output\Release\cryptlib.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\shlwapi.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\rpcrt4.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\comctl32.lib:
+    Searching D:\src\wxWidgets-2.8.8\lib\vc_libvc90\wxmsw28.lib:
+    Searching D:\src\wxWidgets-2.8.8\lib\vc_libvc90\wxexpat.lib:
+Finished searching libraries
+Searching libraries
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\kernel32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\user32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\gdi32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\winspool.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\comdlg32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\advapi32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\shell32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\ole32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\oleaut32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\uuid.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\odbc32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\odbccp32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\oleacc.lib:
+    Searching C:\Program Files\Microsoft Visual Studio 9.0\VC\lib\msvcprt.lib:
+    Searching D:\src\boost\boost_1_36_0\stage\lib\libboost_date_time-vc90-mt-1_36.lib:
+    Searching D:\src\boost\boost_1_36_0\stage\lib\libboost_filesystem-vc90-mt-1_36.lib:
+    Searching D:\src\boost\boost_1_36_0\stage\lib\libboost_system-vc90-mt-1_36.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\psapi.lib:
+    Searching C:\Program Files\Microsoft Visual Studio 9.0\VC\lib\MSVCRT.lib:
+    Searching C:\Program Files\Microsoft Visual Studio 9.0\VC\lib\OLDNAMES.lib:
+    Searching C:\Python25\Libs\python25.lib:
+    Searching D:\src\boost\boost_1_36_0\stage\lib\boost_python-vc90-mt-1_36.lib:
+    Searching D:\src\boost\boost_1_36_0\stage\lib\libboost_program_options-vc90-mt-1_36.lib:
+    Searching D:\src\boost\boost_1_36_0\stage\lib\libboost_regex-vc90-mt-1_36.lib:
+    Searching D:\src\cryptopp\Win32\Output\Release\cryptlib.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\shlwapi.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\rpcrt4.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\comctl32.lib:
+    Searching D:\src\wxWidgets-2.8.8\lib\vc_libvc90\wxmsw28.lib:
+    Searching D:\src\wxWidgets-2.8.8\lib\vc_libvc90\wxexpat.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\kernel32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\user32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\gdi32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\winspool.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\comdlg32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\advapi32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\shell32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\ole32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\oleaut32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\uuid.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\odbc32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\odbccp32.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\oleacc.lib:
+    Searching C:\Program Files\Microsoft Visual Studio 9.0\VC\lib\msvcprt.lib:
+    Searching D:\src\boost\boost_1_36_0\stage\lib\libboost_date_time-vc90-mt-1_36.lib:
+    Searching D:\src\boost\boost_1_36_0\stage\lib\libboost_filesystem-vc90-mt-1_36.lib:
+    Searching D:\src\boost\boost_1_36_0\stage\lib\libboost_system-vc90-mt-1_36.lib:
+    Searching C:\Program Files\Microsoft SDKs\Windows\v6.0A\\lib\psapi.lib:
+Finished searching libraries
+Creating manifest...
+Build log was saved at "file://e:\svn\guicopy\VC9Release\BuildLog.htm"
+GUICopy - 0 error(s), 2 warning(s)
+========== Build: 1 succeeded, 0 failed, 0 up-to-date, 0 skipped ==========

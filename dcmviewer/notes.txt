@@ -1,0 +1,29 @@
+	//unsigned short bits_stored = data.operator()(dicom::TAG_BITS_STORED).Get<unsigned short>();
+	//Photometric Interpretation MONOCHROME1, MONOCHROME2, PALETTE COLOR, RGB, YBR_FULL.
+	// 8, 10, 12, 16 grayscale and 24 bit images 
+	// JPEG (8, 10, 12, 16-bit Lossless grayscale, 8, 12 bit lossy grayscale, 24-bit lossless and lossy color), 
+	//JPEG 2000 (including lossy and lossless 8-16 bit grayscale images and 24-bit color) Run Length, Uncompressed, 
+	//Photometric Interpretation (Monochrome1, Monochrome2, Palletized, RGB, ARGB, CMYK, YBR Full 422, YBR Full, YBR_RCT, YBR_ICT), 
+	//and single and multi-frame images.
+	//Planar Configuration Both possible values (color-by-plane, color-by-pixel).
+	
+	
+	
+	
+	
+	C.7.6.3.1.3 Planar Configuration
+Planar Configuration (0028,0006) indicates whether the color pixel data are sent color-by-plane
+or color-by-pixel. This Attribute shall be present if Samples per Pixel (0028,0002) has a value
+greater than 1. It shall not be present otherwise.
+Enumerated Values:
+0 = The sample values for the first pixel are followed by the sample values for the second
+pixel, etc. For RGB images, this means the order of the pixel values sent shall be R1,
+G1, B1, R2, G2, B2, ..., etc. 
+1 = Each color plane shall be sent contiguously. For
+RGB images, this means the order of the pixel values sent is R1, R2, R3, ..., G1, G2,
+G3, ..., B1, B2, B3, etc.
+Note: Planar Configuration (0028,0006) is not meaningful when a compression transfer syntax is used
+that involves reorganization of sample components in the compressed bit stream. In such cases,
+since the Attribute is required to be sent, then an appropriate value to use may be specified in
+the description of the Transfer Syntax in PS 3.5, though in all likelihood the value of the Attribute
+will be ignored by the receiving implementation.

@@ -1,0 +1,345 @@
+<!DOCTYPE QtCreatorProject>
+<qtcreator>
+ <data>
+  <variable>RunConfiguration0-BaseEnvironmentBase</variable>
+  <value type="int">2</value>
+ </data>
+ <data>
+  <variable>RunConfiguration0-CommandLineArguments</variable>
+  <valuelist type="QVariantList"/>
+ </data>
+ <data>
+  <variable>RunConfiguration0-ProFile</variable>
+  <value type="QString">testqt1.pro</value>
+ </data>
+ <data>
+  <variable>RunConfiguration0-RunConfiguration.name</variable>
+  <value type="QString">testqt1</value>
+ </data>
+ <data>
+  <variable>RunConfiguration0-UseDyldImageSuffix</variable>
+  <value type="bool">false</value>
+ </data>
+ <data>
+  <variable>RunConfiguration0-UseTerminal</variable>
+  <value type="bool">false</value>
+ </data>
+ <data>
+  <variable>RunConfiguration0-UserEnvironmentChanges</variable>
+  <valuelist type="QVariantList"/>
+ </data>
+ <data>
+  <variable>RunConfiguration0-UserSetName</variable>
+  <value type="bool">false</value>
+ </data>
+ <data>
+  <variable>RunConfiguration0-UserSetWorkingDirectory</variable>
+  <value type="bool">false</value>
+ </data>
+ <data>
+  <variable>RunConfiguration0-UserWorkingDirectory</variable>
+  <value type="QString"></value>
+ </data>
+ <data>
+  <variable>RunConfiguration0-type</variable>
+  <value type="QString">Qt4ProjectManager.Qt4RunConfiguration</value>
+ </data>
+ <data>
+  <variable>activeRunConfiguration</variable>
+  <value type="int">0</value>
+ </data>
+ <data>
+  <variable>activebuildconfiguration</variable>
+  <value type="QString">Release</value>
+ </data>
+ <data>
+  <variable>buildConfiguration-Debug</variable>
+  <valuemap type="QVariantMap">
+   <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString">Debug</value>
+   <value key="QtVersionId" type="int">0</value>
+   <value key="ToolChain" type="int">0</value>
+   <value key="addQDumper" type=""></value>
+   <value key="buildConfiguration" type="int">2</value>
+  </valuemap>
+ </data>
+ <data>
+  <variable>buildConfiguration-Release</variable>
+  <valuemap type="QVariantMap">
+   <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString">Release</value>
+   <value key="QtVersionId" type="int">0</value>
+   <value key="ToolChain" type="int">0</value>
+   <value key="addQDumper" type=""></value>
+   <value key="buildConfiguration" type="int">0</value>
+   <valuelist key="userEnvironmentChanges" type="QVariantList">
+    <value type="QString">LD_LIBRARY_PATH=/home/onega/qtsdk-2009.05/lib/qtcreator:</value>
+   </valuelist>
+  </valuemap>
+ </data>
+ <data>
+  <variable>buildconfiguration-Debug-buildstep0</variable>
+  <valuemap type="QVariantMap">
+   <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString">Debug</value>
+   <valuelist key="abstractProcess.Environment" type="QVariantList">
+    <value type="QString">DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-gReMSuPShD,guid=5a03c309ca116770afe813ed4ba72810</value>
+    <value type="QString">DESKTOP_SESSION=gnome</value>
+    <value type="QString">DISPLAY=:0.0</value>
+    <value type="QString">GDMSESSION=gnome</value>
+    <value type="QString">GDM_KEYBOARD_LAYOUT=cn</value>
+    <value type="QString">GDM_LANG=en_HK.UTF-8</value>
+    <value type="QString">GNOME_DESKTOP_SESSION_ID=this-is-deprecated</value>
+    <value type="QString">GNOME_KEYRING_SOCKET=/tmp/keyring-2U40UC/socket</value>
+    <value type="QString">GTK_IM_MODULE=ibus</value>
+    <value type="QString">GTK_MODULES=canberra-gtk-module</value>
+    <value type="QString">GTK_RC_FILES=/etc/gtk/gtkrc:/home/onega/.gtkrc-1.2-gnome2</value>
+    <value type="QString">HOME=/home/onega</value>
+    <value type="QString">LANG=en_HK.UTF-8</value>
+    <value type="QString">LD_LIBRARY_PATH=/home/onega/qtsdk-2009.05/lib/qtcreator:</value>
+    <value type="QString">LOGNAME=onega</value>
+    <value type="QString">ORBIT_SOCKETDIR=/tmp/orbit-onega</value>
+    <value type="QString">PATH=/home/onega/qtsdk-2009.05/qt/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games</value>
+    <value type="QString">PWD=/home/onega/qtsdk-2009.05/bin</value>
+    <value type="QString">QTDIR=/home/onega/qtsdk-2009.05/qt</value>
+    <value type="QString">QT_IM_MODULE=xim</value>
+    <value type="QString">SESSION_MANAGER=local/ub-laptop:@/tmp/.ICE-unix/1410,unix/ub-laptop:/tmp/.ICE-unix/1410</value>
+    <value type="QString">SHELL=/bin/bash</value>
+    <value type="QString">SPEECHD_PORT=7560</value>
+    <value type="QString">SSH_AGENT_PID=1453</value>
+    <value type="QString">SSH_AUTH_SOCK=/tmp/keyring-2U40UC/socket.ssh</value>
+    <value type="QString">USER=onega</value>
+    <value type="QString">USERNAME=onega</value>
+    <value type="QString">XAUTHORITY=/var/run/gdm/auth-for-onega-Ug0UOv/database</value>
+    <value type="QString">XDG_DATA_DIRS=/usr/share/gnome:/usr/local/share/:/usr/share/</value>
+    <value type="QString">XDG_SESSION_COOKIE=cf4b79a33a4e2f6f353949304b241879-1269245967.733507-822588628</value>
+    <value type="QString">XMODIFIERS=@im=ibus</value>
+   </valuelist>
+   <valuelist key="abstractProcess.arguments" type="QVariantList">
+    <value type="QString">/home/onega/testqt1/testqt1.pro</value>
+    <value type="QString">-spec</value>
+    <value type="QString">linux-g++</value>
+    <value type="QString">-r</value>
+    <value type="QString">CONFIG+=debug</value>
+   </valuelist>
+   <value key="abstractProcess.command" type="QString">/home/onega/qtsdk-2009.05/qt/bin/qmake</value>
+   <value key="abstractProcess.enabled" type="bool">false</value>
+   <value key="abstractProcess.workingDirectory" type="QString">/home/onega/testqt1</value>
+  </valuemap>
+ </data>
+ <data>
+  <variable>buildconfiguration-Debug-buildstep1</variable>
+  <valuemap type="QVariantMap">
+   <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString">Debug</value>
+   <valuelist key="abstractProcess.Environment" type="QVariantList">
+    <value type="QString">DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-gReMSuPShD,guid=5a03c309ca116770afe813ed4ba72810</value>
+    <value type="QString">DESKTOP_SESSION=gnome</value>
+    <value type="QString">DISPLAY=:0.0</value>
+    <value type="QString">GDMSESSION=gnome</value>
+    <value type="QString">GDM_KEYBOARD_LAYOUT=cn</value>
+    <value type="QString">GDM_LANG=en_HK.UTF-8</value>
+    <value type="QString">GNOME_DESKTOP_SESSION_ID=this-is-deprecated</value>
+    <value type="QString">GNOME_KEYRING_SOCKET=/tmp/keyring-2U40UC/socket</value>
+    <value type="QString">GTK_IM_MODULE=ibus</value>
+    <value type="QString">GTK_MODULES=canberra-gtk-module</value>
+    <value type="QString">GTK_RC_FILES=/etc/gtk/gtkrc:/home/onega/.gtkrc-1.2-gnome2</value>
+    <value type="QString">HOME=/home/onega</value>
+    <value type="QString">LANG=en_HK.UTF-8</value>
+    <value type="QString">LD_LIBRARY_PATH=/home/onega/qtsdk-2009.05/lib/qtcreator:</value>
+    <value type="QString">LOGNAME=onega</value>
+    <value type="QString">ORBIT_SOCKETDIR=/tmp/orbit-onega</value>
+    <value type="QString">PATH=/home/onega/qtsdk-2009.05/qt/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games</value>
+    <value type="QString">PWD=/home/onega/qtsdk-2009.05/bin</value>
+    <value type="QString">QTDIR=/home/onega/qtsdk-2009.05/qt</value>
+    <value type="QString">QT_IM_MODULE=xim</value>
+    <value type="QString">SESSION_MANAGER=local/ub-laptop:@/tmp/.ICE-unix/1410,unix/ub-laptop:/tmp/.ICE-unix/1410</value>
+    <value type="QString">SHELL=/bin/bash</value>
+    <value type="QString">SPEECHD_PORT=7560</value>
+    <value type="QString">SSH_AGENT_PID=1453</value>
+    <value type="QString">SSH_AUTH_SOCK=/tmp/keyring-2U40UC/socket.ssh</value>
+    <value type="QString">USER=onega</value>
+    <value type="QString">USERNAME=onega</value>
+    <value type="QString">XAUTHORITY=/var/run/gdm/auth-for-onega-Ug0UOv/database</value>
+    <value type="QString">XDG_DATA_DIRS=/usr/share/gnome:/usr/local/share/:/usr/share/</value>
+    <value type="QString">XDG_SESSION_COOKIE=cf4b79a33a4e2f6f353949304b241879-1269245967.733507-822588628</value>
+    <value type="QString">XMODIFIERS=@im=ibus</value>
+   </valuelist>
+   <value key="abstractProcess.IgnoreReturnValue" type="bool">false</value>
+   <valuelist key="abstractProcess.arguments" type="QVariantList">
+    <value type="QString">-w</value>
+   </valuelist>
+   <value key="abstractProcess.command" type="QString">/usr/bin/make</value>
+   <value key="abstractProcess.enabled" type="bool">true</value>
+   <value key="abstractProcess.workingDirectory" type="QString">/home/onega/testqt1</value>
+  </valuemap>
+ </data>
+ <data>
+  <variable>buildconfiguration-Debug-cleanstep0</variable>
+  <valuemap type="QVariantMap">
+   <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString">Debug</value>
+   <value key="cleanConfig" type="bool">true</value>
+   <valuelist key="makeargs" type="QVariantList">
+    <value type="QString">clean</value>
+   </valuelist>
+  </valuemap>
+ </data>
+ <data>
+  <variable>buildconfiguration-Release-buildstep0</variable>
+  <valuemap type="QVariantMap">
+   <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString">Release</value>
+   <valuelist key="abstractProcess.Environment" type="QVariantList">
+    <value type="QString">DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-XRqnHBduAv,guid=1f1fa2c58b5293c41491ba0a4bc0739a</value>
+    <value type="QString">DESKTOP_SESSION=kde</value>
+    <value type="QString">DISPLAY=:0.0</value>
+    <value type="QString">DM_CONTROL=/var/run/xdmctl</value>
+    <value type="QString">GPG_AGENT_INFO=/tmp/gpg-YBkIaI/S.gpg-agent:1471:1</value>
+    <value type="QString">GS_LIB=/home/onega/.fonts</value>
+    <value type="QString">GTK2_RC_FILES=/etc/gtk-2.0/gtkrc:/home/onega/.gtkrc-2.0:/home/onega/.gtkrc-2.0-kde4:/home/onega/.kde/share/config/gtkrc-2.0</value>
+    <value type="QString">GTK_IM_MODULE=ibus</value>
+    <value type="QString">GTK_MODULES=canberra-gtk-module</value>
+    <value type="QString">GTK_RC_FILES=/etc/gtk/gtkrc:/home/onega/.gtkrc::/home/onega/.kde/share/config/gtkrc</value>
+    <value type="QString">HOME=/home/onega</value>
+    <value type="QString">KDE_FULL_SESSION=true</value>
+    <value type="QString">KDE_MULTIHEAD=false</value>
+    <value type="QString">KDE_SESSION_UID=1000</value>
+    <value type="QString">KDE_SESSION_VERSION=4</value>
+    <value type="QString">LANG=en_HK.UTF-8</value>
+    <value type="QString">LD_LIBRARY_PATH=/home/onega/qtsdk-2009.05/lib/qtcreator:</value>
+    <value type="QString">LOGNAME=onega</value>
+    <value type="QString">PATH=/home/onega/qtsdk-2009.05/qt/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games</value>
+    <value type="QString">PWD=/home/onega/Documents</value>
+    <value type="QString">QTDIR=/home/onega/qtsdk-2009.05/qt</value>
+    <value type="QString">QT_IM_MODULE=ibus</value>
+    <value type="QString">QT_PLUGIN_PATH=/home/onega/.kde/lib/kde4/plugins/:/usr/lib/kde4/plugins/</value>
+    <value type="QString">SESSION_MANAGER=local/ub-laptop:@/tmp/.ICE-unix/1566,unix/ub-laptop:/tmp/.ICE-unix/1566</value>
+    <value type="QString">SHELL=/bin/bash</value>
+    <value type="QString">SHLVL=0</value>
+    <value type="QString">SPEECHD_PORT=7560</value>
+    <value type="QString">SSH_AGENT_PID=1470</value>
+    <value type="QString">SSH_AUTH_SOCK=/tmp/ssh-XPfEKv1412/agent.1412</value>
+    <value type="QString">USER=onega</value>
+    <value type="QString">WINDOWPATH=7</value>
+    <value type="QString">XCURSOR_THEME=oxy-white</value>
+    <value type="QString">XDG_DATA_DIRS=/usr/share:/usr/share:/usr/local/share</value>
+    <value type="QString">XDG_SESSION_COOKIE=cf4b79a33a4e2f6f353949304b241879-1270903706.686399-72773459</value>
+    <value type="QString">XDM_MANAGED=method=classic</value>
+    <value type="QString">XMODIFIERS=@im=ibus</value>
+   </valuelist>
+   <valuelist key="abstractProcess.arguments" type="QVariantList">
+    <value type="QString">/home/onega/workspace/svn/mytoybox/trunk/boost_python_exec_file/testqt1.pro</value>
+    <value type="QString">-spec</value>
+    <value type="QString">linux-g++</value>
+    <value type="QString">-r</value>
+   </valuelist>
+   <value key="abstractProcess.command" type="QString">/home/onega/qtsdk-2009.05/qt/bin/qmake</value>
+   <value key="abstractProcess.enabled" type="bool">false</value>
+   <value key="abstractProcess.workingDirectory" type="QString">/home/onega/workspace/svn/mytoybox/trunk/boost_python_exec_file</value>
+  </valuemap>
+ </data>
+ <data>
+  <variable>buildconfiguration-Release-buildstep1</variable>
+  <valuemap type="QVariantMap">
+   <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString">Release</value>
+   <valuelist key="abstractProcess.Environment" type="QVariantList">
+    <value type="QString">DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-XRqnHBduAv,guid=1f1fa2c58b5293c41491ba0a4bc0739a</value>
+    <value type="QString">DESKTOP_SESSION=kde</value>
+    <value type="QString">DISPLAY=:0.0</value>
+    <value type="QString">DM_CONTROL=/var/run/xdmctl</value>
+    <value type="QString">GPG_AGENT_INFO=/tmp/gpg-YBkIaI/S.gpg-agent:1471:1</value>
+    <value type="QString">GS_LIB=/home/onega/.fonts</value>
+    <value type="QString">GTK2_RC_FILES=/etc/gtk-2.0/gtkrc:/home/onega/.gtkrc-2.0:/home/onega/.gtkrc-2.0-kde4:/home/onega/.kde/share/config/gtkrc-2.0</value>
+    <value type="QString">GTK_IM_MODULE=ibus</value>
+    <value type="QString">GTK_MODULES=canberra-gtk-module</value>
+    <value type="QString">GTK_RC_FILES=/etc/gtk/gtkrc:/home/onega/.gtkrc::/home/onega/.kde/share/config/gtkrc</value>
+    <value type="QString">HOME=/home/onega</value>
+    <value type="QString">KDE_FULL_SESSION=true</value>
+    <value type="QString">KDE_MULTIHEAD=false</value>
+    <value type="QString">KDE_SESSION_UID=1000</value>
+    <value type="QString">KDE_SESSION_VERSION=4</value>
+    <value type="QString">LANG=en_HK.UTF-8</value>
+    <value type="QString">LD_LIBRARY_PATH=/home/onega/qtsdk-2009.05/lib/qtcreator:</value>
+    <value type="QString">LOGNAME=onega</value>
+    <value type="QString">PATH=/home/onega/qtsdk-2009.05/qt/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games</value>
+    <value type="QString">PWD=/home/onega/Documents</value>
+    <value type="QString">QTDIR=/home/onega/qtsdk-2009.05/qt</value>
+    <value type="QString">QT_IM_MODULE=ibus</value>
+    <value type="QString">QT_PLUGIN_PATH=/home/onega/.kde/lib/kde4/plugins/:/usr/lib/kde4/plugins/</value>
+    <value type="QString">SESSION_MANAGER=local/ub-laptop:@/tmp/.ICE-unix/1566,unix/ub-laptop:/tmp/.ICE-unix/1566</value>
+    <value type="QString">SHELL=/bin/bash</value>
+    <value type="QString">SHLVL=0</value>
+    <value type="QString">SPEECHD_PORT=7560</value>
+    <value type="QString">SSH_AGENT_PID=1470</value>
+    <value type="QString">SSH_AUTH_SOCK=/tmp/ssh-XPfEKv1412/agent.1412</value>
+    <value type="QString">USER=onega</value>
+    <value type="QString">WINDOWPATH=7</value>
+    <value type="QString">XCURSOR_THEME=oxy-white</value>
+    <value type="QString">XDG_DATA_DIRS=/usr/share:/usr/share:/usr/local/share</value>
+    <value type="QString">XDG_SESSION_COOKIE=cf4b79a33a4e2f6f353949304b241879-1270903706.686399-72773459</value>
+    <value type="QString">XDM_MANAGED=method=classic</value>
+    <value type="QString">XMODIFIERS=@im=ibus</value>
+   </valuelist>
+   <value key="abstractProcess.IgnoreReturnValue" type="bool">false</value>
+   <valuelist key="abstractProcess.arguments" type="QVariantList">
+    <value type="QString">-w</value>
+   </valuelist>
+   <value key="abstractProcess.command" type="QString">/usr/bin/make</value>
+   <value key="abstractProcess.enabled" type="bool">true</value>
+   <value key="abstractProcess.workingDirectory" type="QString">/home/onega/workspace/svn/mytoybox/trunk/boost_python_exec_file</value>
+  </valuemap>
+ </data>
+ <data>
+  <variable>buildconfiguration-Release-cleanstep0</variable>
+  <valuemap type="QVariantMap">
+   <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString">Release</value>
+   <value key="cleanConfig" type="bool">true</value>
+   <valuelist key="makeargs" type="QVariantList">
+    <value type="QString">clean</value>
+   </valuelist>
+  </valuemap>
+ </data>
+ <data>
+  <variable>buildconfigurations</variable>
+  <valuelist type="QVariantList">
+   <value type="QString">Debug</value>
+   <value type="QString">Release</value>
+  </valuelist>
+ </data>
+ <data>
+  <variable>buildstep0</variable>
+  <valuemap type="QVariantMap">
+   <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString"></value>
+   <value key="mkspec" type="QString"></value>
+  </valuemap>
+ </data>
+ <data>
+  <variable>buildstep1</variable>
+  <valuemap type="QVariantMap">
+   <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString"></value>
+  </valuemap>
+ </data>
+ <data>
+  <variable>buildsteps</variable>
+  <valuelist type="QVariantList">
+   <value type="QString">trolltech.qt4projectmanager.qmake</value>
+   <value type="QString">trolltech.qt4projectmanager.make</value>
+  </valuelist>
+ </data>
+ <data>
+  <variable>cleanstep0</variable>
+  <valuemap type="QVariantMap">
+   <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString"></value>
+   <value key="clean" type="bool">true</value>
+  </valuemap>
+ </data>
+ <data>
+  <variable>cleansteps</variable>
+  <valuelist type="QVariantList">
+   <value type="QString">trolltech.qt4projectmanager.make</value>
+  </valuelist>
+ </data>
+ <data>
+  <variable>defaultFileEncoding</variable>
+  <value type="QByteArray">System</value>
+ </data>
+ <data>
+  <variable>project</variable>
+  <valuemap type="QVariantMap"/>
+ </data>
+</qtcreator>

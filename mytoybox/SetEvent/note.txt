@@ -1,0 +1,5 @@
+HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion
+
+Loki::ImplOf<class RegistryPage>::OnReadRegistry\\.\root\default:StdRegProv
+Exception in Loki::ImplOf<class RegistryPage>::OnReadRegistry 0x80020005, description Type mismatch.
+Loki::ImplOf<class RegistryPage>::OnReadRegistry spends 0 milliseconds

@@ -1,0 +1,2 @@
+dcmviewer fatal error LNK1179: invalid or corrupt file: duplicate COMDAT ''
+Fix: rebuild D:\3rd\dicom\dicomlib\dicomlib.sln

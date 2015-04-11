@@ -1,0 +1,5 @@
+interface taosimple
+{
+boolean send_message(in string arg1, inout string message);
+oneway void shutdown ();
+};

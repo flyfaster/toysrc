@@ -1,0 +1,18 @@
+// OzSvc.idl : IDL source for OzSvc
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (OzSvc.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+
+[
+	uuid(5690B87B-6704-4841-9C64-2CDBCD5F1F64),
+	version(1.0),
+	helpstring("OzSvc 1.0 Type Library")
+]
+library OzSvcLib
+{
+	importlib("stdole2.tlb");
+};

@@ -1,0 +1,2 @@
+mainicon	ICON	"main32.ico"
+#include "wx/msw/wx.rc"
