@@ -19,7 +19,7 @@ public:
 		char szBuff[1024];
 		va_list arg;
 		va_start(arg, szFormat);
-		snprintf (szBuff, sizeof(szBuff), szFormat, arg);
+		vsnprintf (szBuff, sizeof(szBuff), szFormat, arg);
 		va_end(arg);
 //		std::cout << szBuff;
 	}
