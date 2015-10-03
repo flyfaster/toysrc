@@ -1,0 +1,44 @@
+git clone https://github.com/open-source-parsers/jsoncpp.git 
+cd jsoncpp
+mkdir -p build/release
+cd build/release
+cmake -DCMAKE_BUILD_TYPE=release -DBUILD_SHARED_LIBS=ON -DCMAKE_CXX_FLAGS="-fPIC" -G "Unix Makefiles" ../..
+make | tee -a jsoncpp-build.log
+sudo make install
+
+[onega@localhost jsonrpc-cpp-0.6]$ grep std= /home/onega/workspace/jsonrpc-cpp-0.6/examples/Makefile
+AM_CXXFLAGS = -std=c++11 -Wall -Wextra -pedantic -Wredundant-decls -Wshadow -O2 -Wno-long-long -Werror -I$(top_srcdir)/include
+
+[onega@localhost jsonrpc-cpp-0.6]$ make -C /home/onega/workspace/jsonrpc-cpp-0.6/examples
+make: Entering directory `/home/onega/workspace/jsonrpc-cpp-0.6/examples'
+depbase=`echo test-rpc.o | sed 's|[^/]*$|.deps/&|;s|\.o$||'`;\
+g++ -DPACKAGE_NAME=\"jsonrpc-cpp\" -DPACKAGE_TARNAME=\"jsonrpc-cpp\" -DPACKAGE_VERSION=\"0.6\" -DPACKAGE_STRING=\"jsonrpc-cpp\ 0.6\" -DPACKAGE_BUGREPORT=\"\" -DPACKAGE_URL=\"\" -DPACKAGE=\"jsonrpc-cpp\" -DVERSION=\"0.6\" -DSTDC_HEADERS=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_MEMORY_H=1 -DHAVE_STRINGS_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1 -DHAVE_UNISTD_H=1 -DHAVE_DLFCN_H=1 -DLT_OBJDIR=\".libs/\"   -I"/usr/include/jsoncpp" -I"../src"   -std=c++11 -Wall -Wextra -pedantic -Wredundant-decls -Wshadow -O2 -Wno-long-long -Werror -I../include -g -O2 -MT test-rpc.o -MD -MP -MF $depbase.Tpo -c -o test-rpc.o test-rpc.cpp &&\
+mv -f $depbase.Tpo $depbase.Po
+/bin/sh ../libtool  --tag=CXX   --mode=link g++ -std=c++11 -Wall -Wextra -pedantic -Wredundant-decls -Wshadow -O2 -Wno-long-long -Werror -I../include -g -O2   -o udp-client udp-client.o test-rpc.o ../src/libjsonrpc-cpp.la -ljsoncpp  
+libtool: link: g++ -std=c++11 -Wall -Wextra -pedantic -Wredundant-decls -Wshadow -O2 -Wno-long-long -Werror -I../include -g -O2 -o .libs/udp-client udp-client.o test-rpc.o  ../src/.libs/libjsonrpc-cpp.so -ljsoncpp -Wl,-rpath -Wl,/usr/local/lib
+depbase=`echo udp-server.o | sed 's|[^/]*$|.deps/&|;s|\.o$||'`;\
+g++ -DPACKAGE_NAME=\"jsonrpc-cpp\" -DPACKAGE_TARNAME=\"jsonrpc-cpp\" -DPACKAGE_VERSION=\"0.6\" -DPACKAGE_STRING=\"jsonrpc-cpp\ 0.6\" -DPACKAGE_BUGREPORT=\"\" -DPACKAGE_URL=\"\" -DPACKAGE=\"jsonrpc-cpp\" -DVERSION=\"0.6\" -DSTDC_HEADERS=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_MEMORY_H=1 -DHAVE_STRINGS_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1 -DHAVE_UNISTD_H=1 -DHAVE_DLFCN_H=1 -DLT_OBJDIR=\".libs/\"   -I"/usr/include/jsoncpp" -I"../src"   -std=c++11 -Wall -Wextra -pedantic -Wredundant-decls -Wshadow -O2 -Wno-long-long -Werror -I../include -g -O2 -MT udp-server.o -MD -MP -MF $depbase.Tpo -c -o udp-server.o udp-server.cpp &&\
+mv -f $depbase.Tpo $depbase.Po
+/bin/sh ../libtool  --tag=CXX   --mode=link g++ -std=c++11 -Wall -Wextra -pedantic -Wredundant-decls -Wshadow -O2 -Wno-long-long -Werror -I../include -g -O2   -o udp-server udp-server.o test-rpc.o ../src/libjsonrpc-cpp.la -ljsoncpp 
+libtool: link: g++ -std=c++11 -Wall -Wextra -pedantic -Wredundant-decls -Wshadow -O2 -Wno-long-long -Werror -I../include -g -O2 -o .libs/udp-server udp-server.o test-rpc.o  ../src/.libs/libjsonrpc-cpp.so -ljsoncpp -Wl,-rpath -Wl,/usr/local/lib
+/bin/sh ../libtool  --tag=CXX   --mode=link g++ -std=c++11 -Wall -Wextra -pedantic -Wredundant-decls -Wshadow -O2 -Wno-long-long -Werror -I../include -g -O2   -o tcp-client tcp-client.o test-rpc.o ../src/libjsonrpc-cpp.la -ljsoncpp  
+libtool: link: g++ -std=c++11 -Wall -Wextra -pedantic -Wredundant-decls -Wshadow -O2 -Wno-long-long -Werror -I../include -g -O2 -o .libs/tcp-client tcp-client.o test-rpc.o  ../src/.libs/libjsonrpc-cpp.so -ljsoncpp -Wl,-rpath -Wl,/usr/local/lib
+depbase=`echo tcp-server.o | sed 's|[^/]*$|.deps/&|;s|\.o$||'`;\
+g++ -DPACKAGE_NAME=\"jsonrpc-cpp\" -DPACKAGE_TARNAME=\"jsonrpc-cpp\" -DPACKAGE_VERSION=\"0.6\" -DPACKAGE_STRING=\"jsonrpc-cpp\ 0.6\" -DPACKAGE_BUGREPORT=\"\" -DPACKAGE_URL=\"\" -DPACKAGE=\"jsonrpc-cpp\" -DVERSION=\"0.6\" -DSTDC_HEADERS=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_MEMORY_H=1 -DHAVE_STRINGS_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1 -DHAVE_UNISTD_H=1 -DHAVE_DLFCN_H=1 -DLT_OBJDIR=\".libs/\"   -I"/usr/include/jsoncpp" -I"../src"   -std=c++11 -Wall -Wextra -pedantic -Wredundant-decls -Wshadow -O2 -Wno-long-long -Werror -I../include -g -O2 -MT tcp-server.o -MD -MP -MF $depbase.Tpo -c -o tcp-server.o tcp-server.cpp &&\
+mv -f $depbase.Tpo $depbase.Po
+/bin/sh ../libtool  --tag=CXX   --mode=link g++ -std=c++11 -Wall -Wextra -pedantic -Wredundant-decls -Wshadow -O2 -Wno-long-long -Werror -I../include -g -O2   -o tcp-server tcp-server.o test-rpc.o ../src/libjsonrpc-cpp.la -ljsoncpp  
+libtool: link: g++ -std=c++11 -Wall -Wextra -pedantic -Wredundant-decls -Wshadow -O2 -Wno-long-long -Werror -I../include -g -O2 -o .libs/tcp-server tcp-server.o test-rpc.o  ../src/.libs/libjsonrpc-cpp.so -ljsoncpp -Wl,-rpath -Wl,/usr/local/lib
+make: Leaving directory `/home/onega/workspace/jsonrpc-cpp-0.6/examples'
+[onega@localhost jsonrpc-cpp-0.6]$ 
+
+
+[onega@localhost jsonrpc-cpp-0.6]$ examples/tcp-server 1000
+Start JSON-RPC TCP server
+
+
+[onega@localhost jsonrpc-cpp-0.6]$ examples/tcp-client 10000
+Query is: [{"id":1,"jsonrpc":"2.0","method":"print"},{"jsonrpc":"2.0","method":"notify"},{"foo":"bar"},{"id":4,"jsonrpc":"2.0","method":"method"},{"id":5,"jsonrpc":"2.0","method":"print"}]
+
+/home/onega/workspace/jsonrpc-cpp-0.6/examples/.libs/lt-tcp-clientsend 50000 jscon rpc message via udp used 804ms
+
+
