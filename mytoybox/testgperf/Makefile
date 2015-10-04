@@ -18,7 +18,7 @@ testgperf: testgperf.cpp profiler.cpp profiler.h
             --output elf64-x86-64 \
             --binary-architecture i386 Makefile Makefile-binary.o
             
-	g++ -o testgperf -L/home/onega/src/gperftools/gperftools-2.3.90/.libs -rdynamic ${CFLAGS} -g testgperf.cpp profiler.cpp *.o -lbfd -lprofiler -ltcmalloc -ldl
+	g++ -o testgperf -L/home/onega/src/gperftools/gperftools-2.3.90/.libs -rdynamic ${CFLAGS} -g -std=c++11 testgperf.cpp profiler.cpp *.o -lboost_program_options -lbfd -lprofiler -ltcmalloc -ldl
 	
 clean:
 	rm testgperf Makefile-binary.o profiler.h.o profiler.cpp.o testgperf.cpp.o

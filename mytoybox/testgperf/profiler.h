@@ -11,6 +11,7 @@ struct funcperf {
   funcperf() __attribute__ ((no_instrument_function));
   ~funcperf() __attribute__ ((no_instrument_function));
   ptrtype function;
+  ptrtype caller;
   uint64_t duration;
 };
 
@@ -20,6 +21,7 @@ struct sfuncperf {
   void add(uint64_t sometime) __attribute__ ((no_instrument_function));
   void add(const sfuncperf& other) __attribute__ ((no_instrument_function));
   ptrtype function;
+  ptrtype caller;
   uint64_t duration;
   uint64_t cnt;
   uint64_t minval;
