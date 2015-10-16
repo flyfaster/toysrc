@@ -82,6 +82,32 @@ public class Solution {
         return true;
     }
 }
+
+public class Solution { // combination-sum-iii
+    private void combination(List<List<Integer>> ret, List<Integer> a, int k, int n) {
+        int lastelement = 0;
+        if( a.isEmpty()==false)
+            lastelement = a.get(a.size()-1);
+        if(k==1 && n<=9 && n>lastelement) {
+            a.add(n);
+            ret.add(a);
+            return;
+        }
+        if(n<=lastelement) return;
+        for(int i=lastelement+1; i<=9; i++) {
+            List<Integer> dup = new LinkedList<Integer>(a);
+            dup.add(i);
+            combination(ret, dup, k-1, n-i);
+        }
+    }
+    public List<List<Integer>> combinationSum3(int k, int n) {
+        List<List<Integer>> ret= new LinkedList<List<Integer>>();
+        List<Integer> dup = new LinkedList<Integer>( );
+        combination(ret, dup, k, n);
+        return ret;
+    }
+}
+
 */
 
 
