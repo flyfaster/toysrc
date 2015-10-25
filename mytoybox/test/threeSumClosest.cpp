@@ -1,9 +1,5 @@
 //============================================================================
 // Name        : threeSumClosest.cpp
-// Author      : Onega Zhang
-// Version     :
-// Copyright   : Your copyright notice
-// Description : Hello World in C++, Ansi-style
 //============================================================================
 
 #include <iostream>
@@ -60,7 +56,7 @@ public:
 };
 
 int main() {
-	cout << "https://leetcode.com/problems/3sum-closest/" << endl; // prints https://leetcode.com/problems/3sum-closest/
+	cout << "3sum-closest/" << endl;
 	std::vector<int> nums={
 			43,75,-90,47,-49,72,17,-31,-68,-22,-21,-30,65,88,-75,23,97,-61,53,87,-3,33,20,51,-79,43,80,-9,34,-89,-7,93,43,
 			55,-94,29,-32,-49,25,72,-6,35,53,63,6,-62,-96,-83,-73,66,-11,96,-90,-27,78,-51,79,35,-63,85,-82,-15,100,-82,1,
@@ -75,8 +71,4 @@ int main() {
 	std::cout << "ret "<< ret<<std::endl;
 	return 0;
 }
-//Given an array S of n integers, find three integers in S such that the sum is closest to a given number,
-//target. Return the sum of the three integers. You may assume that each input would have exactly one solution.
-//    For example, given array S = {-1 2 1 -4}, and target = 1.
-//    The sum that is closest to the target is 2. (-1 + 2 + 1 = 2).
 

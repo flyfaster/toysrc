@@ -1,10 +1,5 @@
 //============================================================================
 // Name        : longestPalindrome.cpp
-// Author      : Onega Zhang
-// Version     :
-// Copyright   : Your copyright notice
-// Given a string S, find the longest palindromic substring in S. You may assume
-// that the maximum length of S is 1000, and there exists one unique longest palindromic substring.
 //============================================================================
 
 #include <iostream>
@@ -87,7 +82,7 @@ public:
     }
 };
 int main() {
-	cout << "https://leetcode.com/problems/longest-palindromic-substring/" << endl;
+	cout << "longest-palindromic-substring" << endl;
 	Solution mysol;
 	cout << mysol.longestPalindrome("ccc") <<endl;
 	return 0;

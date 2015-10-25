@@ -1,11 +1,5 @@
 //============================================================================
 // Name        : findMedianSortedArrays.cpp
-// Author      : Onega Zhang
-// Version     :
-// Copyright   : Your copyright notice
-// Description : //There are two sorted arrays nums1 and nums2 of size m and n respectively. 
-//               Find the median of the two sorted arrays.
-//               The overall run time complexity should be O(log (m+n)).
 //============================================================================
 
 #include <iostream>
@@ -83,7 +77,7 @@ public:
     }
 };
 int main() {
-	cout << "https://leetcode.com/problems/median-of-two-sorted-arrays/" << endl;
+	cout << "median-of-two-sorted-arrays/" << endl;
 	Solution mysol;
 //	if (true) {
 //	std::vector<int> nums1={1};

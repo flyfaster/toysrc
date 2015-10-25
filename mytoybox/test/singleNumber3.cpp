@@ -1,4 +1,4 @@
-class Solution { // https://leetcode.com/problems/single-number-iii/
+class Solution { // single-number-iii
 public:
     vector<int> singleNumber(vector<int>& nums) {
         int xd = 0; vector<int> ret;

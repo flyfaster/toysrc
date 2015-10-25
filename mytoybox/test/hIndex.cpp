@@ -1,4 +1,4 @@
-// https://leetcode.com/problems/h-index-ii/
+// h-index-ii/
 class Solution {
 public:
     int hIndex(vector<int>& citations) {
@@ -13,7 +13,7 @@ public:
     }
 };
 
-// https://leetcode.com/problems/h-index/
+// h-index/
 class Solution {
 public:
     int hIndex(vector<int>& citations) {

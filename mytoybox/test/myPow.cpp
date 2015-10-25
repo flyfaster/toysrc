@@ -1,9 +1,5 @@
 //============================================================================
 // Name        : myPow.cpp
-// Author      : Onega Zhang
-// Version     :
-// Copyright   : Your copyright notice
-// Description : Hello World in C++, Ansi-style
 //============================================================================
 
 #include <iostream>
@@ -61,7 +57,7 @@ public:
         }
 };
 int main() {
-	cout << "https://leetcode.com/problems/powx-n/" << endl; // prints https://leetcode.com/problems/powx-n/
+	cout << "powx-n/" << endl; // 
 	Solution mysol;
 //	cout << mysol.myPow(0.00001, 2147483647) << std::endl;
 	cout << mysol.myPow(8.84372, -5) << std::endl;

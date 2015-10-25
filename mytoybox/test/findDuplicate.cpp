@@ -1,9 +1,5 @@
 //============================================================================
 // Name        : findDuplicate.cpp
-// Author      : Onega Zhang
-// Version     :
-// Copyright   : Your copyright notice
-// Description : Hello World in C++, Ansi-style
 //============================================================================
 
 #include <iostream>
@@ -39,7 +35,7 @@ public:
     }
 };
 int main() {
-	cout << "https://leetcode.com/problems/find-the-duplicate-number/" << endl;
+	cout << "find-the-duplicate-number/" << endl;
 	std::vector<int> input={1,2,5, 4,4,4,4};
 	Solution mysol;
 	cout << mysol.findDuplicate(input) << endl;

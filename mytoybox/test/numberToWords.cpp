@@ -1,9 +1,5 @@
 //============================================================================
 // Name        : numberToWords.cpp
-// Author      : Onega Zhang
-// Version     :
-// Copyright   : Your copyright notice
-// Description : Hello World in C++, Ansi-style
 //============================================================================
 
 #include <iostream>
@@ -95,7 +91,7 @@ public:
     }
 };
 int main() {
-	cout << "https://leetcode.com/problems/integer-to-english-words/" << endl; // prints https://leetcode.com/problems/integer-to-english-words/
+	cout << "integer-to-english-words" << endl;
 	Solution mysol;
 	cout << "\"" << mysol.numberToWords(123)<<"\"" << endl;
 	cout << "\"" << mysol.numberToWords(1234567)<<"\"" << endl;

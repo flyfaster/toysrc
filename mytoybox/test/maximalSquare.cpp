@@ -1,9 +1,5 @@
 //============================================================================
 // Name        : maximalSquare.cpp
-// Author      : Onega Zhang
-// Version     :
-// Copyright   : Your copyright notice
-// Description : Hello World in C++, Ansi-style
 //============================================================================
 
 #include <iostream>
@@ -11,13 +7,6 @@
 #include <stdarg.h>
 #include <cstdio>
 using namespace std;
-//Given a 2D binary matrix filled with 0's and 1's, find the largest square containing all 1's and return its area.
-//For example, given the following matrix:
-//1 0 1 0 0
-//1 0 1 1 1
-//1 1 1 1 1
-//1 0 0 1 0
-//Return 4.
 #define VERBOSE
 class Solution {
 public:
