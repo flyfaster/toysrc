@@ -26,6 +26,7 @@
 #include <string>
 #include <boost/algorithm/string.hpp>
 #include <iomanip>
+#include <iostream>
 #include <sstream>
 #include "url_class.h"
 
