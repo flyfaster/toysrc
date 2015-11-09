@@ -29,12 +29,15 @@
 #include <sqlite3.h>
 #include <deque>
 #include <algorithm>
+#include <unordered_set>
+#include <unordered_map>
 #include "resource_database.h"
 
 resource_database::resource_database():zErrMsg(0), rc(0)
 {
 
 }
+
 int resource_database::open(const std::string& database_filepath)
 {
   std::cout << __FUNCTION__ << " " << database_filepath<<std::endl;
@@ -76,6 +79,7 @@ static int callback(void* NotUsed, int argc, char** argv, char** azColName)
   }
   return 0;
 }
+
 int resource_database::add_url_resource(const std::string& resource_url, 
 					const std::string& local_file, 
 					const std::string& sha1data, 
@@ -155,26 +159,32 @@ std::string resource_database::get_dbpath()
 return db_path_;
 }
 
-int resource_database::add_image_url(const std::string& imgurl)
-{
-  if (std::find(img_url_list.begin(), img_url_list.end(), imgurl) == img_url_list.end())
-  {
-    std::cout << __FUNCTION__ << " " << imgurl<<std::endl;
-  img_url_list.push_back(imgurl);
-  }
-  else
-  {
-    std::cout << __FUNCTION__ << " duplicated " << imgurl<<std::endl;
-  }
-return 0;
+int resource_database::add_image_url(const std::string& imgurl) {
+	if (image_url_table.find(imgurl) != image_url_table.end()) {
+		std::cout << __FUNCTION__ << " skip duplicated " << imgurl << std::endl;
+		return 0;
+	}
+	if (std::find(img_url_list.begin(), img_url_list.end(), imgurl)
+			== img_url_list.end()) {
+		std::cout << __FUNCTION__ << " " << imgurl << std::endl;
+		img_url_list.push_back(imgurl);
+	} else {
+		std::cout << __FUNCTION__ << " duplicated " << imgurl << std::endl;
+	}
+	return 0;
 }
 
 int resource_database::add_page_url(const std::string& urlpath, int depth)
 {
+	if(page_url_depth_table.find(urlpath) != page_url_depth_table.end()) {
+		std::cout << __FUNCTION__ << " ignore duplicated url: "<< urlpath<<std::endl;
+		return 0;
+	}
+	page_url_depth_table[urlpath]=depth;
   if (std::find(page_url_list.begin(), page_url_list.end(), urlpath) == page_url_list.end())
   {
-  page_url_list.push_back(urlpath);
-  std::cout << __FUNCTION__ << " add page, depth: "<< depth <<" "<< urlpath <<std::endl;
+	  page_url_list.push_back(urlpath);
+	  std::cout << __FUNCTION__ << " add page, depth: "<< depth <<" "<< urlpath <<std::endl;
   }
   else
   {

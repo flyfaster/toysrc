@@ -56,6 +56,8 @@ public:
     std::deque<std::string> page_url_list, img_url_list;
     std::deque<std::string> get_page_list();
     std::deque<std::string> get_img_list();
+    std::unordered_map<std::string, int> page_url_depth_table; // key: page url, value: depth
+    std::unordered_set<std::string> image_url_table;
 };
 
 #endif // RESOURCE_DATABASE_H

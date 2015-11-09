@@ -38,10 +38,11 @@
 #include "http_downloader.h"
 #include "url_class.h"
 
-http_downloader::http_downloader()
-{
-	min_file_size_ = 32*1024;
-  reset_digest();
+http_downloader::http_downloader() {
+	min_file_size_ = 32 * 1024;
+	image_long_min_ = 640;
+	image_short_min_ = 320;
+	reset_digest();
 }
 
 void http_downloader::min_file_size(long fs) {
@@ -150,9 +151,30 @@ bool http_downloader::download_image(const char* surl)
      SHA1_Final(digest, &ctx);
      int width=0, height=0;
      bool funcret = get_image_size(saveas_filename.c_str(), &width, &height);
-     if(funcret)
-    	 std::cout << __func__ << " "<<saveas_filename<< " image size " << width << "x"<<height<<std::endl;
+     if(funcret) {
+
+    	 bool goodimage = true;
+    	 if (width <image_long_min_ && height < image_long_min_)
+    		 goodimage = false;
+    	 if (width <image_short_min_ || height < image_short_min_)
+    		 goodimage = false;
+    	 if(!goodimage) {
+    		 remove(saveas_filename.c_str());
+    		 std::cout << __func__ << " "<<saveas_filename<< " is removed, image size " << width << "x"<<height<<std::endl;
+    	 } else {
+    		 std::cout << __func__ << " "<<saveas_filename<< " image size " << width << "x"<<height<<std::endl;
+    	 }
+
+     }
      else
     	 std::cout << __func__ << " "<<saveas_filename<< " failed to get image size " <<std::endl;
     return true;
+}
+
+void http_downloader::image_short_min(long short_min) {
+	image_short_min_ = short_min;
+}
+
+void http_downloader::image_long_min(long long_min) {
+	image_long_min_ = long_min;
 }

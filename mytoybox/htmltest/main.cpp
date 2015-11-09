@@ -12,6 +12,8 @@
 #include <istream>
 #include <ostream>
 #include <string>
+#include <unordered_set>
+#include <unordered_map>
 #include <sys/select.h>
 #include <boost/asio/ip/tcp.hpp>
 #include <boost/algorithm/string.hpp>
@@ -34,12 +36,12 @@
 #include "resource_database.h"
 
 int input_signal=0;
-void my_handler(int signalinput)
-{
-  input_signal = signalinput;
-  std::cout<<__FUNCTION__ << " got signal " << signalinput<<std::endl;  
-  exit(0);
+void my_handler(int signalinput) {
+	input_signal = signalinput;
+	std::cout << __FUNCTION__ << " got signal " << signalinput << std::endl;
+	exit(0);
 }
+
 int main(int argc, char** argv) {
     using namespace std;
     cout << argv[0] << " pid " << getpid() << " built time "<< __DATE__ <<" " << __TIME__<< endl;
@@ -55,6 +57,8 @@ int main(int argc, char** argv) {
 	  ("minfilesize", po::value<int>(), "minimal files size")
 	  ("recursive", "process links in the page")
 	  ("save-page-src", "save html page source to file")
+	  ("image-short-min", po::value<int>(), "both width and height shall be greater than the specified pixel size")
+	  ("image-long-min", po::value<int>(), "width or height shall be greater than the specified pixel size")
 	  ; 
     
     try 
@@ -76,11 +80,11 @@ int main(int argc, char** argv) {
     }     
         ////           
     std::string dbpathstr = "./htmltest.bin";
-    if(vm.count("dbpath"))
-    {dbpathstr = vm["dbpath"].as<std::string>();
+    if(vm.count("dbpath"))    {
+    	dbpathstr = vm["dbpath"].as<std::string>();
     }
     resource_database db;
-      boost::filesystem::path dbpath(dbpathstr);
+    boost::filesystem::path dbpath(dbpathstr);
 	if (boost::filesystem::exists(dbpath)) {
 		db.open(dbpathstr);
 		db.load_database();
@@ -152,6 +156,12 @@ int main(int argc, char** argv) {
 	    http_downloader downloader;
 	    if(vm.count("minfilesize")){
 	    	downloader.min_file_size(vm["minfilesize"].as<int>());
+	    }
+	    if(vm.count("image-short-min")) {
+	    	downloader.image_short_min(vm["image-short-min"].as<int>());
+	    }
+	    if(vm.count("image-long-min")) {
+	    	downloader.image_long_min(vm["image-long-min"].as<int>());
 	    }
 	    downloader.download_image(it->c_str());
 	    // if succeeded, record used, time,
