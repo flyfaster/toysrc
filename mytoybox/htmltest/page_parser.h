@@ -44,6 +44,7 @@ public:
 	int parse_page(const std::string& surl, int depth);
 	void recursive(bool enable);
 	int depth_;
+	int max_depth_;
 	url_class url_;
 	bool recursive_;
 	bool save_html_src_;

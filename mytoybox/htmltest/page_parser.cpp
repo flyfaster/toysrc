@@ -42,7 +42,7 @@
 #include "http_downloader.h"
 #include "clock_timer.h"
 
-page_parser::page_parser():res_db_(0), depth_(0), recursive_(false)
+page_parser::page_parser():res_db_(0), depth_(0), recursive_(false), max_depth_(1)
 {
 
 }
@@ -60,6 +60,7 @@ page_parser::~page_parser()
 void page_parser::recursive(bool enable) {
 	recursive_ = enable;
 }
+
 page_parser& page_parser::operator=(const page_parser& other)
 {
     return *this;
@@ -137,7 +138,7 @@ void page_parser::search_for_links(GumboNode* node) {
 		return;
 	}
 	GumboAttribute* href;
-	if (recursive_ && node->v.element.tag == GUMBO_TAG_A && (href =
+	if (recursive_ && depth_ < max_depth_ && node->v.element.tag == GUMBO_TAG_A && (href =
 			gumbo_get_attribute(&node->v.element.attributes, "href"))) {
 		std::cout << __PRETTY_FUNCTION__ << " " << href->value << std::endl;
 		// TODO ignore links to external server.

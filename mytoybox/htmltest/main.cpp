@@ -59,6 +59,7 @@ int main(int argc, char** argv) {
 	  ("save-page-src", "save html page source to file")
 	  ("image-short-min", po::value<int>(), "both width and height shall be greater than the specified pixel size")
 	  ("image-long-min", po::value<int>(), "width or height shall be greater than the specified pixel size")
+	  ("page-link-depth", po::value<int>(), "page link depths, similar to TTL")
 	  ; 
     
     try 
@@ -139,12 +140,14 @@ int main(int argc, char** argv) {
 	    	pageparser.recursive(true);
 	    if(vm.count("save-page-src"))
 	    	pageparser.save_html_src_ = true;
+	    if(vm.count("page-link-depth"))
+	    	pageparser.max_depth_ = vm["page-link-depth"].as<int>();
 	    pageparser.set_resource_database(&db);
 	    pageparser.parse_page(*it, 0);
 	    // if succeeded, record used time, depth. record minum depth.
 	    // if failed, update retry count.
 	  } 
-//	  if (pagelist.size()==0)
+
       std::deque<std::string> imglist = db.get_img_list();
       for(std::deque<std::string>::iterator it=imglist.begin();
 	  it!=imglist.end();
@@ -167,6 +170,7 @@ int main(int argc, char** argv) {
 	    // if succeeded, record used, time,
 	    // if failed, update database with fail count.
 	  }
+      if (pagelist.size()+imglist.size()==0)
 	    break;
     }
     cout << argv[0] <<" done."<< endl; //

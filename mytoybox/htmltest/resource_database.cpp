@@ -193,12 +193,15 @@ int resource_database::add_page_url(const std::string& urlpath, int depth)
 return 0;
 }
 
-std::deque< std::string > resource_database::get_img_list()
-{
-return img_url_list;
+std::deque<std::string> resource_database::get_img_list() {
+	std::deque<std::string> ret;
+	ret.swap(img_url_list);
+	return ret;
 }
 
 std::deque< std::string > resource_database::get_page_list()
 {
-return page_url_list;
+	std::deque<std::string> ret;
+	ret.swap(page_url_list);
+	return ret;
 }
