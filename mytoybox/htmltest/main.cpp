@@ -127,7 +127,7 @@ int main(int argc, char** argv) {
     while(input_signal == 0)
     {
 	  ////////////////////////////////////////
-	std::deque<std::string> pagelist = db.get_page_list();
+    	std::deque<std::string> pagelist = db.get_page_list();
       for(std::deque<std::string>::iterator it=pagelist.begin();
 	  it!=pagelist.end();
 	  it++)
@@ -146,6 +146,7 @@ int main(int argc, char** argv) {
 	    pageparser.parse_page(*it, 0);
 	    // if succeeded, record used time, depth. record minum depth.
 	    // if failed, update retry count.
+	    // check debug command, display number of pages processed, number of pages left.
 	  } 
 
       std::deque<std::string> imglist = db.get_img_list();

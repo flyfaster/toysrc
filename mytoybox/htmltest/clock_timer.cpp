@@ -107,8 +107,7 @@ std::string clock_timer::get_time_str() {
 	  time_t t = time(NULL);
 	  struct tm tm = *localtime(&t);
 	  std::stringstream ss;
-	  ss << tm.tm_year
-	    << std::setw(4) <<std::setfill('0')<<tm.tm_year+ 1900
+	  ss<< std::setw(4) <<std::setfill('0')<<tm.tm_year+ 1900
 	    << std::setw(2) <<std::setfill('0')<<tm.tm_mon + 1
 	    << std::setw(2) <<std::setfill('0')<<tm.tm_mday
 	    << std::setw(2) <<std::setfill('0')<<tm.tm_hour
