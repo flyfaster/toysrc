@@ -41,6 +41,11 @@ public:
     std::ofstream outputfile_;
     SHA_CTX ctx;
     void reset_digest();
+    void min_file_size(long fs);
+private:
+    long min_file_size_;
 };
+
+bool get_image_size(const char *fn, int *x,int *y);
 
 #endif // HTTP_DOWNLOADER_H

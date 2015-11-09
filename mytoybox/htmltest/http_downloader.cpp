@@ -30,12 +30,22 @@
 #include <fstream>
 #include <string>
 #include <string.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <time.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include "http_downloader.h"
 #include "url_class.h"
 
 http_downloader::http_downloader()
 {
+	min_file_size_ = 32*1024;
   reset_digest();
+}
+
+void http_downloader::min_file_size(long fs) {
+	min_file_size_ = fs;
 }
 
 http_downloader::http_downloader(const http_downloader& other)
@@ -82,7 +92,14 @@ size_t callbackfunction(void *ptr, size_t size, size_t nmemb, void* userdata)
 
 void http_downloader::reset_digest()
 {
-  memset(digest, 0, sizeof(digest));
+	memset(digest, 0, sizeof(digest));
+}
+
+long get_file_size(std::string filename)
+{
+    struct stat stat_buf;
+    int rc = stat(filename.c_str(), &stat_buf);
+    return rc == 0 ? stat_buf.st_size : -1;
 }
 
 bool http_downloader::download_image(const char* surl)
@@ -109,21 +126,33 @@ bool http_downloader::download_image(const char* surl)
     CURLcode rc = curl_easy_perform(curlCtx);
     if (rc)
     {
-      std::cerr<<"ERROR download "<<surl<<std::endl;      
-      outputfile_.close();
-      remove(saveas_filename.c_str());
-        return false;
+		std::cerr<< __FUNCTION__ << " ERROR download "<<surl<<std::endl;
+		outputfile_.close();
+		remove(saveas_filename.c_str());
+		return false;
     }
     long res_code = 0;
     curl_easy_getinfo(curlCtx, CURLINFO_RESPONSE_CODE, &res_code);
     if (!((res_code == 200 || res_code == 201) && rc != CURLE_ABORTED_BY_CALLBACK))
     {
         std::cout<<"ERROR unexpected Response code:" << res_code << " for "<<surl<<std::endl;
-	outputfile_.close();
-	remove(saveas_filename.c_str());
+		outputfile_.close();
+		remove(saveas_filename.c_str());
         return false;
     }
     curl_easy_cleanup(curlCtx);
+    long filesize = get_file_size(saveas_filename);
+    if (filesize < min_file_size_) {
+    	std::cout << __PRETTY_FUNCTION__ << " file size "<< filesize<< ", ignore small file " << saveas_filename << std::endl;
+    	remove(saveas_filename.c_str());
+    	return true;
+    }
      SHA1_Final(digest, &ctx);
+     int width=0, height=0;
+     bool funcret = get_image_size(saveas_filename.c_str(), &width, &height);
+     if(funcret)
+    	 std::cout << __func__ << " "<<saveas_filename<< " image size " << width << "x"<<height<<std::endl;
+     else
+    	 std::cout << __func__ << " "<<saveas_filename<< " failed to get image size " <<std::endl;
     return true;
 }

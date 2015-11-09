@@ -29,6 +29,7 @@
 
 class clock_timer
 {
+public:
     char m_message[256] ;
     int m_log_level, _time_type;
     timespec start, end, diff;
@@ -43,6 +44,7 @@ class clock_timer
     void Clear();	// disable printing in dtor
     timespec& GetDuration();	// calculate end - start
     int GetElapsedMilliseconds();
+    static std::string get_time_str();
 };
 
 #endif // CLOCK_TIMER_H

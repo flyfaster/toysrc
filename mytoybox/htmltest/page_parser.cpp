@@ -23,6 +23,7 @@
     OTHER DEALINGS IN THE SOFTWARE.
 */
 #include <iostream>
+#include <fstream>
 #include <iomanip>
 #include <string>
 #include <boost/asio/ip/tcp.hpp>
@@ -30,14 +31,16 @@
 #include <fstream>
 #include <sqlite3.h>
 #include <deque>
+#include <curl/curl.h>
 #include "gumbo.h"
 #include "url_class.h"
 #include "resource_database.h"
 #include "page_parser.h"
 #include "url_class.h"
 #include "http_downloader.h"
+#include "clock_timer.h"
 
-page_parser::page_parser():res_db_(0), depth_(0)
+page_parser::page_parser():res_db_(0), depth_(0), recursive_(false)
 {
 
 }
@@ -52,6 +55,9 @@ page_parser::~page_parser()
 
 }
 
+void page_parser::recursive(bool enable) {
+	recursive_ = enable;
+}
 page_parser& page_parser::operator=(const page_parser& other)
 {
     return *this;
@@ -125,35 +131,55 @@ std::string page_parser::get_page(const std::string& surl)
 }
 
 void page_parser::search_for_links(GumboNode* node) {
-  if (node->type != GUMBO_NODE_ELEMENT) {
-    return;
-  }
-  GumboAttribute* href;
-  if (node->v.element.tag == GUMBO_TAG_A &&
-      (href = gumbo_get_attribute(&node->v.element.attributes, "href"))) {
-    std::cout <<__FUNCTION__<<" "<< href->value << std::endl;
-  // TODO ignore links to external server.
-    if (strlen(href->value))
-    {
-    url_class absoluteurl( url_.get_absolute_path(href->value));
-    if (absoluteurl.host_ ==url_.host_ && res_db_)    
-      res_db_->add_page_url(url_.get_absolute_path(href->value), depth_+1);
-    else
-      std::cout <<__FUNCTION__<<" ignore external link "<< href->value << std::endl;
-    }
-  }
-  if (node->v.element.tag == GUMBO_TAG_IMG &&
-      (href = gumbo_get_attribute(&node->v.element.attributes, "src"))) {
-    std::cout <<__FUNCTION__<<" img: "<< href->value << std::endl;
-  if (res_db_ && strlen(href->value))
-    res_db_->add_image_url(url_.get_absolute_path(href->value));
+	if (node->type != GUMBO_NODE_ELEMENT) {
+		return;
+	}
+	GumboAttribute* href;
+	if (recursive_ && node->v.element.tag == GUMBO_TAG_A && (href =
+			gumbo_get_attribute(&node->v.element.attributes, "href"))) {
+		std::cout << __PRETTY_FUNCTION__ << " " << href->value << std::endl;
+		// TODO ignore links to external server.
+		if (strlen(href->value)) {
+			url_class absoluteurl(url_.get_absolute_path(href->value));
+			if (recursive_) {
+				if (absoluteurl.host_ == url_.host_ && res_db_)
+					res_db_->add_page_url(url_.get_absolute_path(href->value),
+							depth_ + 1);
+				else
+					std::cout << __PRETTY_FUNCTION__ << " ignore external link "
+							<< href->value << std::endl;
+			}
+		} else {
+			std::cout << __PRETTY_FUNCTION__ << " ignore link " << href->value
+					<< std::endl;
+		}
+	}
+	if (node->v.element.tag == GUMBO_TAG_IMG
+			&& (href = gumbo_get_attribute(&node->v.element.attributes, "src"))) {
+		std::cout << __FUNCTION__ << " img: " << href->value << std::endl
+				<< "absolute url: " << url_.get_absolute_path(href->value)
+				<< std::endl;
+		if (res_db_ && strlen(href->value))
+			res_db_->add_image_url(url_.get_absolute_path(href->value));
 //     http_downloader downloader;
 //     downloader.download_image(href->value);
-  }
-  GumboVector* children = &node->v.element.children;
-  for (unsigned int i = 0; i < children->length; ++i) {
-    search_for_links(static_cast<GumboNode*>(children->data[i]));
-  }
+	}
+
+	if (node->v.element.tag == GUMBO_TAG_IMG
+			&& (href = gumbo_get_attribute(&node->v.element.attributes, "file"))) {
+		std::cout << __FUNCTION__ << " img: " << href->value << std::endl
+				<< "absolute url: " << url_.get_absolute_path(href->value)
+				<< std::endl;
+		if (res_db_ && strlen(href->value))
+			res_db_->add_image_url(url_.get_absolute_path(href->value));
+//     http_downloader downloader;
+//     downloader.download_image(href->value);
+	}
+
+	GumboVector* children = &node->v.element.children;
+	for (unsigned int i = 0; i < children->length; ++i) {
+		search_for_links(static_cast<GumboNode*>(children->data[i]));
+	}
 }
 
 void page_parser::parse(const std::string& html_src)
@@ -163,27 +189,80 @@ void page_parser::parse(const std::string& html_src)
     gumbo_destroy_output(&kGumboDefaultOptions, output);
 }
 
-int page_parser::parse_page(const std::string& surl, int depth)
-{
-  set_depth(depth);
-  url_.parse(surl);
-  std::string html_src= get_page(surl);
-  if (html_src.length()<8)
-  {
-      std::cout << __FUNCTION__ <<" failed to read " << surl<<std::endl;
-      return __LINE__;
-  }
-  std::cout << surl<< " page source length:"<< html_src.length()<<std::endl;
-  parse(html_src);  
-  return 0;
+std::string page_parser::get_temp_filename() {
+	  std::stringstream ss;
+	  ss << clock_timer::get_time_str()
+	    << ".html"; // assume it is jpg filename
+	  return ss.str();
 }
 
-void page_parser::set_resource_database(resource_database* db)
-{
-  res_db_ = db;
+int page_parser::parse_page(const std::string& surl, int depth) {
+	set_depth(depth);
+	url_.parse(surl);
+	std::string html_src = get_page(surl);
+	if (html_src.length() < 8) {
+		std::cout << __FUNCTION__ << " failed to read " << surl << std::endl;
+		return __LINE__;
+	}
+	std::cout << surl << " page source length:" << html_src.length()
+			<< std::endl;
+	if (save_html_src_) {
+		std::string filename = get_temp_filename();
+		std::ofstream outputfile_;
+		outputfile_.open(filename.c_str(), std::ios::out);
+		outputfile_ << html_src;
+		outputfile_.close();
+	}
+	parse(html_src);
+	return 0;
 }
 
-void page_parser::set_depth(int d)
-{
-depth_ = d;
+void page_parser::set_resource_database(resource_database* db) {
+	res_db_ = db;
+}
+
+void page_parser::set_depth(int d) {
+	depth_ = d;
+}
+
+size_t callbackfunction2(void *ptr, size_t size, size_t nmemb, void* userdata) {
+	if (!userdata) {
+		std::cerr << __FUNCTION__ << " ERROR No stream to accept "
+				<< size * nmemb << " bytes data\n";
+		return 0;
+	}
+	page_parser* downloader = (page_parser*) (userdata);
+	downloader->ss_.write((const char*) ptr, size * nmemb);
+	return size * nmemb;
+}
+
+std::string page_parser::get_page2(const std::string& surl) {
+	std::cout << __FUNCTION__ << " open " << surl << std::endl;
+	page_src_filename = get_temp_filename();
+	ss_.open(page_src_filename.c_str(), std::ios_base::binary | std::ios_base::in | std::ios_base::out );
+	CURL* curlCtx = curl_easy_init();
+	curl_easy_setopt(curlCtx, CURLOPT_URL, surl.c_str());
+	curl_easy_setopt(curlCtx, CURLOPT_WRITEDATA, this);
+	curl_easy_setopt(curlCtx, CURLOPT_WRITEFUNCTION, callbackfunction2);
+	curl_easy_setopt(curlCtx, CURLOPT_FOLLOWLOCATION, 1);
+
+	CURLcode rc = curl_easy_perform(curlCtx);
+	if (rc) {
+		std::cerr << __FUNCTION__ << " ERROR download " << surl << std::endl;
+		return "";
+	}
+	long res_code = 0;
+	curl_easy_getinfo(curlCtx, CURLINFO_RESPONSE_CODE, &res_code);
+	if (!((res_code == 200 || res_code == 201)
+			&& rc != CURLE_ABORTED_BY_CALLBACK)) {
+		std::cout << __FUNCTION__ << " ERROR unexpected Response code:"
+				<< res_code << " for " << surl << std::endl;
+		return "";
+	}
+	curl_easy_cleanup(curlCtx);
+	ss_.flush();
+	std::cout << __FUNCTION__ << " get " << ss_.tellg() << " bytes for "
+			<< surl << std::endl;
+	ss_.close();
+	return "";
 }

@@ -24,6 +24,9 @@
 */
 #include <string.h>
 #include <time.h>
+#include <string>
+#include <sstream>
+#include <iomanip>
 #include "clock_timer.h"
 
 void clock_timer::Stop()
@@ -96,4 +99,22 @@ void clock_timer::Clear() {
 int clock_timer::GetElapsedMilliseconds()
 {
 	return GetDuration().tv_sec*1000 + GetDuration().tv_nsec/1000000;
+}
+
+std::string clock_timer::get_time_str() {
+	  timespec timedata;
+	  clock_gettime(CLOCK_MONOTONIC, &timedata);
+	  time_t t = time(NULL);
+	  struct tm tm = *localtime(&t);
+	  std::stringstream ss;
+	  ss << tm.tm_year
+	    << std::setw(4) <<std::setfill('0')<<tm.tm_year+ 1900
+	    << std::setw(2) <<std::setfill('0')<<tm.tm_mon + 1
+	    << std::setw(2) <<std::setfill('0')<<tm.tm_mday
+	    << std::setw(2) <<std::setfill('0')<<tm.tm_hour
+	    << std::setw(2) <<std::setfill('0')<<tm.tm_min
+	    << std::setw(2) <<std::setfill('0')<<tm.tm_sec
+	    << std::setw(9) <<std::setfill('0')<<timedata.tv_nsec
+	    ;
+	  return ss.str();
 }

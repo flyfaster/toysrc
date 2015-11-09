@@ -38,10 +38,11 @@ void my_handler(int signalinput)
 {
   input_signal = signalinput;
   std::cout<<__FUNCTION__ << " got signal " << signalinput<<std::endl;  
+  exit(0);
 }
 int main(int argc, char** argv) {
     using namespace std;
-    cout << argv[0]<< endl;
+    cout << argv[0] << " pid " << getpid() << " built time "<< __DATE__ <<" " << __TIME__<< endl;
     
     namespace po = boost::program_options; 
     po::variables_map vm; 
@@ -50,7 +51,11 @@ int main(int argc, char** argv) {
       ("help", "Print help messages") 
       ("dbpath", po::value<std::string>(),  "database file path") 
       ("pageurl", po::value<std::string>(),  "page url to parse") 
-      ("imageurl", po::value<std::string>(),"image url to download"); 
+      ("imageurl", po::value<std::string>(),"image url to download")
+	  ("minfilesize", po::value<int>(), "minimal files size")
+	  ("recursive", "process links in the page")
+	  ("save-page-src", "save html page source to file")
+	  ; 
     
     try 
     { 
@@ -76,16 +81,16 @@ int main(int argc, char** argv) {
     }
     resource_database db;
       boost::filesystem::path dbpath(dbpathstr);
-      if(boost::filesystem::exists(dbpath))
-      {
-	db.open(dbpathstr);
-	db.load_database();
-      }
-      else
-      {
-	db.open(dbpathstr);
-	db.create_tables();
-      }
+	if (boost::filesystem::exists(dbpath)) {
+		db.open(dbpathstr);
+		db.load_database();
+	} else {
+		db.open(dbpathstr);
+		db.create_tables();
+	}
+	if (vm.count("imageurl")) {
+		db.add_image_url(vm["imageurl"].as<std::string>());
+	}
       /////////////////////////////////////
     if(vm.count("pageurl"))
     {
@@ -116,31 +121,42 @@ int main(int argc, char** argv) {
     sigaction(SIGINT, &sigIntHandler, 0);
     while(input_signal == 0)
     {
-      std::deque<std::string> imglist = db.get_img_list();
-      for(std::deque<std::string>::iterator it=imglist.begin();
-	  it!=imglist.end();
-	  it++)
-	  {
-	    std::cout << __FUNCTION__ << " " <<*it<<std::endl;
-	    http_downloader downloader;
-	    downloader.download_image(it->c_str());	  
-	    // if succeeded, record used, time,
-	    // if failed, update database with fail count.
-	  }
 	  ////////////////////////////////////////
 	std::deque<std::string> pagelist = db.get_page_list();
       for(std::deque<std::string>::iterator it=pagelist.begin();
 	  it!=pagelist.end();
 	  it++)
 	  {
-	    std::cout << __FUNCTION__<<" " << *it<<std::endl;
+    	  if(input_signal)
+    	      break;
+    	std::cout << __PRETTY_FUNCTION__ <<" " << *it<<std::endl;
 	    page_parser pageparser;
+	    if(vm.count("recursive"))
+	    	pageparser.recursive(true);
+	    if(vm.count("save-page-src"))
+	    	pageparser.save_html_src_ = true;
 	    pageparser.set_resource_database(&db);
 	    pageparser.parse_page(*it, 0);
 	    // if succeeded, record used time, depth. record minum depth.
 	    // if failed, update retry count.
 	  } 
-	  if (pagelist.size()==0)
+//	  if (pagelist.size()==0)
+      std::deque<std::string> imglist = db.get_img_list();
+      for(std::deque<std::string>::iterator it=imglist.begin();
+	  it!=imglist.end();
+	  it++)
+	  {
+    	  if(input_signal)
+    		  break;
+	    std::cout << __PRETTY_FUNCTION__ << " " <<*it<<std::endl;
+	    http_downloader downloader;
+	    if(vm.count("minfilesize")){
+	    	downloader.min_file_size(vm["minfilesize"].as<int>());
+	    }
+	    downloader.download_image(it->c_str());
+	    // if succeeded, record used, time,
+	    // if failed, update database with fail count.
+	  }
 	    break;
     }
     cout << argv[0] <<" done."<< endl; //

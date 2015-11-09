@@ -27,23 +27,30 @@
 #define PAGE_PARSER_H
 
 class resource_database;
-class page_parser
-{
+class page_parser {
 public:
-    page_parser();
-    page_parser(const page_parser& other);
-    virtual ~page_parser();
-    virtual page_parser& operator=(const page_parser& other);
-    virtual bool operator==(const page_parser& other) const;
-    void set_resource_database(resource_database* db);
-    resource_database* res_db_;
-   void search_for_links(GumboNode* node) ;
-   std::string get_page(const std::string& surl);  
-    void parse(const std::string& html_src);
-    void set_depth(int d);
-    int parse_page(const std::string& surl, int depth);
-    int depth_;
-    url_class url_;
+	page_parser();
+	page_parser(const page_parser& other);
+	virtual ~page_parser();
+	virtual page_parser& operator=(const page_parser& other);
+	virtual bool operator==(const page_parser& other) const;
+	void set_resource_database(resource_database* db);
+	resource_database* res_db_;
+	void search_for_links(GumboNode* node);
+	std::string get_page(const std::string& surl);
+	std::string get_page2(const std::string& surl);
+	void parse(const std::string& html_src);
+	void set_depth(int d);
+	int parse_page(const std::string& surl, int depth);
+	void recursive(bool enable);
+	int depth_;
+	url_class url_;
+	bool recursive_;
+	bool save_html_src_;
+	std::fstream ss_;
+	std::string get_temp_filename();
+	std::string page_src_filename;
+
 };
 
 

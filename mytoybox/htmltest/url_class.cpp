@@ -29,7 +29,7 @@
 #include <iostream>
 #include <sstream>
 #include "url_class.h"
-
+#include "clock_timer.h"
 url_class::url_class()
 {
 
@@ -74,6 +74,7 @@ bool url_class::operator==(const url_class& other) const
 
 void url_class::parse(const std::string& url_s)
 {using namespace std;
+resource_url_ = url_s;
     const std::string prot_end("://");
     std::string::const_iterator prot_i = search(url_s.begin(), url_s.end(),
                                            prot_end.begin(), prot_end.end());
@@ -135,19 +136,8 @@ std::string url_class::get_save_filename(const std::string& urlpath)
   {
     return filename;
   }
-  timespec timedata;
-  clock_gettime(CLOCK_MONOTONIC, &timedata);
-  time_t t = time(NULL);
-  struct tm tm = *localtime(&t);
   std::stringstream ss;
-  ss << tm.tm_year 
-    << std::setw(2) <<std::setfill('0')<<tm.tm_year+ 1900
-    << std::setw(2) <<std::setfill('0')<<tm.tm_mon + 1
-    << std::setw(2) <<std::setfill('0')<<tm.tm_mday
-    << std::setw(2) <<std::setfill('0')<<tm.tm_hour
-    << std::setw(2) <<std::setfill('0')<<tm.tm_min
-    << std::setw(2) <<std::setfill('0')<<tm.tm_sec
-    << std::setw(9) <<std::setfill('0')<<timedata.tv_nsec
+  ss << clock_timer::get_time_str()
     << ".jpg"; // assume it is jpg filename
     filename = ss.str();
     return filename;
@@ -159,6 +149,7 @@ return resource_url_;
 
 std::string url_class::get_absolute_path(const std::string& relative_path)
 {
+	// http://www.66.ca/data/attachment/forum/201506/27/141841p36hn6hiqznq6iiq.jpg
   std::string absolute_path;
   if (relative_path.find("://")!=std::string::npos)
     return relative_path; // this is absolute path 
@@ -172,9 +163,9 @@ std::string url_class::get_absolute_path(const std::string& relative_path)
   else 
   {
     size_t path_separator_pos=resource_url_.find_last_of("/");
-    if(path_separator_pos != relative_path.npos)
+    if(path_separator_pos != resource_url_.npos)
     {
-      absolute_path= resource_url_.substr(path_separator_pos)+relative_path; 
+      absolute_path= resource_url_.substr(0,path_separator_pos+1)+relative_path;
     }
   }
   // path not start with '/'
