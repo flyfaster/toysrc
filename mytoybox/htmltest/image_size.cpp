@@ -2,8 +2,37 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+//#define png_infopp_NULL (png_infopp)NULL
+#define int_p_NULL (int*)NULL
+//#define png_bytep_NULL (png_bytep)NULL
+
+#include <boost/algorithm/string/predicate.hpp>
+#include <boost/gil/extension/io/jpeg_io.hpp>
+#include <boost/gil/extension/io/png_io.hpp>
+//#include <boost/gil/gil_all.hpp>
+
+bool get_image_size2(const char *fn, int *x,int *y);
+
+
+
+bool get_image_size(const char *fileName, int *x,int *y) {
+
+	if (boost::iends_with(fileName, ".png")) {
+	auto dimension = boost::gil::png_read_dimensions(fileName);
+	*x = dimension.x;
+	*y = dimension.y;
+	return true;
+	}
+	if (boost::iends_with(fileName, ".jpg")) {
+	auto dimension = boost::gil::jpeg_read_dimensions(fileName);
+	*x = dimension.x;
+	*y = dimension.y;
+	return true;
+	}
+	return get_image_size2(fileName, x, y);
+}
 // http://www.jmjatlanta.com/getting-an-image-size-in-c/
-bool get_image_size(const char *fn, int *x,int *y)
+bool get_image_size2(const char *fn, int *x,int *y)
 {
     char buf[24];
     int len = 0;
