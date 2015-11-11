@@ -216,3 +216,22 @@ std::deque< std::string > resource_database::get_page_list()
 	ret.swap(page_url_list);
 	return ret;
 }
+
+std::string method_name(const std::string& prettyFunction)
+{
+    size_t colons = prettyFunction.find("::");
+    size_t begin = prettyFunction.substr(0,colons).rfind(" ") + 1;
+    size_t end = prettyFunction.rfind("(") - begin;
+
+    return prettyFunction.substr(begin,end) + "()";
+}
+
+std::string current_datetime_str()
+{
+    time_t now = time(0);
+    struct tm tstruct;
+    char buf[80];
+    tstruct = *localtime(&now);
+    strftime(buf, sizeof(buf), "%Y-%m-%d %X", &tstruct);
+    return buf;
+}

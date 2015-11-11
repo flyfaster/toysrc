@@ -134,7 +134,7 @@ int main(int argc, char** argv) {
 	  {
     	  if(input_signal)
     	      break;
-    	std::cout << __PRETTY_FUNCTION__ <<" " << *it<<std::endl;
+    	std::cout << __FUNCTION__ <<" " << *it<<std::endl;
 	    page_parser pageparser;
 	    if(vm.count("recursive"))
 	    	pageparser.recursive(true);
@@ -156,7 +156,7 @@ int main(int argc, char** argv) {
 	  {
     	  if(input_signal)
     		  break;
-	    std::cout << __PRETTY_FUNCTION__ << " " <<*it<<std::endl;
+	    std::cout << __FUNCTION__ << " " <<*it<<std::endl;
 	    http_downloader downloader;
 	    if(vm.count("minfilesize")){
 	    	downloader.min_file_size(vm["minfilesize"].as<int>());
@@ -167,6 +167,7 @@ int main(int argc, char** argv) {
 	    if(vm.count("image-long-min")) {
 	    	downloader.image_long_min(vm["image-long-min"].as<int>());
 	    }
+	    downloader.db_ = &db;
 	    downloader.download_image(it->c_str());
 	    // if succeeded, record used, time,
 	    // if failed, update database with fail count.

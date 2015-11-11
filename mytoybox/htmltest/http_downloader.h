@@ -26,6 +26,7 @@
 
 #ifndef HTTP_DOWNLOADER_H
 #define HTTP_DOWNLOADER_H
+#include "resource_database.h"
 
 class http_downloader
 {
@@ -36,7 +37,7 @@ public:
     virtual ~http_downloader();
     virtual http_downloader& operator=(const http_downloader& other);
     virtual bool operator==(const http_downloader& other) const;
-    unsigned char digest[SHA_DIGEST_LENGTH];
+    image_digest_t digest;
     bool download_image(const char* surl);
     std::ofstream outputfile_;
     SHA_CTX ctx;
@@ -44,6 +45,7 @@ public:
     void min_file_size(long fs);
     void image_short_min(long short_min);
     void image_long_min(long long_min);
+    class resource_database* db_;
 private:
     long min_file_size_;
     long image_short_min_;

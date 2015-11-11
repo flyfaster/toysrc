@@ -34,6 +34,7 @@
 #include <sqlite3.h>
 #include <deque>
 #include <curl/curl.h>
+#include <set>
 #include "gumbo.h"
 #include "url_class.h"
 #include "resource_database.h"
@@ -140,7 +141,7 @@ void page_parser::search_for_links(GumboNode* node) {
 	GumboAttribute* href;
 	if (recursive_ && depth_ < max_depth_ && node->v.element.tag == GUMBO_TAG_A && (href =
 			gumbo_get_attribute(&node->v.element.attributes, "href"))) {
-		std::cout << __PRETTY_FUNCTION__ << " " << href->value << std::endl;
+		std::cout << __METHOD_NAME__ << " " << href->value << std::endl;
 		// TODO ignore links to external server.
 		if (strlen(href->value)) {
 			url_class absoluteurl(url_.get_absolute_path(href->value));
@@ -149,20 +150,20 @@ void page_parser::search_for_links(GumboNode* node) {
 					res_db_->add_page_url(url_.get_absolute_path(href->value),
 							depth_ + 1);
 				else
-					std::cout << __PRETTY_FUNCTION__ << " ignore external link "
+					std::cout << __METHOD_NAME__ << " ignore external link "
 							<< href->value << std::endl;
 			}
 		} else {
-			std::cout << __PRETTY_FUNCTION__ << " ignore link " << href->value
+			std::cout << __METHOD_NAME__ << " ignore link " << href->value
 					<< std::endl;
 		}
 	}
 	if (node->v.element.tag == GUMBO_TAG_IMG
 			&& (href = gumbo_get_attribute(&node->v.element.attributes, "src"))) {
-		std::cout << __FUNCTION__ << " img: " << href->value << std::endl
-				<< "absolute url: " << url_.get_absolute_path(href->value)
-				<< std::endl;
-		if (res_db_ && strlen(href->value))
+//		std::cout << __METHOD_NAME__ //<< " img: " << href->value << std::endl
+//				<< " absolute url: " << url_.get_absolute_path(href->value)
+//				<< std::endl;
+		if (res_db_ && strlen(href->value)>4)
 			res_db_->add_image_url(url_.get_absolute_path(href->value));
 //     http_downloader downloader;
 //     downloader.download_image(href->value);
@@ -170,7 +171,7 @@ void page_parser::search_for_links(GumboNode* node) {
 
 	if (node->v.element.tag == GUMBO_TAG_IMG
 			&& (href = gumbo_get_attribute(&node->v.element.attributes, "file"))) {
-		std::cout << __FUNCTION__ << " img: " << href->value << std::endl
+		std::cout << __METHOD_NAME__ << " img: " << href->value << std::endl
 				<< "absolute url: " << url_.get_absolute_path(href->value)
 				<< std::endl;
 		if (res_db_ && strlen(href->value))
@@ -204,10 +205,10 @@ int page_parser::parse_page(const std::string& surl, int depth) {
 	url_.parse(surl);
 	std::string html_src = get_page(surl);
 	if (html_src.length() < 8) {
-		std::cout << __FUNCTION__ << " failed to read " << surl << std::endl;
+		std::cout << __METHOD_NAME__ << " failed to read " << surl << std::endl;
 		return __LINE__;
 	}
-	std::cout << surl << " page source length:" << html_src.length()
+	std::cout << current_datetime_str() <<__METHOD_NAME__ <<" " << surl << " page source length:" << html_src.length()
 			<< std::endl;
 	if (save_html_src_) {
 		std::string filename = get_temp_filename();
@@ -230,7 +231,7 @@ void page_parser::set_depth(int d) {
 
 size_t callbackfunction2(void *ptr, size_t size, size_t nmemb, void* userdata) {
 	if (!userdata) {
-		std::cerr << __FUNCTION__ << " ERROR No stream to accept "
+		std::cerr << __METHOD_NAME__ << " ERROR No stream to accept "
 				<< size * nmemb << " bytes data\n";
 		return 0;
 	}
@@ -240,7 +241,7 @@ size_t callbackfunction2(void *ptr, size_t size, size_t nmemb, void* userdata) {
 }
 
 std::string page_parser::get_page2(const std::string& surl) {
-	std::cout << __FUNCTION__ << " open " << surl << std::endl;
+	std::cout << __METHOD_NAME__ << " open " << surl << std::endl;
 	page_src_filename = get_temp_filename();
 	ss_.open(page_src_filename.c_str(), std::ios_base::binary | std::ios_base::in | std::ios_base::out );
 	CURL* curlCtx = curl_easy_init();
@@ -251,20 +252,20 @@ std::string page_parser::get_page2(const std::string& surl) {
 
 	CURLcode rc = curl_easy_perform(curlCtx);
 	if (rc) {
-		std::cerr << __FUNCTION__ << " ERROR download " << surl << std::endl;
+		std::cerr << __METHOD_NAME__ << " ERROR download " << surl << std::endl;
 		return "";
 	}
 	long res_code = 0;
 	curl_easy_getinfo(curlCtx, CURLINFO_RESPONSE_CODE, &res_code);
 	if (!((res_code == 200 || res_code == 201)
 			&& rc != CURLE_ABORTED_BY_CALLBACK)) {
-		std::cout << __FUNCTION__ << " ERROR unexpected Response code:"
+		std::cout << __METHOD_NAME__ << " ERROR unexpected Response code:"
 				<< res_code << " for " << surl << std::endl;
 		return "";
 	}
 	curl_easy_cleanup(curlCtx);
 	ss_.flush();
-	std::cout << __FUNCTION__ << " get " << ss_.tellg() << " bytes for "
+	std::cout << __METHOD_NAME__ << " get " << ss_.tellg() << " bytes for "
 			<< surl << std::endl;
 	ss_.close();
 	return "";

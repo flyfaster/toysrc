@@ -26,6 +26,22 @@
 
 #ifndef RESOURCE_DATABASE_H
 #define RESOURCE_DATABASE_H
+#include <sqlite3.h>
+#include <set>
+#include <array>
+#include <openssl/sha.h>
+#include <deque>
+#include <unordered_set>
+#include <unordered_map>
+#include <string.h>
+
+typedef std::array<unsigned char, SHA_DIGEST_LENGTH> image_digest_t;
+
+struct stdarray_compare {
+    bool operator() (const image_digest_t& lhs, const image_digest_t& rhs) const{
+        return memcmp(lhs.data(), rhs.data(), lhs.size());
+    }
+};
 
 class resource_database
 {
@@ -53,22 +69,19 @@ public:
     std::string db_path_;
     int add_page_url(const std::string& urlpath, int depth);
     int add_image_url(const std::string& imgurl);
-    typedef std::array<unsigned char, SHA_DIGEST_LENGTH> image_digest_t;
+
     bool check_duplicate_image(const image_digest_t& imgdigest); // return true if it is duplicated.
     std::deque<std::string> page_url_list, img_url_list;
     std::deque<std::string> get_page_list();
     std::deque<std::string> get_img_list();
     std::unordered_map<std::string, int> page_url_depth_table; // key: page url, value: depth
     std::unordered_set<std::string> image_url_table;
-
-    struct lex_compare {
-        bool operator() (const image_digest_t& lhs, const image_digest_t& rhs) const{
-
-            return memcmp(lhs.data(), rhs.data(), lhs.size());
-        }
-    };
-
-    std::set<image_digest_t> image_digest_table;
+    std::set<image_digest_t, stdarray_compare> image_digest_table;
 };
+
+std::string method_name(const std::string& prettyFunction);
+std::string current_datetime_str();
+
+#define __METHOD_NAME__ method_name(__PRETTY_FUNCTION__)
 
 #endif // RESOURCE_DATABASE_H

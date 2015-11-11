@@ -35,6 +35,7 @@
 #include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "resource_database.h"
 #include "http_downloader.h"
 #include "url_class.h"
 
@@ -42,6 +43,7 @@ http_downloader::http_downloader() {
 	min_file_size_ = 32 * 1024;
 	image_long_min_ = 640;
 	image_short_min_ = 320;
+	db_ = nullptr;
 	reset_digest();
 }
 
@@ -93,7 +95,7 @@ size_t callbackfunction(void *ptr, size_t size, size_t nmemb, void* userdata)
 
 void http_downloader::reset_digest()
 {
-	memset(digest, 0, sizeof(digest));
+	memset(digest.data(), 0, sizeof(digest));
 }
 
 long get_file_size(std::string filename)
@@ -113,10 +115,10 @@ bool http_downloader::download_image(const char* surl)
   
   if(!outputfile_.good())
   {
-    std::cout<<"failed to create file "<<saveas_filename <<std::endl;
+    std::cout<<current_datetime_str()<<" "<< __METHOD_NAME__<<" failed to create file "<<saveas_filename <<std::endl;
     return false;
   }
-  std::cout << __FUNCTION__ << " open " << saveas_filename<<std::endl;
+  std::cout <<current_datetime_str()<<" "<< __METHOD_NAME__ << " save "<<surl<< " to " << saveas_filename<<std::endl;
 
     CURL* curlCtx = curl_easy_init();
     curl_easy_setopt(curlCtx, CURLOPT_URL, surl);
@@ -127,7 +129,7 @@ bool http_downloader::download_image(const char* surl)
     CURLcode rc = curl_easy_perform(curlCtx);
     if (rc)
     {
-		std::cerr<< __FUNCTION__ << " ERROR download "<<surl<<std::endl;
+		std::cerr<< __METHOD_NAME__ << " ERROR download "<<surl<<std::endl;
 		outputfile_.close();
 		remove(saveas_filename.c_str());
 		return false;
@@ -136,23 +138,30 @@ bool http_downloader::download_image(const char* surl)
     curl_easy_getinfo(curlCtx, CURLINFO_RESPONSE_CODE, &res_code);
     if (!((res_code == 200 || res_code == 201) && rc != CURLE_ABORTED_BY_CALLBACK))
     {
-        std::cout<<"ERROR unexpected Response code:" << res_code << " for "<<surl<<std::endl;
+        std::cout<< __METHOD_NAME__ << " ERROR unexpected Response code:" << res_code << " for "<<surl<<std::endl;
 		outputfile_.close();
 		remove(saveas_filename.c_str());
         return false;
     }
     curl_easy_cleanup(curlCtx);
+    outputfile_.close();
     long filesize = get_file_size(saveas_filename);
     if (filesize < min_file_size_) {
-    	std::cout << __PRETTY_FUNCTION__ << " file size "<< filesize<< ", ignore small file " << saveas_filename << std::endl;
+    	std::cout << __METHOD_NAME__ << " file size "<< filesize<< ", ignore small file " << saveas_filename << std::endl;
     	remove(saveas_filename.c_str());
     	return true;
     }
-     SHA1_Final(digest, &ctx);
+     SHA1_Final(digest.data(), &ctx);
+     // check sha1 digest see if the file is duplicated.
+     if (db_->check_duplicate_image(digest)) {
+    	 std::cout << __METHOD_NAME__ << " duplicated sha1 digest " << saveas_filename << std::endl;
+		remove(saveas_filename.c_str());
+		return true;
+     }
+     // check image dimension
      int width=0, height=0;
      bool funcret = get_image_size(saveas_filename.c_str(), &width, &height);
      if(funcret) {
-
     	 bool goodimage = true;
     	 if (width <image_long_min_ && height < image_long_min_)
     		 goodimage = false;
@@ -160,14 +169,13 @@ bool http_downloader::download_image(const char* surl)
     		 goodimage = false;
     	 if(!goodimage) {
     		 remove(saveas_filename.c_str());
-    		 std::cout << __func__ << " "<<saveas_filename<< " is removed, image size " << width << "x"<<height<<std::endl;
+    		 std::cout << __METHOD_NAME__ << " "<<saveas_filename<< " is removed, image size " << width << "x"<<height<<std::endl;
     	 } else {
-    		 std::cout << __func__ << " "<<saveas_filename<< " image size " << width << "x"<<height<<std::endl;
+    		 std::cout << __METHOD_NAME__ << " "<<saveas_filename<< " image size " << width << "x"<<height<<std::endl;
     	 }
-
      }
      else
-    	 std::cout << __func__ << " "<<saveas_filename<< " failed to get image size " <<std::endl;
+    	 std::cout << __METHOD_NAME__ << " "<<saveas_filename<< " failed to get image size " <<std::endl;
     return true;
 }
 
