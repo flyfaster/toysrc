@@ -31,6 +31,10 @@
 #include <algorithm>
 #include <unordered_set>
 #include <unordered_map>
+#include <array>
+#include <openssl/sha.h>
+#include <set>
+#include <string.h>
 #include "resource_database.h"
 
 resource_database::resource_database():zErrMsg(0), rc(0)
@@ -191,6 +195,13 @@ int resource_database::add_page_url(const std::string& urlpath, int depth)
     std::cout << __FUNCTION__ << " existing page: "<< urlpath<<std::endl;
   }
 return 0;
+}
+
+bool resource_database::check_duplicate_image(const image_digest_t& imgdigest) {
+	if(image_digest_table.find(imgdigest)!=image_digest_table.end())
+		return true;
+	image_digest_table.insert(imgdigest);
+	return false;
 }
 
 std::deque<std::string> resource_database::get_img_list() {
