@@ -40,13 +40,13 @@ typedef std::array<unsigned char, SHA_DIGEST_LENGTH> image_digest_t;
 
 struct stdarray_compare {
     bool operator() (const image_digest_t& lhs, const image_digest_t& rhs) const{
-        return memcmp(lhs.data(), rhs.data(), lhs.size());
+        return memcmp(lhs.data(), rhs.data(), lhs.size())<0;
     }
 };
 
 inline bool operator<(const image_digest_t& lhs, const image_digest_t& rhs)
 {
-  return memcmp(lhs.data(), rhs.data(), lhs.size());
+  return memcmp(lhs.data(), rhs.data(), lhs.size())<0;
 }
 
 
@@ -83,8 +83,8 @@ public:
     std::deque<std::string> get_img_list();
     std::unordered_map<std::string, int> page_url_depth_table; // key: page url, value: depth
     std::unordered_set<std::string> image_url_table;
-//    std::set<image_digest_t, stdarray_compare> image_digest_table;
-    std::set<image_digest_t> image_digest_table;
+    std::set<image_digest_t, stdarray_compare> image_digest_table;
+//    std::set<image_digest_t> image_digest_table;
 };
 
 std::string method_name(const std::string& prettyFunction);
