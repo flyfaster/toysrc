@@ -34,6 +34,7 @@
 #include <unordered_set>
 #include <unordered_map>
 #include <string.h>
+//#include <boost/bimap.hpp>
 
 typedef std::array<unsigned char, SHA_DIGEST_LENGTH> image_digest_t;
 
@@ -42,6 +43,12 @@ struct stdarray_compare {
         return memcmp(lhs.data(), rhs.data(), lhs.size());
     }
 };
+
+inline bool operator<(const image_digest_t& lhs, const image_digest_t& rhs)
+{
+  return memcmp(lhs.data(), rhs.data(), lhs.size());
+}
+
 
 class resource_database
 {
@@ -76,11 +83,13 @@ public:
     std::deque<std::string> get_img_list();
     std::unordered_map<std::string, int> page_url_depth_table; // key: page url, value: depth
     std::unordered_set<std::string> image_url_table;
-    std::set<image_digest_t, stdarray_compare> image_digest_table;
+//    std::set<image_digest_t, stdarray_compare> image_digest_table;
+    std::set<image_digest_t> image_digest_table;
 };
 
 std::string method_name(const std::string& prettyFunction);
 std::string current_datetime_str();
+
 
 #define __METHOD_NAME__ method_name(__PRETTY_FUNCTION__)
 

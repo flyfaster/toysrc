@@ -34,6 +34,7 @@
 #include "http_downloader.h"
 #include "page_parser.h"
 #include "resource_database.h"
+#include "digestclass.h"
 
 int input_signal=0;
 void my_handler(int signalinput) {
@@ -60,6 +61,7 @@ int main(int argc, char** argv) {
 	  ("image-short-min", po::value<int>(), "both width and height shall be greater than the specified pixel size")
 	  ("image-long-min", po::value<int>(), "width or height shall be greater than the specified pixel size")
 	  ("page-link-depth", po::value<int>(), "page link depths, similar to TTL")
+	  ("check-dup", po::value<std::string>(), "check files under the folder see if digest is duplicated")
 	  ; 
     
     try 
@@ -95,6 +97,13 @@ int main(int argc, char** argv) {
 	}
 	if (vm.count("imageurl")) {
 		db.add_image_url(vm["imageurl"].as<std::string>());
+	}
+
+	if(vm.count("check-dup")) {
+		digest_class digestmachine;
+		digestmachine.db_ = &db;
+		digestmachine.remove_duplicated_file(vm["check-dup"].as<std::string>());
+		return 0;
 	}
       /////////////////////////////////////
     if(vm.count("pageurl"))
