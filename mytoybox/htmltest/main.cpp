@@ -62,6 +62,7 @@ int main(int argc, char** argv) {
 	  ("image-long-min", po::value<int>(), "width or height shall be greater than the specified pixel size")
 	  ("page-link-depth", po::value<int>(), "page link depths, similar to TTL")
 	  ("check-dup", po::value<std::string>(), "check files under the folder see if digest is duplicated")
+	  ("imagefolder", po::value<std::string>(), "specify the directory to save image files")
 	  ; 
     
     try 
@@ -103,7 +104,7 @@ int main(int argc, char** argv) {
 		digest_class digestmachine;
 		digestmachine.db_ = &db;
 		digestmachine.remove_duplicated_file(vm["check-dup"].as<std::string>());
-		return 0;
+//		return 0;
 	}
       /////////////////////////////////////
     if(vm.count("pageurl"))
@@ -128,6 +129,16 @@ int main(int argc, char** argv) {
 	    db.add_page_url(pageurl, 0);
         }
     }
+    if(vm.count("imagefolder")) {
+    	std::string imagefolder = vm["imagefolder"].as<std::string>();
+    	try {
+    	if(!boost::filesystem::exists(imagefolder))
+    		boost::filesystem::create_directory(imagefolder);
+    	} catch (const std::exception& ex) {
+    		std::cout << "failed to create " << imagefolder << " " << ex.what();
+    		return 1;
+    	}
+    }
     struct sigaction sigIntHandler;
     sigIntHandler.sa_handler = my_handler;
     sigemptyset(&sigIntHandler.sa_mask);
@@ -137,13 +148,12 @@ int main(int argc, char** argv) {
     {
 	  ////////////////////////////////////////
     	std::deque<std::string> pagelist = db.get_page_list();
-      for(std::deque<std::string>::iterator it=pagelist.begin();
-	  it!=pagelist.end();
-	  it++)
+    	std::cout << __func__ << " there are " << pagelist.size() << " pages\n";
+      for(auto pageurl: pagelist)
 	  {
     	  if(input_signal)
     	      break;
-    	std::cout << __FUNCTION__ <<" " << *it<<std::endl;
+    	std::cout << __FUNCTION__ <<" " << pageurl<<std::endl;
 	    page_parser pageparser;
 	    if(vm.count("recursive"))
 	    	pageparser.recursive(true);
@@ -152,13 +162,14 @@ int main(int argc, char** argv) {
 	    if(vm.count("page-link-depth"))
 	    	pageparser.max_depth_ = vm["page-link-depth"].as<int>();
 	    pageparser.set_resource_database(&db);
-	    pageparser.parse_page(*it, 0);
+	    pageparser.parse_page(pageurl, 0);
 	    // if succeeded, record used time, depth. record minum depth.
 	    // if failed, update retry count.
 	    // check debug command, display number of pages processed, number of pages left.
 	  } 
 
       std::deque<std::string> imglist = db.get_img_list();
+      std::cout << __func__ << " there are " << imglist.size() << " images\n";
       for(std::deque<std::string>::iterator it=imglist.begin();
 	  it!=imglist.end();
 	  it++)
@@ -175,6 +186,9 @@ int main(int argc, char** argv) {
 	    }
 	    if(vm.count("image-long-min")) {
 	    	downloader.image_long_min(vm["image-long-min"].as<int>());
+	    }
+	    if(vm.count("imagefolder")) {
+	    	downloader.set_image_save_location(vm["imagefolder"].as<std::string>());
 	    }
 	    downloader.db_ = &db;
 	    downloader.download_image(it->c_str());

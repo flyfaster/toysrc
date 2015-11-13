@@ -28,6 +28,7 @@
 #include <curl/curl.h>
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <string>
 #include <string.h>
 #include <sys/types.h>
@@ -35,6 +36,9 @@
 #include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <boost/algorithm/string/predicate.hpp>
+#include <boost/filesystem.hpp>
+#include <boost/regex.hpp>
 #include "resource_database.h"
 #include "http_downloader.h"
 #include "url_class.h"
@@ -105,12 +109,74 @@ long get_file_size(std::string filename)
     return rc == 0 ? stat_buf.st_size : -1;
 }
 
+std::string contents;
+// This is the callback function that is called by
+// curl_easy_perform(curl)
+size_t handle_data(void *ptr, size_t size, size_t nmemb, void *stream) {
+	const boost::regex content_length_regex("Content-Length: [0-9]{1,}"); // Regex do video do youtube...
+	const boost::regex content_length_remove_regex("Content-Length: ");
+	int numbytes = size * nmemb;
+	char lastchar = *((char *) ptr + numbytes - 1);
+	std::string nothing = "";
+	*((char *) ptr + numbytes - 1) = '\0';
+	std::string last_char = ((char *) ptr);
+	if (regex_search(last_char, content_length_regex) == 1)
+			{
+		contents = regex_replace(last_char, content_length_remove_regex,
+				nothing);
+	} else
+		return size * nmemb;
+}
+long remote_filesize(std::string url) {
+	contents.clear();
+	CURL *curl;
+	CURLcode res;
+	double length = 0.0;
+	curl = curl_easy_init();
+	if (curl) {
+		curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+		curl_easy_setopt(curl, CURLOPT_NOBODY, 1);
+		curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1);
+		curl_easy_setopt(curl, CURLOPT_HEADERFUNCTION, handle_data);
+		curl_easy_setopt(curl, CURLOPT_MAXREDIRS, 500);
+		res = curl_easy_perform(curl);
+	}
+	curl_easy_cleanup(curl);
+	if (contents.size()<1) {
+		return (-1);
+	} else {
+		return atol(contents.c_str());
+	}
+}
+
 bool http_downloader::download_image(const char* surl)
 {  
+	long remotesize = remote_filesize(surl);
+    if (remotesize>1 && remotesize < min_file_size_) {
+    	std::cout << __METHOD_NAME__ << " file size "<< remotesize<< ", ignore small file " << surl << std::endl;
+    	return true;
+    }
   SHA1_Init(&ctx);
   std::string saveas_filename=url_class::get_save_filename(surl);
   if(saveas_filename.length()==0)
     return false;
+  saveas_filename = image_save_folder + saveas_filename;
+
+  // generate unique name
+  boost::filesystem::path fullpath(saveas_filename);
+  boost::filesystem::path dir = fullpath.parent_path();
+  std::string stem = fullpath.stem().string(); // file name without extension
+  std::string extension = boost::filesystem::extension(saveas_filename);
+  int i=1;
+  while(boost::filesystem::exists(saveas_filename))
+  //for(int i=1; boost::filesystem::exists(saveas_filename); i++)
+  {
+	  std::stringstream ss;
+	  ss << image_save_folder << stem <<"-"<<i<<extension;
+	  saveas_filename = ss.str();
+	  i++;
+  }
+
   outputfile_.open(saveas_filename.c_str(), std::ios::out | std::ios::binary);
   
   if(!outputfile_.good())
@@ -185,4 +251,10 @@ void http_downloader::image_short_min(long short_min) {
 
 void http_downloader::image_long_min(long long_min) {
 	image_long_min_ = long_min;
+}
+
+void http_downloader::set_image_save_location(std::string path) {
+	image_save_folder = path;
+	if(path.length()>0 && boost::ends_with(path, "/")==false)
+		image_save_folder.append("/");
 }

@@ -45,7 +45,9 @@ public:
     void min_file_size(long fs);
     void image_short_min(long short_min);
     void image_long_min(long long_min);
+    void set_image_save_location(std::string path);
     class resource_database* db_;
+    std::string image_save_folder;
 private:
     long min_file_size_;
     long image_short_min_;
