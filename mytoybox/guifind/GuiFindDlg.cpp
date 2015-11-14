@@ -65,8 +65,6 @@ void GuiFindDlg::CreateGUI()
     int col = 0;
     int row = 0;
     int col_span = 3;
-    gbs->AddGrowableCol(col_span);
-    gbs->AddGrowableRow(3);
     gbs->Add(new wxStaticText(this, wxID_ANY, _T("File Name")),
             wxGBPosition(row,col), wxGBSpan(1, 1),
             wxALIGN_CENTER | wxALL);
@@ -97,6 +95,10 @@ void GuiFindDlg::CreateGUI()
     gbs->Add(m_btnCancel, wxGBPosition(row, col));
     col++;
     gbs->Add(m_btnClose, wxGBPosition(row, col));
+
+    gbs->AddGrowableCol(col_span);
+    gbs->AddGrowableRow(3);
+
     this->SetSizer(gbs);
     gbs->SetSizeHints(this);
     gbs->Fit(this);

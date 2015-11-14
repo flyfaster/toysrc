@@ -39,7 +39,7 @@ void LogMessage(wxString msg)
 FindThread::FindThread() {
 	m_stop=false;
 	wxString msg;
-	msg.Printf(_T("FindThread::FindThread(%d)"), (int)this);
+	msg.Printf(_T("FindThread::FindThread(%p)"), this);
 	LogMessage(msg);
 }
 
@@ -56,7 +56,7 @@ int FindThread::operator()()
 void thread_sleep(int secs)
 {
 boost::xtime xt;
-	boost::xtime_get(&xt, boost::TIME_UTC);
+	boost::xtime_get(&xt, boost::TIME_UTC_);
 	xt.sec += secs;
 	boost::thread::sleep(xt);
 }
@@ -94,7 +94,7 @@ void dummy_thread_func()
 {
 	wxGetApp().m_find_dlg->AppendResult(_T("dummy_thread_func() start"));
 	boost::xtime xt;
-	boost::xtime_get(&xt, boost::TIME_UTC);
+	boost::xtime_get(&xt, boost::TIME_UTC_);
 	xt.sec += 1;
 	boost::thread::sleep(xt);
 	wxGetApp().m_find_dlg->AppendResult(_T("dummy_thread_func() end"));

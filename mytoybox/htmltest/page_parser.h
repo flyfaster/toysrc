@@ -39,6 +39,7 @@ public:
 	void search_for_links(GumboNode* node);
 	std::string get_page(const std::string& surl);
 	std::string get_page2(const std::string& surl);
+	std::string get_page3(const std::string& surl);
 	void parse(const std::string& html_src);
 	void set_depth(int d);
 	int parse_page(const std::string& surl, int depth);

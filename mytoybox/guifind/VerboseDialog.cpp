@@ -41,7 +41,7 @@ VerboseDialog::VerboseDialog(wxWindow *parent)
 
 	logger = new wxLogTextCtrl( m_status );
 	m_logOld = wxLog::SetActiveTarget( logger );
-	wxLog::SetTimestamp( NULL );
+	wxLog::SetTimestamp( wxEmptyString );
 
 }
 

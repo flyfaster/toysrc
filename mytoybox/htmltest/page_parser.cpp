@@ -86,7 +86,7 @@ std::string page_parser::get_page(const std::string& surl)
         s.connect(u.host_.c_str(), "http"); // www.boost.org
         if (!s)
         {
-            std::cout << "Unable to connect: " //<< s.error().message() << "\n";
+            std::cout << __METHOD_NAME__ << " Unable to connect: " //<< s.error().message() << "\n";
                       << u.host_ <<std::endl;
             return page_content;
         }
@@ -193,6 +193,73 @@ void page_parser::parse(const std::string& html_src)
     gumbo_destroy_output(&kGumboDefaultOptions, output);
 }
 
+static int writer(char *data, size_t size, size_t nmemb,
+                  std::string *writerData)
+{
+  if (writerData == NULL)
+    return 0;
+  writerData->append(data, size*nmemb);
+  return size * nmemb;
+}
+
+
+std::string page_parser::get_page3(const std::string& surl) {
+	CURL *conn = NULL;
+	  CURLcode code;
+	  std::string title;
+	  static char errorBuffer[CURL_ERROR_SIZE];
+	    conn = curl_easy_init();
+	    if (conn == NULL)
+	    {
+	      std::cout << __METHOD_NAME__<<" Failed to create CURL connection\n";
+	      return title;
+	    }
+	    code = curl_easy_setopt(conn, CURLOPT_ERRORBUFFER, errorBuffer);
+	    if (code != CURLE_OK)
+	    {
+	    	std::cout << __METHOD_NAME__<<" Failed to set error buffer "<< code<<std::endl;
+	      return title;
+	    }
+
+	    code = curl_easy_setopt(conn, CURLOPT_URL, surl.c_str());
+	    if (code != CURLE_OK)
+	    {
+	    	std::cout << __METHOD_NAME__<<" Failed to set URL "<< errorBuffer<<std::endl;
+	      return title;
+	    }
+
+	    code = curl_easy_setopt(conn, CURLOPT_FOLLOWLOCATION, 1L);
+	    if (code != CURLE_OK)
+	    {
+	    	std::cout << __METHOD_NAME__<<" Failed to set redirect option "<< errorBuffer<<std::endl;
+	      return title;
+	    }
+
+	    code = curl_easy_setopt(conn, CURLOPT_WRITEFUNCTION, writer);
+	    if (code != CURLE_OK)
+	    {
+	    	std::cout << __METHOD_NAME__<<" Failed to set writer "<< errorBuffer<<std::endl;
+	      return title;
+	    }
+
+	    code = curl_easy_setopt(conn, CURLOPT_WRITEDATA, &title);
+	    if (code != CURLE_OK)
+	    {
+	    	std::cout << __METHOD_NAME__<<" Failed to set write data "<< errorBuffer<<std::endl;
+	      return title;
+	    }
+	    curl_global_init(CURL_GLOBAL_DEFAULT);
+	    // Retrieve content for the URL
+	    code = curl_easy_perform(conn);
+	    curl_easy_cleanup(conn);
+	    if (code != CURLE_OK)
+	    {
+	    	std::cout << __METHOD_NAME__<<" Failed to get"<<surl<<" "<< errorBuffer<<std::endl;
+	      return title;
+	    }
+	    return title;
+}
+
 std::string page_parser::get_temp_filename() {
 	  std::stringstream ss;
 	  ss << clock_timer::get_time_str()
@@ -203,7 +270,7 @@ std::string page_parser::get_temp_filename() {
 int page_parser::parse_page(const std::string& surl, int depth) {
 	set_depth(depth);
 	url_.parse(surl);
-	std::string html_src = get_page(surl);
+	std::string html_src = get_page3(surl);
 	if (html_src.length() < 8) {
 		std::cout << __METHOD_NAME__ << " failed to read " << surl << std::endl;
 		return __LINE__;
