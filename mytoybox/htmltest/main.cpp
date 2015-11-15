@@ -46,14 +46,22 @@ void my_handler(int signalinput) {
 int main(int argc, char** argv) {
     using namespace std;
     cout << argv[0] << " pid " << getpid() << " built time "<< __DATE__ <<" " << __TIME__<< endl;
-    
+//    {
+//    image_digest_t digest, d2;
+//    memset(digest.data(), 5, digest.size());
+//    memset(d2.data(), 1, digest.size());
+//    std::string test = digest_class::digest_to_string(digest);
+//    digest_class::string_to_digest(test, d2);
+//    std::cout << "digest to string and back " << (memcmp(digest.data(), d2.data(), d2.size())==0?"pass":"fail") << std::endl;
+//    }
     namespace po = boost::program_options; 
     po::variables_map vm; 
     po::options_description desc("Options");     
     desc.add_options() 
       ("help", "Print help messages") 
       ("dbpath", po::value<std::string>(),  "database file path") 
-      ("pageurl", po::value<std::string>(),  "page url to parse") 
+      ("pageurl", po::value<std::string>(),  "page url to parse")
+	  ("pagesite", po::value<std::string>(),  "page site to load")
       ("imageurl", po::value<std::string>(),"image url to download")
 	  ("minfilesize", po::value<int>(), "minimal files size")
 	  ("recursive", "process links in the page")
@@ -161,6 +169,8 @@ int main(int argc, char** argv) {
 	    	pageparser.save_html_src_ = true;
 	    if(vm.count("page-link-depth"))
 	    	pageparser.max_depth_ = vm["page-link-depth"].as<int>();
+	    if(vm.count("pagesite"))
+	    	pageparser.pagesite = vm["pagesite"].as<std::string>();
 	    pageparser.set_resource_database(&db);
 	    pageparser.parse_page(pageurl, 0);
 	    // if succeeded, record used time, depth. record minum depth.

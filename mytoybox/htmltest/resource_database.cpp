@@ -36,6 +36,10 @@
 #include <set>
 #include <string.h>
 #include "resource_database.h"
+#include "digestclass.h"
+
+std::unordered_set<std::string> resource_database::image_url_table;
+std::set<image_digest_t, stdarray_compare> resource_database::image_digest_table;
 
 resource_database::resource_database():zErrMsg(0), rc(0)
 {
@@ -44,13 +48,13 @@ resource_database::resource_database():zErrMsg(0), rc(0)
 
 int resource_database::open(const std::string& database_filepath)
 {
-  std::cout << __FUNCTION__ << " " << database_filepath<<std::endl;
+  std::cout << __METHOD_NAME__ << " " << database_filepath<<std::endl;
   db_path_=database_filepath;
   rc=sqlite3_open(database_filepath.c_str(), &db_);
   if(rc)
   {
     db_=0;
-    std::cerr<< __FUNCTION__ << " failed to open " << database_filepath<<std::endl;
+    std::cerr<< __METHOD_NAME__ << " failed to open " << database_filepath<<std::endl;
   }
 }
 
@@ -91,7 +95,7 @@ int resource_database::add_url_resource(const std::string& resource_url,
 					int used_milliseconds)
 {
   std::stringstream ss;
-  ss <<"INSERT INTO url_resource_table(resource_url, local_file, sha1data, filesize, used_milliseconds)"
+  ss <<"INSERT INTO images(resource_url, local_file, sha1data, filesize, used_milliseconds)"
   <<"VALUES("
   <<"'"<<resource_url<<"',"
   <<"'"<<local_file<<"',"
@@ -122,20 +126,38 @@ int resource_database::create_tables()
 return 0;
 }
 
-static int select_callback(void* NotUsed, int argc, char** argv, char** azColName)
+static int select_callback(void* first_arg_to_callback, int argc, char** argv, char** azColName)
 {
-  for(int i=0; i<argc; i++)
-  {
-    std::cout << azColName[i] << "=" << (argv[i]?argv[i]:"NULL") <<std::endl;
+//	 std::cout << __METHOD_NAME__ << " argc="<<argc<<std::endl;
+//  for(int i=0; i<argc; i++)
+//  {
+//    std::cout << azColName[i] << "=" << (argv[i]?argv[i]:"NULL") <<std::endl;
+//  }
+  const char* table_name = (const char*)first_arg_to_callback;
+  if(first_arg_to_callback && strcmp("images", table_name)==0) {
+//	  char**)() argc=5
+//	  resource_url=http://www.aaa.com/fileuploads/21744/2174404434b29b0a116ac96362aecdc52c805f81.jpg
+//	  local_file=/tmp/testdb/2174404434b29b0a116ac96362aecdc52c805f81-1.jpg
+//	  sha1data=4249d917530a3f105a8d595a85c0f04391ec93da
+//	  filesize=798372
+//	  used_milliseconds=483
+	  image_digest_t digest;
+	  if (digest_class::string_to_digest(argv[2], digest)) {
+		  resource_database::image_digest_table.insert(digest);
+	  }
+	  resource_database::image_url_table.insert(argv[0]);
   }
   return 0;
 }
 
 int resource_database::load_database()
 {
-  std::cout << __FUNCTION__<<std::endl;
-  std::string sql="SELECT * from url_resource_table"; 
-  return exec_sql(sql, select_callback);
+  std::cout << __METHOD_NAME__<<std::endl;
+  std::string sql="SELECT * from images";
+  int countbefore = image_url_table.size();
+  int ret = exec_sql(sql, select_callback, (void*)"images");
+  std::cout << __METHOD_NAME__ << " loaded " << image_url_table.size()-countbefore << " records from images table" << std::endl;
+  return ret;
 }
 
 void resource_database::clear()
@@ -148,14 +170,18 @@ void resource_database::clear()
 
 int resource_database::exec_sql(const std::string& sql, int (*callback)(void*,int,char**,char**) )
 {
-  clear();
-  rc = sqlite3_exec(db_, sql.c_str(), callback, 0, &zErrMsg);
-  if(rc!=SQLITE_OK)
-  {
-    std::cerr << __FUNCTION__ << " ERROR " << rc 
-    << " execute sql: " << sql<<std::endl;
-  }
-  return rc;
+	rc = exec_sql(sql, callback, NULL);
+	return rc;
+}
+int resource_database::exec_sql(const std::string& sql, int (*callback)(void*,int,char**,char**), void* first_arg_to_callback) {
+	  clear();
+	  rc = sqlite3_exec(db_, sql.c_str(), callback, first_arg_to_callback, &zErrMsg);
+	  if(rc!=SQLITE_OK)
+	  {
+	    std::cerr << __METHOD_NAME__ << " ERROR " << rc
+	    << " execute sql: " << sql<<std::endl;
+	  }
+	  return rc;
 }
 
 std::string resource_database::get_dbpath()
@@ -165,15 +191,15 @@ return db_path_;
 
 int resource_database::add_image_url(const std::string& imgurl) {
 	if (image_url_table.find(imgurl) != image_url_table.end()) {
-		std::cout << __FUNCTION__ << " skip duplicated " << imgurl << std::endl;
+		std::cout << __METHOD_NAME__ << " skip duplicated " << imgurl << std::endl;
 		return 0;
 	}
 	if (std::find(img_url_list.begin(), img_url_list.end(), imgurl)
 			== img_url_list.end()) {
-		std::cout << __FUNCTION__ << " " << imgurl << std::endl;
+		std::cout << __METHOD_NAME__ << " " << imgurl << std::endl;
 		img_url_list.push_back(imgurl);
 	} else {
-		std::cout << __FUNCTION__ << " duplicated " << imgurl << std::endl;
+		std::cout << __METHOD_NAME__ << " duplicated " << imgurl << std::endl;
 	}
 	return 0;
 }
@@ -181,18 +207,18 @@ int resource_database::add_image_url(const std::string& imgurl) {
 int resource_database::add_page_url(const std::string& urlpath, int depth)
 {
 	if(page_url_depth_table.find(urlpath) != page_url_depth_table.end()) {
-		std::cout << __FUNCTION__ << " ignore duplicated url: "<< urlpath<<std::endl;
+		std::cout << __METHOD_NAME__ << " ignore duplicated url: "<< urlpath<<std::endl;
 		return 0;
 	}
 	page_url_depth_table[urlpath]=depth;
   if (std::find(page_url_list.begin(), page_url_list.end(), urlpath) == page_url_list.end())
   {
 	  page_url_list.push_back(urlpath);
-	  std::cout << __FUNCTION__ << " add page, depth: "<< depth <<" "<< urlpath <<std::endl;
+	  std::cout << __METHOD_NAME__ << " add page, depth: "<< depth <<" "<< urlpath <<std::endl;
   }
   else
   {
-    std::cout << __FUNCTION__ << " existing page: "<< urlpath<<std::endl;
+    std::cout << __METHOD_NAME__ << " existing page: "<< urlpath<<std::endl;
   }
 return 0;
 }
@@ -222,7 +248,6 @@ std::string method_name(const std::string& prettyFunction)
     size_t colons = prettyFunction.find("::");
     size_t begin = prettyFunction.substr(0,colons).rfind(" ") + 1;
     size_t end = prettyFunction.rfind("(") - begin;
-
     return prettyFunction.substr(begin,end) + "()";
 }
 

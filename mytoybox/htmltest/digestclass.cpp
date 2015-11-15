@@ -11,6 +11,8 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <sstream>
+#include <iomanip>
 
 digest_class::digest_class() {
 	// TODO Auto-generated constructor stub
@@ -65,4 +67,38 @@ int digest_class::remove_duplicated_file(const std::string& pathname) {
     }
     std::cout << __METHOD_NAME__ << " size " << db_->image_digest_table.size() << std::endl;
     return 0;
+}
+
+std::string digest_class::digest_to_string(const image_digest_t& digest) {
+    std::string sha1str;
+    std::stringstream ss;
+    for(auto data: digest)
+   	 ss << std::hex <<std::setw(2)<<std::setfill('0') << (int)data;
+    sha1str = ss.str();
+    return sha1str;
+}
+
+bool digest_class::string_to_digest(const std::string& input,
+		image_digest_t& output) {
+	memset(output.data(), 0, output.size());
+    static const char* const lut = "0123456789abcdef"; // "0123456789ABCDEF";
+    size_t len = input.length();
+    if (len!=output.size()*2) {
+    	std::cout << __METHOD_NAME__ << " unexpected digest string length " << len << std::endl;
+    	return false;
+    }
+    if (len & 1) throw std::invalid_argument("odd length");
+
+    for (size_t i = 0; i < len; i += 2)
+    {
+        char a = input[i];
+        const char* p = std::lower_bound(lut, lut + 16, a);
+        if (*p != a) throw std::invalid_argument("not a hex digit");
+
+        char b = input[i + 1];
+        const char* q = std::lower_bound(lut, lut + 16, b);
+        if (*q != b) throw std::invalid_argument("not a hex digit");
+        output[i/2] = (((p - lut) << 4) | (q - lut));
+    }
+    return true;
 }

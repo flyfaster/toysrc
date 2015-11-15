@@ -72,6 +72,7 @@ public:
     int open(const std::string& database_filepath);
     void clear();
     int exec_sql(const std::string& sql, int (*callback)(void*,int,char**,char**));
+    int exec_sql(const std::string& sql, int (*callback)(void*,int,char**,char**), void* first_arg_to_callback);
     std::string get_dbpath();
     std::string db_path_;
     int add_page_url(const std::string& urlpath, int depth);
@@ -82,8 +83,8 @@ public:
     std::deque<std::string> get_page_list();
     std::deque<std::string> get_img_list();
     std::unordered_map<std::string, int> page_url_depth_table; // key: page url, value: depth
-    std::unordered_set<std::string> image_url_table;
-    std::set<image_digest_t, stdarray_compare> image_digest_table;
+    static std::unordered_set<std::string> image_url_table;
+    static std::set<image_digest_t, stdarray_compare> image_digest_table;
 //    std::set<image_digest_t> image_digest_table;
 };
 

@@ -19,6 +19,8 @@ public:
 	static int sha1checksum(const std::string& filename, image_digest_t& digest);
 	int remove_duplicated_file(const std::string& path);
 	class resource_database* db_;
+	static std::string digest_to_string(const image_digest_t& digest);
+	static bool string_to_digest(const std::string& input, image_digest_t& output);
 };
 
 #endif /* DIGESTCLASS_H_ */

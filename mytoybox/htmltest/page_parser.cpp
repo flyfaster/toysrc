@@ -144,11 +144,14 @@ void page_parser::search_for_links(GumboNode* node) {
 		std::cout << __METHOD_NAME__ << " " << href->value << std::endl;
 		// TODO ignore links to external server.
 		if (strlen(href->value)) {
-			url_class absoluteurl(url_.get_absolute_path(href->value));
+			std::string urlfullpath = url_.get_absolute_path(href->value);
+			url_class absoluteurl(urlfullpath);
 			if (recursive_) {
-				if (absoluteurl.host_ == url_.host_ && res_db_)
-					res_db_->add_page_url(url_.get_absolute_path(href->value),
+				if (absoluteurl.host_ == url_.host_ && res_db_) {
+					if(pagesite.length() && urlfullpath.find(pagesite)!=urlfullpath.npos)
+					res_db_->add_page_url(urlfullpath,
 							depth_ + 1);
+				}
 				else
 					std::cout << __METHOD_NAME__ << " ignore external link "
 							<< href->value << std::endl;
@@ -202,13 +205,17 @@ static int writer(char *data, size_t size, size_t nmemb,
   return size * nmemb;
 }
 
-
+template<typename T>
+using deleted_unique_ptr = std::unique_ptr<T,std::function<void(T*)>>;
 std::string page_parser::get_page3(const std::string& surl) {
 	CURL *conn = NULL;
 	  CURLcode code;
 	  std::string title;
 	  static char errorBuffer[CURL_ERROR_SIZE];
 	    conn = curl_easy_init();
+		deleted_unique_ptr<CURL> scopedcurl(
+				conn,
+		    [](CURL* curlinst) { curl_easy_cleanup(curlinst); });
 	    if (conn == NULL)
 	    {
 	      std::cout << __METHOD_NAME__<<" Failed to create CURL connection\n";
@@ -251,7 +258,7 @@ std::string page_parser::get_page3(const std::string& surl) {
 	    curl_global_init(CURL_GLOBAL_DEFAULT);
 	    // Retrieve content for the URL
 	    code = curl_easy_perform(conn);
-	    curl_easy_cleanup(conn);
+//	    curl_easy_cleanup(conn);
 	    if (code != CURLE_OK)
 	    {
 	    	std::cout << __METHOD_NAME__<<" Failed to get"<<surl<<" "<< errorBuffer<<std::endl;

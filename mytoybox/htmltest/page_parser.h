@@ -52,6 +52,7 @@ public:
 	std::fstream ss_;
 	std::string get_temp_filename();
 	std::string page_src_filename;
+	std::string pagesite;
 
 };
 

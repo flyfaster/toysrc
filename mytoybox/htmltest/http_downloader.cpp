@@ -29,6 +29,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <iomanip>
 #include <string>
 #include <string.h>
 #include <sys/types.h>
@@ -39,9 +40,11 @@
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/regex.hpp>
+#include <chrono>
 #include "resource_database.h"
 #include "http_downloader.h"
 #include "url_class.h"
+#include "digestclass.h"
 
 http_downloader::http_downloader() {
 	min_file_size_ = 32 * 1024;
@@ -79,18 +82,15 @@ size_t callbackfunction(void *ptr, size_t size, size_t nmemb, void* userdata)
 {
     if (!userdata)
     {
-      std::cerr << "ERROR No stream to accept " << size * nmemb << " bytes data\n";        
+      std::cerr << __func__<< " ERROR No stream to accept " << size * nmemb << " bytes data\n";
         return 0;
     }  
     http_downloader* downloader=(http_downloader*)(userdata);
-//     std::ofstream *pfstream=(std::ofstream*)userdata;
-//     pfstream->write((const char*)ptr, size*nmemb);
-//     if(!pfstream->good())
     downloader->outputfile_.write((const char*)ptr, size*nmemb);
     if(!downloader->outputfile_.good())
     {
       downloader->reset_digest();
-      std::cerr << "ERROR write to file: " << size * nmemb << " bytes data\n";   
+      std::cerr << __func__<< " ERROR write to file: " << size * nmemb << " bytes data\n";
       return 0;
     }
     SHA1_Update(&downloader->ctx, ptr, size*nmemb);
@@ -127,12 +127,19 @@ size_t handle_data(void *ptr, size_t size, size_t nmemb, void *stream) {
 	} else
 		return size * nmemb;
 }
+
+template<typename T>
+using deleted_unique_ptr = std::unique_ptr<T,std::function<void(T*)>>;
+
 long remote_filesize(std::string url) {
 	contents.clear();
 	CURL *curl;
 	CURLcode res;
 	double length = 0.0;
 	curl = curl_easy_init();
+	deleted_unique_ptr<CURL> scopedcurl(
+	    curl,
+	    [](CURL* curlinst) { curl_easy_cleanup(curlinst); });
 	if (curl) {
 		curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
 		curl_easy_setopt(curl, CURLOPT_NOBODY, 1);
@@ -141,7 +148,6 @@ long remote_filesize(std::string url) {
 		curl_easy_setopt(curl, CURLOPT_MAXREDIRS, 500);
 		res = curl_easy_perform(curl);
 	}
-	curl_easy_cleanup(curl);
 	if (contents.size()<1) {
 		return (-1);
 	} else {
@@ -161,7 +167,7 @@ bool http_downloader::download_image(const char* surl)
   if(saveas_filename.length()==0)
     return false;
   saveas_filename = image_save_folder + saveas_filename;
-
+  auto t1 = std::chrono::high_resolution_clock::now();
   // generate unique name
   boost::filesystem::path fullpath(saveas_filename);
   boost::filesystem::path dir = fullpath.parent_path();
@@ -187,6 +193,9 @@ bool http_downloader::download_image(const char* surl)
   std::cout <<current_datetime_str()<<" "<< __METHOD_NAME__ << " save "<<surl<< " to " << saveas_filename<<std::endl;
 
     CURL* curlCtx = curl_easy_init();
+	deleted_unique_ptr<CURL> scopedcurl(
+			curlCtx,
+	    [](CURL* curlinst) { curl_easy_cleanup(curlinst); });
     curl_easy_setopt(curlCtx, CURLOPT_URL, surl);
     curl_easy_setopt(curlCtx, CURLOPT_WRITEDATA, this);
     curl_easy_setopt(curlCtx, CURLOPT_WRITEFUNCTION, callbackfunction);
@@ -209,7 +218,6 @@ bool http_downloader::download_image(const char* surl)
 		remove(saveas_filename.c_str());
         return false;
     }
-    curl_easy_cleanup(curlCtx);
     outputfile_.close();
     long filesize = get_file_size(saveas_filename);
     if (filesize < min_file_size_) {
@@ -218,12 +226,16 @@ bool http_downloader::download_image(const char* surl)
     	return true;
     }
      SHA1_Final(digest.data(), &ctx);
+     auto t2 = std::chrono::high_resolution_clock::now();
+     int used_ms = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count();
      // check sha1 digest see if the file is duplicated.
      if (db_->check_duplicate_image(digest)) {
     	 std::cout << __METHOD_NAME__ << " duplicated sha1 digest " << saveas_filename << std::endl;
 		remove(saveas_filename.c_str());
 		return true;
      }
+     std::string sha1str = digest_class::digest_to_string(digest);
+     db_->add_url_resource(surl, saveas_filename, sha1str, filesize, used_ms);
      // check image dimension
      int width=0, height=0;
      bool funcret = get_image_size(saveas_filename.c_str(), &width, &height);
