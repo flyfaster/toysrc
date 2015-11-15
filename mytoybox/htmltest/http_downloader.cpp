@@ -110,8 +110,7 @@ long get_file_size(std::string filename)
 }
 
 std::string contents;
-// This is the callback function that is called by
-// curl_easy_perform(curl)
+// This is the callback function that is called by curl_easy_perform(curl)
 size_t handle_data(void *ptr, size_t size, size_t nmemb, void *stream) {
 	const boost::regex content_length_regex("Content-Length: [0-9]{1,}"); // Regex do video do youtube...
 	const boost::regex content_length_remove_regex("Content-Length: ");
