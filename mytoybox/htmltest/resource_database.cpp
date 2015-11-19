@@ -40,6 +40,7 @@
 
 std::unordered_set<std::string> resource_database::image_url_table;
 std::set<image_digest_t, stdarray_compare> resource_database::image_digest_table;
+int resource_database::http_timeout_ms=2000; // see CURLOPT_TIMEOUT_MS
 
 resource_database::resource_database():zErrMsg(0), rc(0)
 {

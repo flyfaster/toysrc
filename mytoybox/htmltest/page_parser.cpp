@@ -256,6 +256,7 @@ std::string page_parser::get_page3(const std::string& surl) {
 	      return title;
 	    }
 	    curl_global_init(CURL_GLOBAL_DEFAULT);
+	    curl_easy_setopt(conn, CURLOPT_TIMEOUT_MS, resource_database::http_timeout_ms);
 	    // Retrieve content for the URL
 	    code = curl_easy_perform(conn);
 //	    curl_easy_cleanup(conn);
@@ -323,7 +324,7 @@ std::string page_parser::get_page2(const std::string& surl) {
 	curl_easy_setopt(curlCtx, CURLOPT_WRITEDATA, this);
 	curl_easy_setopt(curlCtx, CURLOPT_WRITEFUNCTION, callbackfunction2);
 	curl_easy_setopt(curlCtx, CURLOPT_FOLLOWLOCATION, 1);
-
+	curl_easy_setopt(curlCtx, CURLOPT_TIMEOUT_MS, resource_database::http_timeout_ms);
 	CURLcode rc = curl_easy_perform(curlCtx);
 	if (rc) {
 		std::cerr << __METHOD_NAME__ << " ERROR download " << surl << std::endl;

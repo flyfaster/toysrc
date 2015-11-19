@@ -85,6 +85,7 @@ public:
     std::unordered_map<std::string, int> page_url_depth_table; // key: page url, value: depth
     static std::unordered_set<std::string> image_url_table;
     static std::set<image_digest_t, stdarray_compare> image_digest_table;
+    static int http_timeout_ms;
 //    std::set<image_digest_t> image_digest_table;
 };
 

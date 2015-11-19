@@ -145,6 +145,7 @@ long remote_filesize(std::string url) {
 		curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1);
 		curl_easy_setopt(curl, CURLOPT_HEADERFUNCTION, handle_data);
 		curl_easy_setopt(curl, CURLOPT_MAXREDIRS, 500);
+		curl_easy_setopt(curl, CURLOPT_TIMEOUT_MS, resource_database::http_timeout_ms);
 		res = curl_easy_perform(curl);
 	}
 	if (contents.size()<1) {
@@ -199,7 +200,7 @@ bool http_downloader::download_image(const char* surl)
     curl_easy_setopt(curlCtx, CURLOPT_WRITEDATA, this);
     curl_easy_setopt(curlCtx, CURLOPT_WRITEFUNCTION, callbackfunction);
     curl_easy_setopt(curlCtx, CURLOPT_FOLLOWLOCATION, 1);
-
+    curl_easy_setopt(curlCtx, CURLOPT_TIMEOUT_MS, resource_database::http_timeout_ms);
     CURLcode rc = curl_easy_perform(curlCtx);
     if (rc)
     {

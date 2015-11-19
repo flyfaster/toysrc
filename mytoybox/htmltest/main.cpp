@@ -64,6 +64,7 @@ int main(int argc, char** argv) {
 	  ("pagesite", po::value<std::string>(),  "page site to load")
       ("imageurl", po::value<std::string>(),"image url to download")
 	  ("minfilesize", po::value<int>(), "minimal files size")
+	  ("http-timeout-ms", po::value<int>(), "timeout milliseconds when downloading by http")
 	  ("recursive", "process links in the page")
 	  ("save-page-src", "save html page source to file")
 	  ("image-short-min", po::value<int>(), "both width and height shall be greater than the specified pixel size")
@@ -113,6 +114,10 @@ int main(int argc, char** argv) {
 		digestmachine.db_ = &db;
 		digestmachine.remove_duplicated_file(vm["check-dup"].as<std::string>());
 //		return 0;
+	}
+
+	if(vm.count("http-timeout-ms")) {
+		db.http_timeout_ms = vm["http-timeout-ms"].as<int>();
 	}
       /////////////////////////////////////
     if(vm.count("pageurl"))
