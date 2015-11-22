@@ -148,7 +148,7 @@ void page_parser::search_for_links(GumboNode* node) {
 			url_class absoluteurl(urlfullpath);
 			if (recursive_) {
 				if (absoluteurl.host_ == url_.host_ && res_db_) {
-					if(pagesite.length() && urlfullpath.find(pagesite)!=urlfullpath.npos)
+					if(is_interested(urlfullpath))
 					res_db_->add_page_url(urlfullpath,
 							depth_ + 1);
 				}
@@ -344,4 +344,14 @@ std::string page_parser::get_page2(const std::string& surl) {
 			<< surl << std::endl;
 	ss_.close();
 	return "";
+}
+
+bool page_parser::is_interested(const std::string& surl) {
+	if (pagesite.size()==0)
+		return true;
+	for(auto sline: pagesite) {
+		if(surl.find(sline)!=surl.npos)
+			return true;
+	}
+	return false;
 }
