@@ -34,6 +34,7 @@
 #include <unordered_set>
 #include <unordered_map>
 #include <string.h>
+#include <boost/program_options.hpp>
 //#include <boost/bimap.hpp>
 
 typedef std::array<unsigned char, SHA_DIGEST_LENGTH> image_digest_t;
@@ -86,6 +87,7 @@ public:
     static std::unordered_set<std::string> image_url_table;
     static std::set<image_digest_t, stdarray_compare> image_digest_table;
     static int http_timeout_ms;
+    static boost::program_options::variables_map vm;
 //    std::set<image_digest_t> image_digest_table;
 };
 

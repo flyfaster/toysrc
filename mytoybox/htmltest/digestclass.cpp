@@ -60,8 +60,10 @@ int digest_class::remove_duplicated_file(const std::string& pathname) {
             } else {
             	if(ret)
             		std::cout << __METHOD_NAME__ << " failed " << current_file << std::endl;
-            	else
-            		std::cout << __METHOD_NAME__ << " finished " << current_file << std::endl;
+            	else {
+            		if (db_->vm.count("verbose-level") && db_->vm["verbose-level"].as<int>()>6)
+            			std::cout << __METHOD_NAME__ << " finished " << current_file << std::endl;
+            	}
             }
         }
     }

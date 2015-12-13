@@ -12,6 +12,32 @@ else()
         message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
 endif()
 
-add_executable(htmltest clock_timer.cpp resource_database.cpp page_parser.cpp url_class.cpp image_size.cpp http_downloader.cpp digestclass.cpp main.cpp)
+add_definitions("-DWITH_SHARED_LIB=1")
 
-target_link_libraries (htmltest gumbo pthread boost_system boost_program_options boost_filesystem boost_regex curl crypto sqlite3 jpeg png)
+include_directories("${CMAKE_CURRENT_BINARY_DIR}")
+include_directories("${PROJECT_SOURCE_DIR}/gen-cpp")
+include(ThriftMacros)
+
+#target_compile_options(htmltestgencpp PUBLIC  -DWITH_SHARED_LIB=1)
+#target_compile_options(htmltest PUBLIC  -DWITH_SHARED_LIB=1)
+
+set(htmltest_thrift_SOURCES 
+    gen-cpp/CheckSumService.cpp  
+    gen-cpp/htmltest_constants.cpp 
+    gen-cpp/CheckSumService_server.skeleton.cpp  
+    gen-cpp/htmltest_types.cpp
+)
+
+add_library(htmltestgencpp STATIC ${htmltest_thrift_SOURCES})
+LINK_AGAINST_THRIFT_LIBRARY(htmltestgencpp thrift)
+
+add_custom_command(OUTPUT gen-cpp/CheckSumService.cpp  gen-cpp/htmltest_constants.cpp gen-cpp/CheckSumService_server.skeleton.cpp  gen-cpp/htmltest_types.cpp
+    COMMAND thrift --gen cpp -r ${PROJECT_SOURCE_DIR}/htmltest.thrift
+)
+
+
+add_executable(htmltest CheckSumServer.cpp clock_timer.cpp resource_database.cpp page_parser.cpp url_class.cpp image_size.cpp http_downloader.cpp digestclass.cpp main.cpp)
+
+target_link_libraries (htmltest gumbo pthread boost_system boost_program_options boost_filesystem boost_regex curl crypto sqlite3 jpeg png htmltestgencpp)
+LINK_AGAINST_THRIFT_LIBRARY(htmltest thrift)
+
