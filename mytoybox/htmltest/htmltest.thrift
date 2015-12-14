@@ -49,6 +49,7 @@ struct CheckSumProgress {
 
 service CheckSumService {
    	CheckSumResult checksum(1:string srcfilename),	// 
+   	binary datachecksum(1:binary data),
 	i32 duplicated(1:string input_checksum),// 
    	oneway void addfolder(1:string pathname),
 	CheckSumProgress getprogress(),

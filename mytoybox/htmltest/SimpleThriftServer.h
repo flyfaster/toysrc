@@ -7,7 +7,7 @@
 
 #ifndef SIMPLETHRIFTSERVER_H_
 #define SIMPLETHRIFTSERVER_H_
-
+#include <thrift/server/TSimpleServer.h>
 namespace htmltest {
 
 class SimpleThriftServer {
@@ -17,7 +17,7 @@ public:
 	void setport(unsigned short myport);
 	int startserver(int argc, char **argv);
 	unsigned short port;
-	class TSimpleServer* server;
+	::apache::thrift::server::TSimpleServer* server;
 };
 
 } /* namespace htmltest */

@@ -8,6 +8,7 @@
 #include "SimpleThriftServer.h"
 #include "CheckSumServer.h"
 #include "htmltest_constants.h"
+#include <iostream>
 
 namespace htmltest {
 
@@ -26,14 +27,17 @@ void SimpleThriftServer::setport(unsigned short myport) {
 
 int SimpleThriftServer::startserver(int argc, char **argv) {
 
-  shared_ptr<CheckSumServiceHandler> handler(new CheckSumServiceHandler());
+  shared_ptr<CheckSumServer> handler(new CheckSumServer());
   shared_ptr<TProcessor> processor(new CheckSumServiceProcessor(handler));
   shared_ptr<TServerTransport> serverTransport(new TServerSocket(port));
   shared_ptr<TTransportFactory> transportFactory(new TBufferedTransportFactory());
   shared_ptr<TProtocolFactory> protocolFactory(new TBinaryProtocolFactory());
 
   server = new  TSimpleServer(processor, serverTransport, transportFactory, protocolFactory);
+  handler->setserver(server);
+  std::cout << argv[0] << " pid " << getpid() << " thrift server start " << std::endl;
   server->serve();
+  std::cout << argv[0] << " pid " << getpid() << " thrift server stop " << std::endl;
   return 0;
 }
 

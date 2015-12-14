@@ -11,6 +11,7 @@
 // You should copy it to another filename to avoid overwriting it.
 
 #include "CheckSumService.h"
+#include "resource_database.h"
 #include <thrift/protocol/TBinaryProtocol.h>
 #include <thrift/server/TSimpleServer.h>
 #include <thrift/transport/TServerSocket.h>
@@ -30,7 +31,7 @@ class CheckSumServer : virtual public CheckSumServiceIf {
 	CheckSumServer() ;
 	~CheckSumServer();
   void checksum(CheckSumResult& _return, const std::string& srcfilename) override;
-
+  void datachecksum(std::string& _return, const std::string& data) override;
   int32_t duplicated(const std::string& input_checksum) override;
 
   void addfolder(const std::string& pathname) override;
@@ -43,6 +44,7 @@ class CheckSumServer : virtual public CheckSumServiceIf {
   void setserver(class TSimpleServer* server);
  private:
   class TSimpleServer* server_;
+  std::set<image_digest_t, stdarray_compare> image_digest_table;
 };
 
 }

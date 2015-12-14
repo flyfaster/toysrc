@@ -35,6 +35,7 @@
 #include "page_parser.h"
 #include "resource_database.h"
 #include "digestclass.h"
+#include "SimpleThriftServer.h"
 
 int input_signal=0;
 void my_handler(int signalinput) {
@@ -76,6 +77,7 @@ int main(int argc, char** argv) {
 	  ("check-dup", po::value<std::string>(), "check files under the folder see if digest is duplicated")
 	  ("imagefolder", po::value<std::string>(), "specify the directory to save image files")
 	  ("checksum-server-port", po::value<unsigned short>(), "port number used by checksum server")
+	  ("thrift-server", "work as a thrift server")
 	  ; 
     
     try 
@@ -96,6 +98,13 @@ int main(int argc, char** argv) {
       std::cerr << desc << std::endl; 
       return __LINE__; 
     }     
+    if (vm.count("thrift-server")) {
+    	htmltest::SimpleThriftServer thriftserver;
+    	if (vm.count("checksum-server-port"))
+    		thriftserver.setport(vm["checksum-server-port"].as<unsigned short>());
+    	int ret = thriftserver.startserver(argc, argv);
+    	return ret;
+    }
     if(vm.count("config_file")) {
     	std::string config_file = vm["config_file"].as<std::string>();
     	std::ifstream settings_file(config_file.c_str());
