@@ -60,23 +60,23 @@ CheckSumServer::~CheckSumServer() {
             }
         }
     }
-    std::cout << __METHOD_NAME__ << " processed " << pathname << std::endl;
+    std::cout << __METHOD_NAME__ << " processed " << pathname << ", checksum count:"<<image_digest_table.size() << std::endl;
   }
 
   void CheckSumServer::getprogress(CheckSumProgress& _return) {
+	  std::cout << __METHOD_NAME__ << " pid " << getpid() << " start." << std::endl;
 	  _return.__set_folders(0);
 	  _return.__set_files(0);
 	  _return.__set_processed_folders(0);
-    // Your implementation goes here
-    printf("getprogress\n");
+	  std::cout << __METHOD_NAME__ << " pid " << getpid() << " done." << std::endl;
   }
 
   void CheckSumServer::ping() {
-	  std::cout << __func__ << " pid " << getpid() << std::endl;
+	  std::cout << __METHOD_NAME__ << " pid " << getpid() << " done." << std::endl;
   }
 
   void CheckSumServer::shutdown(const std::string& msg) {
-    std::cout << __func__ << " pid " << getpid() << ", message from client:" << msg << std::endl;
+    std::cout << __METHOD_NAME__ << " pid " << getpid() << ", message from client:" << msg << std::endl;
     if(server_)
     	server_->stop();
   }

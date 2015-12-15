@@ -36,6 +36,8 @@
 #include "resource_database.h"
 #include "digestclass.h"
 #include "SimpleThriftServer.h"
+#include "htmltest_constants.h"
+#include "main.h"
 
 int input_signal=0;
 void my_handler(int signalinput) {
@@ -55,13 +57,32 @@ int main(int argc, char** argv) {
 //    digest_class::string_to_digest(test, d2);
 //    std::cout << "digest to string and back " << (memcmp(digest.data(), d2.data(), d2.size())==0?"pass":"fail") << std::endl;
 //    }
+    struct sigaction sigIntHandler;
+    sigIntHandler.sa_handler = my_handler;
+    sigemptyset(&sigIntHandler.sa_mask);
+    sigIntHandler.sa_flags =0;
+    sigaction(SIGINT, &sigIntHandler, 0);
+    MainApp::Instance()->Init(argc, argv);
+    MainApp::Instance()->Start(argc, argv);
+    cout << argv[0] <<" done."<< endl; //
+    return 0;
+}
+
+MainApp::MainApp():desc("Options") {
+}
+
+MainApp::~MainApp() {
+}
+
+int MainApp::Init(int argc, char* argv[]) {
+    using namespace std;
+    cout << argv[0] << " pid " << getpid() << " built time "<< __DATE__ <<" " << __TIME__<< endl;
     namespace po = boost::program_options;
-    boost::program_options::variables_map& vm = resource_database::vm;
-    po::options_description desc("Options");     
-    desc.add_options() 
-      ("help", "Print help messages") 
+//    po::options_description desc("Options");
+    desc.add_options()
+      ("help", "Print help messages")
 	  ("config_file", po::value<std::string>(),  "read parameters from configuration file")
-      ("dbpath", po::value<std::string>(),  "database file path") 
+      ("dbpath", po::value<std::string>(),  "database file path")
       ("pageurl", po::value<std::vector<std::string>>(),  "page url to parse")
 	  ("pagesite", po::value<std::vector<std::string>>(),  "only urls with those keywords will be checked")
       ("imageurl", po::value<std::string>(),"image url to download")
@@ -78,33 +99,27 @@ int main(int argc, char** argv) {
 	  ("imagefolder", po::value<std::string>(), "specify the directory to save image files")
 	  ("checksum-server-port", po::value<unsigned short>(), "port number used by checksum server")
 	  ("thrift-server", "work as a thrift server")
-	  ; 
-    
-    try 
-    { 
+	  ("shutdown-server", "shutdown thrift server")
+	  ;
+
+    try
+    {
     	po::store(po::command_line_parser(argc, argv).options(desc).allow_unregistered().run(),vm);
-//      po::store(po::parse_command_line(argc, argv, desc),vm);
-      po::notify(vm); 
-      if ( vm.count("help")  ) 
-      { 
-        std::cout << argv[0] << " usage:" << std::endl 
-                  << desc << std::endl; 
-        return 0; 
-      } 
-    } 
-    catch(po::error& e) 
-    { 
-      std::cerr << "ERROR: " << e.what() << std::endl << std::endl; 
-      std::cerr << desc << std::endl; 
-      return __LINE__; 
-    }     
-    if (vm.count("thrift-server")) {
-    	htmltest::SimpleThriftServer thriftserver;
-    	if (vm.count("checksum-server-port"))
-    		thriftserver.setport(vm["checksum-server-port"].as<unsigned short>());
-    	int ret = thriftserver.startserver(argc, argv);
-    	return ret;
+      po::notify(vm);
+      if ( vm.count("help")  )
+      {
+        std::cout << argv[0] << " usage:" << std::endl
+                  << desc << std::endl;
+        return 0;
+      }
     }
+    catch(po::error& e)
+    {
+      std::cerr << "ERROR: " << e.what() << std::endl << std::endl;
+      std::cerr << desc << std::endl;
+      return __LINE__;
+    }
+
     if(vm.count("config_file")) {
     	std::string config_file = vm["config_file"].as<std::string>();
     	std::ifstream settings_file(config_file.c_str());
@@ -113,9 +128,8 @@ int main(int argc, char** argv) {
     		return 1;
     	}
     	  // Clear the map.
-    	resource_database::vm.clear();
-    	resource_database::vm = po::variables_map();
-//    	boost::program_options::variables_map vmf;
+    	vm.clear();
+    	vm = po::variables_map();
     	  po::store(po::parse_config_file(settings_file , desc, true), vm);
     	  po::notify(vm);
     	  std::cout << __func__ << " loaded " << config_file << std::endl;
@@ -128,9 +142,60 @@ int main(int argc, char** argv) {
 //    	      			  std::cout << "get " << vmf["dryrun"].as<int>() <<std::endl;
 //    	      	  }
     }
-    if(vm.count("recursive"))
-    	std::cout << "enabled recursive\n";
-        ////           
+
+
+}
+
+MainApp* global_mainapp;
+
+int MainApp::InitThrift() {
+	if(transport)
+		return 0;
+    unsigned short port = htmltest::g_htmltest_constants.CheckSumServiceDefaultPort;
+	if (vm.count("checksum-server-port"))
+		port = vm["checksum-server-port"].as<unsigned short>();
+	  socket.reset(new TSocket("localhost", port));
+	  transport.reset(new TBufferedTransport(socket));
+	  protocol.reset(new TBinaryProtocol(transport));
+  transport->open();
+  return 0;
+}
+
+MainApp* MainApp::Instance() {
+	if(!global_mainapp)
+		global_mainapp = new MainApp();
+	return global_mainapp;
+}
+
+int MainApp::Start(int argc, char* argv[]) {
+	if (vm.count("help")) {
+		std::cout << argv[0] << " usage:" << std::endl << desc << std::endl;
+		return 0;
+	}
+
+    if (vm.count("thrift-server")) {
+    	htmltest::SimpleThriftServer thriftserver;
+    	if (vm.count("checksum-server-port"))
+    		thriftserver.setport(vm["checksum-server-port"].as<unsigned short>());
+    	int ret = thriftserver.startserver(argc, argv);
+    	return ret;
+    }
+        ////
+	if(vm.count("check-dup")) {
+		InitThrift();
+		htmltest::CheckSumServiceClient checksumclient(protocol);
+		checksumclient.addfolder(vm["check-dup"].as<std::string>());
+//		digest_class digestmachine;
+//		digestmachine.db_ = &db;
+//		digestmachine.remove_duplicated_file(vm["check-dup"].as<std::string>());
+		return 0;
+	}
+	if(vm.count("shutdown-server")) {
+		InitThrift();
+		htmltest::CheckSumServiceClient checksumclient(protocol);
+		checksumclient.shutdown("please shutdown");
+		return 0;
+	}
     std::string dbpathstr = "./htmltest.bin";
     if(vm.count("dbpath"))    {
     	dbpathstr = vm["dbpath"].as<std::string>();
@@ -146,13 +211,6 @@ int main(int argc, char** argv) {
 	}
 	if (vm.count("imageurl")) {
 		db.add_image_url(vm["imageurl"].as<std::string>());
-	}
-
-	if(vm.count("check-dup")) {
-		digest_class digestmachine;
-		digestmachine.db_ = &db;
-		digestmachine.remove_duplicated_file(vm["check-dup"].as<std::string>());
-//		return 0;
 	}
 
 	if(vm.count("http-timeout-ms")) {
@@ -181,11 +239,6 @@ int main(int argc, char** argv) {
     		return 1;
     	}
     }
-    struct sigaction sigIntHandler;
-    sigIntHandler.sa_handler = my_handler;
-    sigemptyset(&sigIntHandler.sa_mask);
-    sigIntHandler.sa_flags =0;
-    sigaction(SIGINT, &sigIntHandler, 0);
     while(input_signal == 0)
     {
 	  ////////////////////////////////////////
@@ -212,7 +265,7 @@ int main(int argc, char** argv) {
 	    // if succeeded, record used time, depth. record minum depth.
 	    // if failed, update retry count.
 	    // check debug command, display number of pages processed, number of pages left.
-	  } 
+	  }
 
       std::deque<std::string> imglist = db.get_img_list();
       std::cout << __func__ << " there are " << imglist.size() << " images\n";
@@ -245,7 +298,5 @@ int main(int argc, char** argv) {
       if (pagelist.size()+imglist.size()==0)
 	    break;
     }
-    cout << argv[0] <<" done."<< endl; //
     return 0;
 }
-
