@@ -13,6 +13,7 @@
 #include <fstream>
 #include <sstream>
 #include <iomanip>
+#include "main.h"
 
 digest_class::digest_class() {
 	// TODO Auto-generated constructor stub
@@ -61,7 +62,7 @@ int digest_class::remove_duplicated_file(const std::string& pathname) {
             	if(ret)
             		std::cout << __METHOD_NAME__ << " failed " << current_file << std::endl;
             	else {
-            		if (db_->vm.count("verbose-level") && db_->vm["verbose-level"].as<int>()>6)
+            		if (MainApp::Instance()->vm.count("verbose-level") && MainApp::Instance()->vm["verbose-level"].as<int>()>6)
             			std::cout << __METHOD_NAME__ << " finished " << current_file << std::endl;
             	}
             }

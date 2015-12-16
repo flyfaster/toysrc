@@ -26,11 +26,11 @@ public:
 	int Start(int argc, char* argv[]);
 	int InitThrift();
 	static MainApp* Instance();
+	boost::program_options::variables_map vm;
 private:
 	  boost::shared_ptr<TTransport> socket;
 	  boost::shared_ptr<TTransport> transport;
 	  boost::shared_ptr<TProtocol> protocol;
-	  boost::program_options::variables_map vm;
 	  boost::program_options::options_description desc;
 };
 
