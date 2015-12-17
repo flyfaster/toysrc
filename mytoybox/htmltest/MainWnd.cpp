@@ -17,7 +17,7 @@ MainWnd::MainWnd(QWidget *parent, Qt::WFlags flags) :
 	scene = new QGraphicsScene(); // QRect(-50, -50, 400, 200)
 	view = new QGraphicsView(this->centralWidget());
 	view->setScene(scene);
-	view->setDragMode(QGraphicsView::ScrollHandDrag);
+//	view->setDragMode(QGraphicsView::ScrollHandDrag);
 	QPixmap image = QPixmap::fromImage(
 			QImage("/home/onega/Pictures/download.jpg"));
 	item = new QGraphicsPixmapItem(image);
@@ -61,7 +61,15 @@ void MainWnd::clickedSlot()
 	 diskfile.read( (char*)buf, length);
 	 QPixmap pix;
 	 pix.loadFromData(buf, length, "JPG");
-	 item->setPixmap(pix);
+	 scene->height();
+	 scene->width();
+	 pix.height();
+	 pix.width();
+	 qreal marginfactor=0.95;
+	 if(scene->width()*pix.height()>scene->height()*pix.width())
+		 item->setPixmap(pix.scaledToHeight(scene->height()*marginfactor));
+	 else
+		 item->setPixmap(pix.scaledToHeight(scene->height()*marginfactor));
 //	 scene->removeItem(item);
 //	 delete item;
 //	item = new QGraphicsPixmapItem(pix);
