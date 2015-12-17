@@ -38,6 +38,7 @@
 #include "SimpleThriftServer.h"
 #include "htmltest_constants.h"
 #include "main.h"
+#include "MainWnd.h"
 
 int input_signal=0;
 void my_handler(int signalinput) {
@@ -62,6 +63,10 @@ int main(int argc, char** argv) {
     sigemptyset(&sigIntHandler.sa_mask);
     sigIntHandler.sa_flags =0;
     sigaction(SIGINT, &sigIntHandler, 0);
+    QApplication a(argc, argv);
+    MainWnd w;
+    w.show();
+    return a.exec();
     MainApp::Instance()->Init(argc, argv);
     MainApp::Instance()->Start(argc, argv);
     cout << argv[0] <<" done."<< endl; //
