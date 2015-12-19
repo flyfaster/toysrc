@@ -13,7 +13,7 @@
 #include <thrift/transport/TSocket.h>
 #include <thrift/transport/TTransportUtils.h>
 #include <iostream>
-
+#include <unordered_map>
 using namespace apache::thrift;
 using namespace apache::thrift::protocol;
 using namespace apache::thrift::transport;
@@ -27,11 +27,17 @@ public:
 	int InitThrift();
 	static MainApp* Instance();
 	boost::program_options::variables_map vm;
+	std::unordered_map<std::string, int> exclude_list;
+	std::deque<std::string> imagelist;
+	int imageposition;
+	std::string GetNext();
+	std::string GetPrev();
 private:
 	  boost::shared_ptr<TTransport> socket;
 	  boost::shared_ptr<TTransport> transport;
 	  boost::shared_ptr<TProtocol> protocol;
 	  boost::program_options::options_description desc;
+
 };
 
 

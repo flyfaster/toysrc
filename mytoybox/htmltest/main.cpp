@@ -73,7 +73,7 @@ int main(int argc, char** argv) {
     return 0;
 }
 
-MainApp::MainApp():desc("Options") {
+MainApp::MainApp():desc("Options"), imageposition(0) {
 }
 
 MainApp::~MainApp() {
@@ -304,4 +304,26 @@ int MainApp::Start(int argc, char* argv[]) {
 	    break;
     }
     return 0;
+}
+
+std::string MainApp::GetNext() {
+	if (imageposition<imagelist.size()) {
+		int old = imageposition;
+		imageposition++;
+		if (imageposition>=imagelist.size())
+			imageposition=0;
+		return imagelist[old];
+	}
+	return std::string();
+}
+
+std::string MainApp::GetPrev() {
+	if (imageposition<imagelist.size()) {
+		int old = imageposition;
+		imageposition--;
+		if (imageposition<0)
+			imageposition=imagelist.size()-1;
+		return imagelist[old];
+	}
+	return std::string();
 }

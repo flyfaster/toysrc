@@ -27,6 +27,12 @@ public slots:
 private:
  QLineEdit* urlinput;
  QGraphicsPixmapItem* item;
+ QPushButton* button_next;
+ QPushButton* button_prev;
+ QPushButton* button_saveurl;
+ QPushButton* button_saveimg;
+ QPushButton* button_exclude;
+ int DisplayLocalImage(const std::string& filename);
 };
 
 #endif
