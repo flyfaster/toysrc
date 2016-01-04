@@ -24,8 +24,6 @@ private:
  QTextEdit* pinyin;
  QPushButton* button_next;
  QPushButton* button_clear;
- int LoadDict();
- std::deque<std::wstring> dict;
 };
 
 #endif
