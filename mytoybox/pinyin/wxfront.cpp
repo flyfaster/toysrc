@@ -7,10 +7,13 @@
 
 #include "wxfront.h"
 #include "main.h"
+#ifdef _MSC_VER
+#include "resource.h"
+#endif
 
 bool MiniWxApp::OnInit() {
 	wxString title;
-	title.Printf(wxT("Onega’s mini wxWidgets application pid:%d "), getpid());
+	title.Printf(wxT("Onega's mini dictionary pid:%lu "), wxGetProcessId());
 	MyFrame *frame = new MyFrame( title, wxDefaultPosition, wxDefaultSize);
 	frame->Show(true);
 	SetTopWindow (frame);
@@ -32,7 +35,6 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size) 
 		wxFrame(NULL, -1, title, pos, size) {
 	wxMenuBar *menuBar = new wxMenuBar;
 	wxMenu *menuFile = new wxMenu;
-	menuFile->Append(wxID_ABOUT, wxT("&About…"));
 	menuFile->Append(wxID_EXIT, wxT("E&xit"));
 	menuBar->Append(menuFile, wxT("&File"));
 	SetMenuBar(menuBar);
@@ -62,6 +64,9 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size) 
 	Connect(wxEVT_ERASE_BACKGROUND,
 			wxEraseEventHandler(MyFrame::OnEraseBackground));
 	reset();
+#ifdef _MSC_VER	
+	SetIcon(wxICON(IDR_MYICON));
+#endif	
 }
 void MyFrame::OnQuit(wxCommandEvent& event) {
 		Close(true);
@@ -74,7 +79,7 @@ void MyFrame::OnQuit(wxCommandEvent& event) {
 		wxClientDC dc(this);
 		wxDateTime dt = wxDateTime::Now();
 		wxString txt;
-		txt.Printf(wxT("pid:%d "), getpid());
+		txt.Printf(wxT("pid:%lu "), wxGetProcessId());
 		txt.Append(dt.FormatTime());
 		dc.SetTextForeground(*wxBLUE);
 		dc.SetBackgroundMode(wxTRANSPARENT);

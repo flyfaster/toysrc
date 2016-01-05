@@ -1,0 +1,120 @@
+1>------ Build started: Project: pinyin, Configuration: Debug x64 ------
+1>  main.cpp
+1>  NOTE: Use of this header (bool_trait_def.hpp) is deprecated
+1>  NOTE: Use of this header (template_arity_spec.hpp) is deprecated
+1>  NOTE: Use of this header (template_arity_spec.hpp) is deprecated
+1>
+1>  Searching libraries
+1>      Searching C:\apps\oss\wxWidgets-3.0.2\lib\vc_x64_lib\wxbase30ud.lib:
+1>      Searching C:\apps\oss\wxWidgets-3.0.2\lib\vc_x64_lib\wxmsw30ud_core.lib:
+1>      Searching C:\apps\oss\wxWidgets-3.0.2\lib\vc_x64_lib\wxpngd.lib:
+1>      Searching C:\apps\oss\zlib-1.2.8\contrib\vstudio\vc11\x64\ZlibStatDebug\zlibstat.lib:
+1>      Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x64\comctl32.lib:
+1>      Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x64\Rpcrt4.lib:
+1>      Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x64\kernel32.lib:
+1>      Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x64\user32.lib:
+1>      Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x64\gdi32.lib:
+1>      Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x64\winspool.lib:
+1>      Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x64\comdlg32.lib:
+1>      Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x64\advapi32.lib:
+1>      Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x64\shell32.lib:
+1>      Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x64\ole32.lib:
+1>      Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x64\oleaut32.lib:
+1>      Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x64\uuid.lib:
+1>      Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x64\odbc32.lib:
+1>      Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x64\odbccp32.lib:
+1>      Searching C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\amd64\msvcprtd.lib:
+1>      Searching C:\apps\oss\boost_1_60_0\stage\lib\libboost_locale-vc140-mt-gd-1_60.lib:
+1>      Searching C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\amd64\MSVCRTD.lib:
+1>      Searching C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\amd64\OLDNAMES.lib:
+1>      Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x64\oleacc.lib:
+1>      Searching C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\amd64\vcruntimed.lib:
+1>      Searching C:\Program Files (x86)\Windows Kits\10\lib\10.0.10240.0\ucrt\x64\ucrtd.lib:
+1>      Searching C:\apps\oss\wxWidgets-3.0.2\lib\vc_x64_lib\wxbase30ud.lib:
+1>      Searching C:\apps\oss\wxWidgets-3.0.2\lib\vc_x64_lib\wxmsw30ud_core.lib:
+1>      Searching C:\apps\oss\wxWidgets-3.0.2\lib\vc_x64_lib\wxpngd.lib:
+1>      Searching C:\apps\oss\zlib-1.2.8\contrib\vstudio\vc11\x64\ZlibStatDebug\zlibstat.lib:
+1>      Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x64\comctl32.lib:
+1>      Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x64\Rpcrt4.lib:
+1>      Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x64\kernel32.lib:
+1>      Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x64\user32.lib:
+1>      Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x64\gdi32.lib:
+1>      Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x64\winspool.lib:
+1>      Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x64\comdlg32.lib:
+1>      Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x64\advapi32.lib:
+1>      Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x64\shell32.lib:
+1>      Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x64\ole32.lib:
+1>      Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x64\oleaut32.lib:
+1>      Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x64\uuid.lib:
+1>      Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x64\odbc32.lib:
+1>      Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x64\odbccp32.lib:
+1>      Searching C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\amd64\msvcprtd.lib:
+1>      Searching C:\apps\oss\boost_1_60_0\stage\lib\libboost_locale-vc140-mt-gd-1_60.lib:
+1>      Searching C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\amd64\MSVCRTD.lib:
+1>      Searching C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\amd64\OLDNAMES.lib:
+1>      Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x64\oleacc.lib:
+1>      Searching C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\amd64\vcruntimed.lib:
+1>      Searching C:\Program Files (x86)\Windows Kits\10\lib\10.0.10240.0\ucrt\x64\ucrtd.lib:
+1>
+1>  Finished searching libraries
+1>
+1>  Searching libraries
+1>      Searching C:\apps\oss\wxWidgets-3.0.2\lib\vc_x64_lib\wxbase30ud.lib:
+1>      Searching C:\apps\oss\wxWidgets-3.0.2\lib\vc_x64_lib\wxmsw30ud_core.lib:
+1>      Searching C:\apps\oss\wxWidgets-3.0.2\lib\vc_x64_lib\wxpngd.lib:
+1>      Searching C:\apps\oss\zlib-1.2.8\contrib\vstudio\vc11\x64\ZlibStatDebug\zlibstat.lib:
+1>      Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x64\comctl32.lib:
+1>      Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x64\Rpcrt4.lib:
+1>      Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x64\kernel32.lib:
+1>      Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x64\user32.lib:
+1>      Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x64\gdi32.lib:
+1>      Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x64\winspool.lib:
+1>      Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x64\comdlg32.lib:
+1>      Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x64\advapi32.lib:
+1>      Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x64\shell32.lib:
+1>      Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x64\ole32.lib:
+1>      Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x64\oleaut32.lib:
+1>      Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x64\uuid.lib:
+1>      Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x64\odbc32.lib:
+1>      Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x64\odbccp32.lib:
+1>      Searching C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\amd64\msvcprtd.lib:
+1>      Searching C:\apps\oss\boost_1_60_0\stage\lib\libboost_locale-vc140-mt-gd-1_60.lib:
+1>      Searching C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\amd64\MSVCRTD.lib:
+1>      Searching C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\amd64\OLDNAMES.lib:
+1>      Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x64\oleacc.lib:
+1>      Searching C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\amd64\vcruntimed.lib:
+1>      Searching C:\Program Files (x86)\Windows Kits\10\lib\10.0.10240.0\ucrt\x64\ucrtd.lib:
+1>
+1>  Finished searching libraries
+1>
+1>  Searching libraries
+1>      Searching C:\apps\oss\wxWidgets-3.0.2\lib\vc_x64_lib\wxbase30ud.lib:
+1>      Searching C:\apps\oss\wxWidgets-3.0.2\lib\vc_x64_lib\wxmsw30ud_core.lib:
+1>      Searching C:\apps\oss\wxWidgets-3.0.2\lib\vc_x64_lib\wxpngd.lib:
+1>      Searching C:\apps\oss\zlib-1.2.8\contrib\vstudio\vc11\x64\ZlibStatDebug\zlibstat.lib:
+1>      Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x64\comctl32.lib:
+1>      Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x64\Rpcrt4.lib:
+1>      Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x64\kernel32.lib:
+1>      Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x64\user32.lib:
+1>      Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x64\gdi32.lib:
+1>      Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x64\winspool.lib:
+1>      Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x64\comdlg32.lib:
+1>      Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x64\advapi32.lib:
+1>      Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x64\shell32.lib:
+1>      Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x64\ole32.lib:
+1>      Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x64\oleaut32.lib:
+1>      Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x64\uuid.lib:
+1>      Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x64\odbc32.lib:
+1>      Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x64\odbccp32.lib:
+1>      Searching C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\amd64\msvcprtd.lib:
+1>      Searching C:\apps\oss\boost_1_60_0\stage\lib\libboost_locale-vc140-mt-gd-1_60.lib:
+1>      Searching C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\amd64\MSVCRTD.lib:
+1>      Searching C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\amd64\OLDNAMES.lib:
+1>      Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x64\oleacc.lib:
+1>      Searching C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\amd64\vcruntimed.lib:
+1>      Searching C:\Program Files (x86)\Windows Kits\10\lib\10.0.10240.0\ucrt\x64\ucrtd.lib:
+1>
+1>  Finished searching libraries
+1>  pinyin.vcxproj -> C:\apps\oss\pinyin\x64\Debug\pinyin.exe
+1>  pinyin.vcxproj -> C:\apps\oss\pinyin\x64\Debug\pinyin.pdb (Partial PDB)
+========== Build: 1 succeeded, 0 failed, 0 up-to-date, 0 skipped ==========

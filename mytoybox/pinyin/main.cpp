@@ -11,8 +11,14 @@
 #include <boost/iostreams/stream.hpp>
 #include <boost/iostreams/device/array.hpp>
 
-#ifndef __WXGTK__
+#if  !defined( __WXGTK__ ) && !defined(_MSC_VER)
 #include "mainwnd.h"
+#endif
+
+#ifdef _MSC_VER
+#include <Tchar.h>
+#include <windows.h>
+#include "resource.h"
 #endif
 
 #include "main.h"
@@ -28,9 +34,6 @@ std::string wstring_to_utf8(const std::wstring& str)
 {
     return utf_to_utf<char>(str.c_str(), str.c_str() + str.size());
 }
-
-using namespace std;    // Sorry for this!
-//QTextCodec::setCodecForTr(QTextCodec::codecForName("GB18030"));
 
 std::basic_string<wchar_t> convert_utf8_to_utf16(const std::string& utf8) // boost::uint16_t
 {
@@ -132,75 +135,40 @@ std::basic_string<wchar_t> convert_utf8_to_utf16(const std::string& utf8) // boo
 	return utf16;
 }
 
-
-void read_all_lines(const char *filename, const char* chineseword)
-{
-    char linebuf[1024];
-    std::ifstream wifs(filename);
-    const char* console_encoding = "GB18030";
-    while(wifs.getline(linebuf,1024)) {
-    	string txtline = boost::locale::conv::from_utf(linebuf, console_encoding);
-    	std::wstring wkey, wline;
-    	std::string nkey, nline;
-    	nkey = boost::locale::conv::between((const char*)chineseword,
-    			std::string("UTF-8"), 			// to encoding
-				std::string(console_encoding)); // from encoding
-    	wkey = convert_utf8_to_utf16(nkey);
-    	wline = convert_utf8_to_utf16(linebuf);
-    	if (wline.find(wkey)!=std::string::npos)
-    	{
-    	std::cout << txtline << std::endl;
-    	std::ios::sync_with_stdio(false);
-    	std::wcout.imbue(std::locale("zh_CN.gb18030")); // locale -a | grep zh
-    	std::wcout << wline << std::endl;
-//    	break;
-    	}
-    	// check if every line has exact 1 [ and ]
-    	if (std::count(wline.begin(), wline.end(), L'[')!=1 || std::count(wline.begin(), wline.end(), L']')!=1)
-    	{
-			std::cout << txtline << std::endl;
-			std::ios::sync_with_stdio(false);
-			std::wcout.imbue(std::locale("zh_CN.gb18030")); // locale -a | grep zh
-			std::wcout << wline << std::endl;
-    	}
-    }
-}
-
-#ifndef __WXGTK__
+#if  !defined(__WXGTK__) && !defined(__WXMSW__)
 int main(int argc, char* argv[])
 {
-
     QApplication a(argc, argv);
     MainWnd w;
     w.show();
     return a.exec();
-
-	// Console output will be UTF-16 characters
-    if(argc < 2)
-    {
-        wcerr << L"Filename expected!" << endl;
-        return 1;
-    }
     // Terminal > Set Character Encoding > Add or remove > Encodings > GB18030 Chinese Simplified
     // Terminal > Set Character Encoding > Chinese Simplified(GB18030)
     // find out list of locale on CentOS 7: locale -a | grep zh
-    read_all_lines(argv[1], argv[2]);
     return 0;
 }
 #endif
 
 int MainApp::LoadDict() {
-	extern char _binary_dict_txt_start, _binary_dict_txt_size; // objdump -t dict.bin
 	using namespace boost::iostreams;
+#ifdef _MSC_VER
+	HRSRC hRes = FindResource(GetModuleHandle(NULL), MAKEINTRESOURCE(IDR_MYDICT1), _T("MYDICT"));
+	DWORD dwSize = SizeofResource(GetModuleHandle(NULL), hRes);
+	HGLOBAL hGlob = LoadResource(GetModuleHandle(NULL), hRes);
+	const char* pData = reinterpret_cast<const char*>(::LockResource(hGlob));
+	basic_array_source<char> input_source(pData, dwSize);
+	const char* console_encoding = "zh_CN.gb18030"; // windows
+#else
+	extern char _binary_dict_txt_start, _binary_dict_txt_size; // objdump -t dict.bin
 	basic_array_source<char> input_source(&_binary_dict_txt_start, (size_t) &_binary_dict_txt_size);
+	const char* console_encoding = "GB18030"; // linux	
+#endif
 	stream<basic_array_source<char> > wifs(input_source);
-    char linebuf[1024];
-//    std::ifstream wifs("dict.txt");
-    const char* console_encoding = "GB18030";
+    char linebuf[1024];	
     while(wifs.getline(linebuf,1024)) {
-    	std::string txtline = boost::locale::conv::from_utf(linebuf, console_encoding);
+//    	std::string txtline = boost::locale::conv::from_utf(linebuf, console_encoding);
     	std::wstring wkey, wline;
-    	std::string nkey, nline;
+//    	std::string nkey, nline;
 //    	nkey = boost::locale::conv::between((const char*)chineseword,
 //    			std::string("UTF-8"), 			// to encoding
 //				std::string(console_encoding)); // from encoding
@@ -240,12 +208,30 @@ std::wstring MainApp::chinese_to_pinyin(const std::wstring& chinese) {
 	if (dict.size()<1)
 		LoadDict();
 	int foundcnt=0;
+#ifdef _MSC_VER
+	std::locale loc("zh-CN");
+#else
+	std::locale loc("zh_CN.gb18030");
+	//std::setlocale(LC_ALL, "zh_CN.gb18030");
+#endif
+	setlocale(LC_ALL, loc.name().c_str());
+ 
 	for(auto onechar:chinese) {
-//		if(isspace(onechar))
-//			continue;
-		if(isblank(onechar))
+
+		if(isspace(onechar, loc))
 			continue;
-		if(isdigit(onechar))
+#ifdef _MSC_VER
+//		if (isblank(onechar))
+//			continue;
+#else
+		//		if(isspace(onechar))
+		//			continue;
+		if(std::isblank(onechar))
+			continue;
+		if(isdigit(onechar, loc))
+			continue;
+#endif
+		if (onechar >= L'0'&&onechar <= L'9')
 			continue;
 		if(onechar>=L'a'&&onechar<=L'z')
 			continue;
@@ -262,5 +248,6 @@ std::wstring MainApp::chinese_to_pinyin(const std::wstring& chinese) {
 //		wss << L"input lenght is " << chinese.length() << " found " << foundcnt << std::endl;
 	wss<<L"Note: this software does not understand polyphone!\n";
 	wss<<L"dictionary content is from https://chinese-character-2-pinyin.googlecode.com/files/dict.rar\n";
+	wss << L"You may check 3rd party online tool - http://hanyu.iciba.com/pinyin\n";
 	return wss.str();
 }
