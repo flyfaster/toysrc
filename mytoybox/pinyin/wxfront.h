@@ -28,6 +28,7 @@ public:
 	void OnPaint(wxPaintEvent& evt);
 	void OnCopyClick(wxCommandEvent&);
 	void OnReset(wxCommandEvent&);
+	void OnEnterKey(wxKeyEvent& ev);
 private:
 	void reset();
 	void InitButtons();

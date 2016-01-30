@@ -20,6 +20,15 @@ bool MiniWxApp::OnInit() {
 	return true;
 }
 
+void MyFrame::OnEnterKey(wxKeyEvent& ev) {
+	if(ev.GetKeyCode()!=WXK_RETURN) {
+		ev.Skip();
+		return;
+	}
+	wxCommandEvent button_click_event(wxEVT_COMMAND_BUTTON_CLICKED, m_copy->GetId());
+	wxPostEvent(m_copy, button_click_event);
+}
+
 void MyFrame::InitButtons() {
 	m_copy = new wxButton(this, wxID_ANY, wxT("Process"), wxDefaultPosition,
 			wxDefaultSize, 0);
@@ -63,41 +72,48 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size) 
 	Connect(wxEVT_PAINT, wxPaintEventHandler(MyFrame::OnPaint));
 	Connect(wxEVT_ERASE_BACKGROUND,
 			wxEraseEventHandler(MyFrame::OnEraseBackground));
+	m_chinese->Bind(wxEVT_KEY_DOWN, &MyFrame::OnEnterKey, this);
 	reset();
 #ifdef _MSC_VER	
 	SetIcon(wxICON(IDR_MYICON));
 #endif	
 }
+
 void MyFrame::OnQuit(wxCommandEvent& event) {
-		Close(true);
-	}
-	void MyFrame::OnEraseBackground(wxEraseEvent& event) {
-		wxClientDC dc(this);
-		dc.Clear();
-	}
-	void MyFrame::OnPaint(wxPaintEvent& evt) {
-		wxClientDC dc(this);
-		wxDateTime dt = wxDateTime::Now();
-		wxString txt;
-		txt.Printf(wxT("pid:%lu "), wxGetProcessId());
-		txt.Append(dt.FormatTime());
-		dc.SetTextForeground(*wxBLUE);
-		dc.SetBackgroundMode(wxTRANSPARENT);
-		dc.DrawText(txt, 0, 0);
-	}
-	void MyFrame::OnCopyClick(wxCommandEvent&)
-	{
-		wxString chinese;
-		chinese = m_chinese->GetValue();
-		std::wstring pinyinstr = MainApp::Instance()->chinese_to_pinyin(chinese.ToStdWstring());
-		m_pinyin->SetValue(wxString(pinyinstr));
-	}
-	void MyFrame::OnReset(wxCommandEvent&)
-	{
-		reset();
-	}
-	void MyFrame::reset()
-	{
-		m_pinyin->SetValue(wxEmptyString);
-		m_chinese->SetValue(wxEmptyString);
-	}
+	Close(true);
+}
+
+void MyFrame::OnEraseBackground(wxEraseEvent& event) {
+	wxClientDC dc(this);
+	dc.Clear();
+}
+
+void MyFrame::OnPaint(wxPaintEvent& evt) {
+	wxClientDC dc(this);
+	wxDateTime dt = wxDateTime::Now();
+	wxString txt;
+	txt.Printf(wxT("pid:%lu "), wxGetProcessId());
+	txt.Append(dt.FormatTime());
+	dc.SetTextForeground(*wxBLUE);
+	dc.SetBackgroundMode(wxTRANSPARENT);
+	dc.DrawText(txt, 0, 0);
+}
+
+void MyFrame::OnCopyClick(wxCommandEvent&)
+{
+	wxString chinese;
+	chinese = m_chinese->GetValue();
+	std::wstring pinyinstr = MainApp::Instance()->chinese_to_pinyin(chinese.ToStdWstring());
+	m_pinyin->SetValue(wxString(pinyinstr));
+}
+
+void MyFrame::OnReset(wxCommandEvent&)
+{
+	reset();
+}
+
+void MyFrame::reset()
+{
+	m_pinyin->SetValue(wxEmptyString);
+	m_chinese->SetValue(wxEmptyString);
+}

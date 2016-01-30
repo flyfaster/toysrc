@@ -7,6 +7,7 @@
 
 #include "mainwnd.h"
 #include <QtGui/QMessageBox>
+#include <QtGui/QKeyEvent>
 #include <fstream>
 #include <iostream>
 #include <memory>
@@ -36,7 +37,7 @@ MainWnd::MainWnd(QWidget *parent, Qt::WFlags flags) :
 
 	pinyin->setSizePolicy(QSizePolicy::MinimumExpanding,
 	                    QSizePolicy::MinimumExpanding);
-
+	urlinput->installEventFilter(this);
 	this->centralWidget()->setLayout(layout);
 }
 
@@ -58,4 +59,23 @@ void MainWnd::clickedSlot() {
 		pinyin->clear();
 		return;
 	}
+}
+
+bool MainWnd::eventFilter(QObject *obj, QEvent *event)
+{
+    QKeyEvent *keyEvent = static_cast<QKeyEvent*>(event);
+
+    if (event->type() == QEvent::KeyPress)
+    {
+        if (keyEvent->key() == Qt::Key_Return) {
+        	   QApplication::postEvent(button_next,
+        	                            new QKeyEvent(QEvent::KeyPress, Qt::Key_Space, 0, 0));
+        	    QApplication::postEvent(button_next,
+        	                            new QKeyEvent(QEvent::KeyRelease, Qt::Key_Space, 0, 0));
+
+        	return true;
+        }
+            // do something
+    }
+    return false;
 }

@@ -19,6 +19,7 @@ public:
 	virtual ~MainWnd();
 public slots:
  void clickedSlot();
+ bool eventFilter(QObject *obj, QEvent *event);
 private:
  QLineEdit* urlinput;
  QTextEdit* pinyin;
