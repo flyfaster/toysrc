@@ -17,7 +17,7 @@ default:
 endif
 
 client: pciemem-client.cpp
-	g++ -o client $<
+	g++ -o client $< -lboost_program_options -lboost_system
 		
 clean:
 	rm -rf *.o *.ko *~ core .depend *.mod.c .*.cmd .tmp_versions .*.o.d
