@@ -10,6 +10,12 @@ using boost::asio::ip::tcp;
 class async_tcp_client
 {
 public:
+	std::ostream& getstream() {
+#ifndef VERBOSE
+		std::cout.setstate(std::ios_base::badbit);
+#endif
+		return std::cout;
+	}
     async_tcp_client(boost::asio::io_service& io_service,
         const std::string& server, const std::string& path)
         : resolver_(io_service),
@@ -73,7 +79,7 @@ private:
         {
             // The connection was successful. Send the request.
         	std::cout << __func__ << " sleep to test read timeout\n";
-        	for(int i=0; i<1 ; i++) {
+        	for(int i=0; i<30 ; i++) {
         		std::cout << __func__ << " sleep " << i << " minutes\n";
         		boost::this_thread::sleep(boost::posix_time::milliseconds(1000*6));
         	}
@@ -148,6 +154,8 @@ int main(int argc, char* argv[])
     }
     try
     {
+//    	freopen("/dev/null", "w", stdout);
+    	std::cout.setstate(std::ios_base::badbit);
         boost::asio::io_service io_service;
         async_tcp_client client(io_service, argv[1], argv[2]);
         io_service.run();

@@ -28,13 +28,21 @@
 #include <boost/log/sources/record_ostream.hpp>
 #include <boost/log/sources/global_logger_storage.hpp>
 #include <boost/phoenix/bind.hpp>
+#include <boost/program_options.hpp>
 #include <memory>
 #include <map>
 #include <atomic>
-
+/*
+[onega@localhost asiotimeout]$ ulimit -n
+1024
+[onega@localhost asiotimeout]$ cat /proc/sys/fs/file-max
+589233
+Increase the OS hard limit, i.e.: echo 800000 > /proc/sys/fs/file-max
+*/
 namespace logging = boost::log;
 namespace sinks = boost::log::sinks;
 using boost::asio::deadline_timer;
+int timeoutsec = 120;
 class async_tcp_connection;
 typedef boost::shared_ptr<async_tcp_connection> ptr_async_tcp_connection;
 
@@ -88,6 +96,10 @@ void init_logging()
 			boost::log::expressions::attr< logging::trivial::severity_level >("Severity"),
 			boost::log::expressions::attr< int >("ModuleID").or_default(0)
 			));
+    logging::core::get()->set_filter
+    (
+        logging::trivial::severity >= logging::trivial::info
+    );
 	mylog1::get().add_attribute("ModuleID", boost::log::attributes::constant< int >(1));
 	mylog2::get().add_attribute("ModuleID", boost::log::attributes::constant< int >(2));
 	boost::log::add_common_attributes();
@@ -95,12 +107,16 @@ void init_logging()
 
 unsigned short tcp_port = 1234;
 std::atomic_uint connection_cnt;
+uint maxcnt = 0;
+
 class async_tcp_connection: public boost::enable_shared_from_this<async_tcp_connection>
 {
 public:
     ~async_tcp_connection() 
     {
-    	BOOST_LOG_TRIVIAL(info) << __func__ << " connection count: " << connection_cnt.fetch_sub(1);
+    	connection_cnt.fetch_sub(1);
+    	BOOST_LOG_TRIVIAL(info) << __func__
+    			<< " maxcnt "<< maxcnt << " current connection cnt: "<< connection_cnt.load();
     }
     static boost::shared_ptr<async_tcp_connection> create(boost::asio::io_service& io_service)
 	{
@@ -108,10 +124,10 @@ public:
 	}
     void start()
     {
-        std::cout << __FUNCTION__  << std::endl;
+//    	BOOST_LOG_TRIVIAL(debug) << __func__ << __FUNCTION__  << std::endl;
         input_deadline_.async_wait(boost::bind(&async_tcp_connection::check_deadline, shared_from_this(), &input_deadline_));
 //        output_deadline_.async_wait(boost::bind(&async_tcp_connection::check_deadline, shared_from_this(), &output_deadline_));
-        input_deadline_.expires_from_now(boost::posix_time::seconds(4));
+        input_deadline_.expires_from_now(boost::posix_time::seconds(timeoutsec));
 //        async_read_until(socket_,
         async_read(socket_,
             request_buf,
@@ -123,7 +139,9 @@ private:
     async_tcp_connection(boost::asio::io_service& io_service)
         : socket_(io_service), file_size(0), input_deadline_(io_service), output_deadline_(io_service)
     {
-    	BOOST_LOG_TRIVIAL(info) << __func__ << " connection count: " << connection_cnt.fetch_add(1);
+    	connection_cnt.fetch_add(1);
+//    	BOOST_LOG_TRIVIAL(info) << __func__ << " connection count: " << connection_cnt.fetch_add(1);
+    	maxcnt = std::max(maxcnt, connection_cnt.load());
     	input_deadline_.expires_at(boost::posix_time::pos_infin);
     	output_deadline_.expires_at(boost::posix_time::pos_infin);
     }
@@ -173,7 +191,7 @@ private:
     }
     void do_read()
     {
-    	input_deadline_.expires_from_now(boost::posix_time::seconds(4));
+    	input_deadline_.expires_from_now(boost::posix_time::seconds(timeoutsec));
         async_read(socket_, boost::asio::buffer(buf.c_array(), buf.size()),
             boost::bind(&async_tcp_connection::handle_read_file_content,
             shared_from_this(), boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
@@ -200,13 +218,13 @@ private:
     }
     void handle_error(const std::string& function_name, const boost::system::error_code& err)
     {
-        std::cout << __FUNCTION__ << " in " << function_name <<" due to " << err <<" " << err.message()<< std::endl;
+//        std::cout << __FUNCTION__ << " in " << function_name <<" due to " << err <<" " << err.message()<< std::endl;
 		stop();
-		std::cout << __FUNCTION__ << " after stop\n";
+//		std::cout << __FUNCTION__ << " after stop\n";
     }
     void stop()
     {
-    	std::cout << __FUNCTION__ << " start\n";
+//    	std::cout << __FUNCTION__ << " start\n";
     	if(!socket_.is_open())
     		return;
 		boost::system::error_code ignore_ec;
@@ -221,11 +239,11 @@ private:
     		return;
     	if(deadline->expires_at()<=deadline_timer::traits_type::now()) 
     	{
-			std::cout << __FUNCTION__ << " expired\n";
+    		BOOST_LOG_TRIVIAL(debug) << __FUNCTION__ << " expired, maxcnt = " << maxcnt << std::endl;
 			stop();
-			std::cout << __FUNCTION__ << " done\n";
+			BOOST_LOG_TRIVIAL(debug) << __FUNCTION__ << " done\n";
     	} else {
-    		std::cout << __FUNCTION__ << " continue wait\n";
+    		BOOST_LOG_TRIVIAL(debug) << __FUNCTION__ << " continue wait\n";
     		deadline->async_wait(boost::bind(&async_tcp_connection::check_deadline, shared_from_this(), deadline));
     	}
     }
@@ -248,7 +266,9 @@ public:
     }
     void handle_accept(ptr_async_tcp_connection current_connection, const boost::system::error_code& e)
     {
-        std::cout << __FUNCTION__ << " " << e << ", " << e.message()<<std::endl;
+        std::cout << __FUNCTION__ << " " << e << ", " << e.message()
+        		<< " maxcnt "<< maxcnt << " current connection cnt: "<< connection_cnt.load()
+        				<<std::endl;
         if (!e)
         {
             current_connection->start();
@@ -287,12 +307,40 @@ int main(int argc, char* argv[])
 {
 	init_logging();
 	// g++ -o server -DBOOST_ALL_DYN_LINK server.cpp /usr/lib/libboost_system.a -lboost_log.dll -lboost_thread.dll
+    namespace po = boost::program_options;
+    po::options_description desc("Options");
+    desc.add_options()
+      ("help", "Print help messages")
+          ("port", po::value<unsigned short>(),  "specify port number the program will listen on")
+      ("timeout", po::value<int>(),  "number of seconds the server will consider connection timeout");
+    boost::program_options::variables_map vm;
+
     try
     {
-        if (argc==2)
+        po::store(po::command_line_parser(argc, argv).options(desc).allow_unregistered().run(),vm);
+      po::notify(vm);
+      if ( vm.count("help")  )
+      {
+        std::cout << argv[0] << " usage:" << std::endl
+                  << desc << std::endl;
+        return 0;
+      }
+    }
+    catch(po::error& e)
+    {
+      std::cerr << "ERROR: " << e.what() << std::endl << std::endl;
+      std::cerr << desc << std::endl;
+      return __LINE__;
+    }
+
+    try
+    {
+        if (vm.count("port"))
         {
-            tcp_port=atoi(argv[1]);
+            tcp_port=vm["port"].as<unsigned short>();
         }
+        if(vm.count("timeout"))
+        	timeoutsec = vm["timeout"].as<int>();
         BOOST_LOG_SEV(mylog1::get(), boost::log::trivial::info) <<argv[0] << " listen on port " << tcp_port << std::endl;
         async_tcp_server *recv_file_tcp_server = new async_tcp_server(tcp_port);
         recv_file_tcp_server->start_thread();
