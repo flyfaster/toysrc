@@ -5,6 +5,11 @@
 #include <sstream>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/thread/thread.hpp> 
+#include <boost/iostreams/stream.hpp>
+#include <boost/iostreams/device/null.hpp>
+#include <boost/program_options.hpp>
+
+boost::iostreams::stream< boost::iostreams::null_sink > nullOstream( ( boost::iostreams::null_sink() ) );
 
 using boost::asio::ip::tcp;
 class async_tcp_client
@@ -12,7 +17,8 @@ class async_tcp_client
 public:
 	std::ostream& getstream() {
 #ifndef VERBOSE
-		std::cout.setstate(std::ios_base::badbit);
+//		std::cout.setstate(std::ios_base::badbit);
+		return nullOstream;
 #endif
 		return std::cout;
 	}
@@ -21,7 +27,8 @@ public:
         : resolver_(io_service),
         socket_(io_service)
     {
-    	std::cout << __func__ << std::endl;
+    	getstream() << __func__ << std::endl;
+    	delay = 0;
         size_t pos = server.find(':');
         if (pos==std::string::npos)
             return;
@@ -31,16 +38,17 @@ public:
         source_file.open(path.c_str(), std::ios_base::binary | std::ios_base::ate);
         if (!source_file)
         {
-            std::cout << "failed to open " << path << std::endl;
-            return ;
+//            std::cerr << "failed to open " << path << std::endl;
+//            return ;
+        } else {
+			size_t file_size = source_file.tellg();
+			source_file.seekg(0);
+			// first send file name and file size to server
+			std::ostream request_stream(&request_);
+			request_stream << path << "\n"
+				<< file_size << "\n\n";
+			getstream() << "request size:"<<request_.size()<<std::endl;
         }
-        size_t file_size = source_file.tellg();
-        source_file.seekg(0);
-        // first send file name and file size to server
-        std::ostream request_stream(&request_);
-        request_stream << path << "\n"
-            << file_size << "\n\n";
-        std::cout << "request size:"<<request_.size()<<std::endl;
         // Start an asynchronous resolve to translate the server and service names
         // into a list of endpoints.
         tcp::resolver::query query(server_ip_or_host, port_string);
@@ -51,8 +59,9 @@ public:
     }
     ~async_tcp_client()
     {
-    	std::cout << __func__ << std::endl;
+    	getstream() << __func__ << std::endl;
     }
+    int delay;
 private:
     void handle_resolve(const boost::system::error_code& err,
         tcp::resolver::iterator endpoint_iterator)
@@ -68,7 +77,7 @@ private:
         }
         else
         {
-            std::cout << "Error: " << err.message() << "\n";
+            std::cerr << "Error: " << err.message() << "\n";
         }
     }
 
@@ -78,13 +87,15 @@ private:
         if (!err)
         {
             // The connection was successful. Send the request.
-        	std::cout << __func__ << " sleep to test read timeout\n";
-        	for(int i=0; i<30 ; i++) {
-        		std::cout << __func__ << " sleep " << i << " minutes\n";
-        		boost::this_thread::sleep(boost::posix_time::milliseconds(1000*6));
+        	getstream() << __func__ << " sleep to test read timeout\n";
+        	for(int i=0; i<delay ; i++) {
+        		getstream() << __func__ << " sleep " << i << " minutes\n";
+        		boost::this_thread::sleep(boost::posix_time::milliseconds(1000));
         	}
-        	std::cout << __func__ << " early return test timeout\n";
-        	return;
+        	if (!source_file) {
+				std::cerr << __func__ << " early return because no file to send\n";
+				return;
+        	}
             boost::asio::async_write(socket_, request_,
                 boost::bind(&async_tcp_client::handle_write_file, this,
                 boost::asio::placeholders::error));
@@ -100,7 +111,7 @@ private:
         }
         else
         {
-            std::cout << "Error: " << err.message() << "\n";
+            std::cerr << "Error: " << err.message() << "\n";
         }
     }
 
@@ -113,17 +124,17 @@ private:
                     source_file.read(buf.c_array(), (std::streamsize)buf.size());
                     if (source_file.gcount()<=0)
                     {
-                        std::cout << "read file error " << std::endl;
+                        std::cerr << "read file error " << std::endl;
                         return;
                     }
-                    std::cout << "send " <<source_file.gcount()<<" bytes, total:" << source_file.tellg() << " bytes.\n";
+                    getstream() << "send " <<source_file.gcount()<<" bytes, total:" << source_file.tellg() << " bytes.\n";
                     boost::asio::async_write(socket_,
                         boost::asio::buffer(buf.c_array(), source_file.gcount()),
                         boost::bind(&async_tcp_client::handle_write_file, this,
                         boost::asio::placeholders::error));
                     if (err)
                     {
-                        std::cout << "send error:" << err << std::endl;
+                        std::cerr << "send error:" << err << std::endl;
                         return;
                     }
                 }
@@ -132,7 +143,7 @@ private:
         }
         else
         {
-            std::cout << "Error: " << err.message() << "\n";
+            std::cerr << "Error: " << err.message() << "\n";
         }
 
     }
@@ -146,21 +157,58 @@ int main(int argc, char* argv[])
 {
 	// build in Cygwin: g++ -o client client.cpp /usr/lib/libboost_system.a -lboost_date_time.dll -lboost_thread.dll
 	// g++ -o server -DBOOST_ALL_DYN_LINK -std=c++0x -pthread server.cpp /usr/lib/libboost_system.a -lboost_log.dll -lboost_thread.dll
-    if (argc != 3)
+    namespace po = boost::program_options;
+    po::options_description desc("Options");
+    desc.add_options()
+      ("help", "Print help messages")
+          ("server", po::value<std::string>(),  "specify server address and port like 127.0.0.1:1234")
+		  ("path", po::value<std::string>(),  "specify file to be sent to server")
+      ("delay", po::value<int>(),  "number of seconds the client wait after connect, intended to test maximum number of connections to a server")
+	  ;
+    boost::program_options::variables_map vm;
+
+    try
     {
-        std::cerr << "Usage: " << argv[0] << " <server-address> <file path>" << std::endl;
-        std::cerr << "sample: " << argv[0] << " 127.0.0.1:1234 c:\\tmp\\a.txt" << std::endl;
-        return __LINE__;
+        po::store(po::command_line_parser(argc, argv).options(desc).allow_unregistered().run(),vm);
+      po::notify(vm);
+      if ( vm.count("help")  )
+      {
+        std::cout << argv[0] << " usage:" << std::endl
+                  << desc << std::endl;
+        return 0;
+      }
     }
+    catch(po::error& e)
+    {
+      std::cerr << "ERROR: " << e.what() << std::endl << std::endl;
+      std::cerr << desc << std::endl;
+      return __LINE__;
+    }
+    std::string server = "127.0.0.1:1234";
+    std::string path;
+   if (vm.count("server"))
+    {
+    	server = vm["server"].as<std::string>();
+    }
+   if(vm.count("path"))
+	   path = vm["path"].as<std::string>();
+//	if (argc != 3)
+//    {
+//        std::cerr << "Usage: " << argv[0] << " <server-address> <file path>" << std::endl;
+//        std::cerr << "sample: " << argv[0] << " 127.0.0.1:1234 c:\\tmp\\a.txt" << std::endl;
+//        return __LINE__;
+//    }
     try
     {
 //    	freopen("/dev/null", "w", stdout);
     	std::cout.setstate(std::ios_base::badbit);
         boost::asio::io_service io_service;
-        async_tcp_client client(io_service, argv[1], argv[2]);
+        async_tcp_client client(io_service, server.c_str(), path.c_str());
+        if(vm.count("delay"))
+        	client.delay = vm["delay"].as<int>();
         io_service.run();
 
-        std::cout << "send file " << argv[2] << " completed successfully.\n";
+        std::cout << argv[0]<< " send file " << path << " completed successfully.\n";
 //         system("pause");
     }
     catch (std::exception& e)

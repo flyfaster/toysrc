@@ -4,9 +4,13 @@ import sys
 import argparse
 import time
 import datetime
-#pid = os.spawnlp(os.P_NOWAIT, "/bin/mycmd", "mycmd", "myarg")
+# pid = os.spawnlp(os.P_NOWAIT, "/bin/mycmd", "mycmd", "myarg")
 # check /proc/sys/kernel/pid_max
 # ulimit -u
+# check number of files a process can open: ulimit -n
+# check number of threads in system
+# [onega@localhost asiotimeout]$ echo $(( `ps axms | wc -l`  - 1))
+# 1681
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Accepted arguments')
@@ -17,7 +21,8 @@ if __name__ == "__main__":
     try:
         for i in range(0, int(args['num'])):
             time.sleep(0.01)
-            child = subprocess.Popen(["/home/onega/github/toysrc/mytoybox/boost/asiotimeout/client", "127.0.0.1:1234", "./client"])
+#             child = subprocess.Popen(["/home/onega/github/toysrc/mytoybox/boost/asiotimeout/client", "--server", "127.0.0.1:1234", "--path", "./client"])
+            child = subprocess.Popen(["/home/onega/github/toysrc/mytoybox/boost/asiotimeout/client", "--delay", "12"])
             pid = child.pid
             print(pid, sep=' ', end=" ")
             allpid.append(child)
