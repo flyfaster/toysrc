@@ -3,7 +3,7 @@
 // Author      : Onega
 // Version     :
 // Copyright   : Your copyright notice
-// Description : Display a table in specified in sqlite3 database
+// Description : Display a table in specified in sqlite3 database, click on column header to sort
 //============================================================================
 #include <wx/frame.h>
 #include <wx/app.h>
@@ -18,6 +18,8 @@
 #include "boost/iostreams/device/null.hpp"
 #include <vector>
 #include <iostream>
+#include <unordered_map>
+#include <string>
 #include "myapp.h"
 using namespace std;
 
@@ -49,44 +51,41 @@ std::ostream& getostream() {
 //Finished building target: sqliteviewer
 
 // todo: Detach a wxApp from the terminal - Linux way
-// todo: sort by click on column header
 
 struct SortInfoStruct{
     int col ;
     int ascending;
     wxListCtrl* listctrl;
 };
+
+namespace std
+{
+	template<>
+	struct hash<std::pair<int, int>>
+	{
+		size_t operator () ( std::pair<int, int> const & p) const
+		{
+			int64_t aa;
+			aa = ( (int64_t)p.first << 32) + p.second;
+			return (std::hash<int64_t>()(aa));
+		}
+	};
+}
+std::unordered_map<std::pair<int, int>, std::string> dataset;
+
 int wxCALLBACK ListCompareFunction(long item1, long item2, long sortData)
 {
-
-        SortInfoStruct * SortInfo = (SortInfoStruct *) sortData;
-        int column = SortInfo->col;
-        bool direction = SortInfo->ascending;
-        wxString string1, string2;
-        wxListCtrl * sortList = SortInfo->listctrl;
-        wxListItem list_item;
-        list_item.SetId (item1);
-        list_item.SetColumn (column);
-        list_item.SetMask (wxLIST_MASK_TEXT);
-        sortList->GetItem (list_item);
-
-        string1 = list_item.GetText();
-
-        list_item.SetId(item2);
-        list_item.SetColumn (column);
-        list_item.SetMask (wxLIST_MASK_TEXT);
-        sortList->GetItem (list_item);
-
-        string2 = list_item.GetText();
-        getostream() <<item1 <<" vs " << item2 <<" dir "<<SortInfo->ascending<<" "<< string1 << " vs " << string2 << std::endl;
-        if(string1.CmpNoCase(string2) < 0)
-                return direction ? -1 : 1;
-        else
-        {
-                if(string1.CmpNoCase(string2) > 0)
-                        return direction ? 1 : -1;
-        }
-        return 0;
+	SortInfoStruct * SortInfo = (SortInfoStruct *) sortData;
+	wxString string1, string2;
+	string1 = dataset[std::pair<int,int>(item1, SortInfo->col)];
+	string2 = dataset[std::pair<int,int>(item2, SortInfo->col)];
+	getostream() <<item1 <<" vs " << item2 <<" dir "<<SortInfo->ascending<<" "<< string1 << " vs " << string2 << std::endl;
+	int cmpret = string1.CmpNoCase(string2);
+	if(cmpret==0)
+		return cmpret;
+	if( cmpret< 0)
+		return SortInfo->ascending ? -1 : 1;
+	return SortInfo->ascending ? 1 : -1;
 }
 
 int wxCALLBACK MyCompareFunctionDESC(wxIntPtr item1, wxIntPtr item2, wxIntPtr WXUNUSED(sortData))
@@ -105,6 +104,7 @@ class MyFrame : public wxFrame
     std::vector<int> m_item_list_sort; // sort descending or ascending
     std::vector<std::string> column_names; // column title of list control
     std::vector<size_t> column_value_length; // max value width
+
 public:
     void create_header_columns() {
     	for(size_t i=0; i<column_names.size(); i++) {
@@ -165,10 +165,11 @@ public:
     	            wxListItem item;
     	            item.SetId(n);
     	            item.SetText( query.getColumn(i).getText() );
-    	            item.SetData(n); // store row number, used by wxListCtrlCompare, but it does not work. maybe I should store actual text here
+    	            item.SetData(n); // store row number in dataset, used by wxListCtrlCompare
     	            if(i==0)
     	            	m_item_list->InsertItem( item );
     	            m_item_list->SetItem(n, i, query.getColumn(i).getText());
+    	            dataset[std::pair<int,int>(n, i)] = query.getColumn(i).getText();
     	    	}
     	    	n++;
     	    	getostream() << std::endl;
@@ -190,7 +191,7 @@ public:
 		m_sortInfo.listctrl = m_item_list;
 		getostream() << __func__ << " sort on column " << m_sortInfo.col
 				<< std::endl;
-//		m_item_list->SortItems(ListCompareFunction, (long) &m_sortInfo); // not working well
+		m_item_list->SortItems(ListCompareFunction, (long) &m_sortInfo);
 
 	}
 };
