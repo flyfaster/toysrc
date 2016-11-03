@@ -10,6 +10,8 @@
 #include <wx/listctrl.h>
 #include <wx/panel.h>
 #include <wx/sizer.h>
+#include <wx/menu.h>
+#include <wx/clipbrd.h>
 #include <sqlite3/sqlite3.h>
 #include <SQLiteCpp/SQLiteCpp.h>
 #include <boost/program_options.hpp>
@@ -49,6 +51,8 @@ std::ostream& getostream() {
 //Invoking: GCC C++ Linker
 //g++ -L/home/onega/src/wxWidgets-3.1.0/lib -L/home/onega/src/SQLiteCpp/Debug/sqlite3 -L/home/onega/src/SQLiteCpp/Debug -pthread -o "sqliteviewer"  ./src/sqliteviewer.o   -lSQLiteCpp -lboost_filesystem -lboost_program_options -lsqlite3 -lboost_system -lwx_gtk3u_adv-3.1 -lwx_gtk3u_core-3.1 -lwx_baseu-3.1 -ldl
 //Finished building target: sqliteviewer
+//libboost_program_options.so.1.59.0  libwx_baseu-3.1.so.0      libwx_gtk3u_core-3.1.so.0  start.sh
+//libboost_filesystem.so.1.59.0  libboost_system.so.1.59.0           libwx_gtk3u_adv-3.1.so.0  sqliteviewer
 
 // todo: Detach a wxApp from the terminal - Linux way
 
@@ -121,10 +125,12 @@ public:
     {
         wxPanel* mainPane = new wxPanel(this);
         wxBoxSizer* sizer = new wxBoxSizer(wxHORIZONTAL);
-
+        list_ctrl_selected_col = -1;
+        list_ctrl_selected_row = -1;
         m_item_list = new wxListCtrl(mainPane, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLC_REPORT);
         m_item_list->Connect(wxEVT_LIST_COL_CLICK, (wxObjectEventFunction)&MyFrame::OnLabelClick, NULL, this);
-
+        m_item_list->Connect(wxEVT_COMMAND_LIST_ITEM_RIGHT_CLICK, (wxObjectEventFunction)&MyFrame::OnRightClick, NULL, this);
+        m_item_list->Connect(wxEVT_LIST_ITEM_SELECTED, (wxObjectEventFunction)&MyFrame::OnItemSelected, NULL, this);
     	try
     	{
     	    SQLite::Database    db(dbpath.c_str());
@@ -194,6 +200,49 @@ public:
 		m_item_list->SortItems(ListCompareFunction, (long) &m_sortInfo);
 
 	}
+	void OnRightClick(wxListEvent& event)
+	{
+		if(list_ctrl_selected_col<0) {
+			getostream() << __func__ << " no cell is selected\n";
+			return;
+		}
+	    wxMenu menu(wxT("Context Menu"));
+	    menu.Append(wxID_COPY, wxT("&Copy to clipboard"));
+	    menu.Connect(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MyFrame::OnPopupClick), NULL, this);
+	    PopupMenu(&menu, event.GetPoint());
+	}
+	void OnItemSelected(wxListEvent& event)
+	{
+		list_ctrl_selected_col = event.GetColumn();
+		list_ctrl_selected_row = event.GetIndex();
+		wxPoint click_point=::wxGetMousePosition();
+		wxPoint list_point=m_item_list->GetScreenPosition();
+		// delta x
+		int dx=click_point.x - list_point.x;
+		// work out the column
+		int ex=0; // cumulative sum of column widths
+		for (list_ctrl_selected_col=0; list_ctrl_selected_col<m_item_list->GetColumnCount(); list_ctrl_selected_col++) {
+				ex+=m_item_list->GetColumnWidth(list_ctrl_selected_col);
+				if (ex > dx) break;
+		}
+		getostream() << "column is " << list_ctrl_selected_col << std::endl;
+	}
+	void OnPopupClick(wxCommandEvent &evt)
+	 {
+		getostream() << __func__ << "row " << list_ctrl_selected_row << ", column " << list_ctrl_selected_col<<  std::endl;
+	 	switch(evt.GetId()) {
+	 		case wxID_COPY:
+	 			if ( (list_ctrl_selected_col>=0) && wxTheClipboard->Open())
+	 			{
+					wxTheClipboard->SetData( new wxTextDataObject(m_item_list->GetItemText(list_ctrl_selected_row, list_ctrl_selected_col)) );
+					wxTheClipboard->Close();
+	 			}
+	 			break;
+	 		default:
+	 			break;
+	 	}
+	 }
+	int list_ctrl_selected_row, list_ctrl_selected_col;
 };
 
 
@@ -214,20 +263,15 @@ bool MyApp::OnInit()
 	boost::program_options::notify(vm);
 	boost::filesystem::path sqlite3path(dbpath);
 	if (boost::filesystem::exists(sqlite3path))   // does path p actually exist?
-			{
+	{
 		if (boost::filesystem::is_regular_file(sqlite3path)) // is path p a regular file?
-			getostream() << sqlite3path << " size is " << file_size(sqlite3path)
-					<< '\n';
-
+			getostream() << sqlite3path << " size is " << file_size(sqlite3path) << '\n';
 		else if (boost::filesystem::is_directory(sqlite3path)) // is path p a directory?
 			cout << sqlite3path << " is a directory\n";
-
 		else
-			cout << sqlite3path
-					<< " exists, but is not a regular file or directory\n";
+			cout << sqlite3path << " exists, but is not a regular file or directory\n";
 	} else {
-		cout << sqlite3path << " does not exist\n";
-		cout << desc << endl;
+		cout << sqlite3path << " does not exist\n" << desc << endl;
 		return 0;
 	}
 
