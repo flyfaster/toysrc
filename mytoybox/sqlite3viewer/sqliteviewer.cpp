@@ -3,7 +3,10 @@
 // Author      : Onega
 // Version     :
 // Copyright   : Your copyright notice
-// Description : Display a table in specified in sqlite3 database, click on column header to sort
+// Description : Display a table in specified in sqlite3 database,
+// display sqlite_master table by default, select a row and right click to open the table;
+// when a table other than sqlite_master is displayed, select a row and right click to copy the cell to clipboard, or choose display sqlite_master again;
+// click on column header to sort, click again to sort in reverse order
 //============================================================================
 #include <wx/frame.h>
 #include <wx/app.h>
@@ -12,12 +15,13 @@
 #include <wx/sizer.h>
 #include <wx/menu.h>
 #include <wx/clipbrd.h>
+#include <wx/msgdlg.h>
 #include <sqlite3/sqlite3.h>
 #include <SQLiteCpp/SQLiteCpp.h>
 #include <boost/program_options.hpp>
 #include <boost/filesystem.hpp>
-#include "boost/iostreams/stream.hpp"
-#include "boost/iostreams/device/null.hpp"
+#include <boost/iostreams/stream.hpp>
+#include <boost/iostreams/device/null.hpp>
 #include <vector>
 #include <iostream>
 #include <unordered_map>
@@ -92,16 +96,6 @@ int wxCALLBACK ListCompareFunction(long item1, long item2, long sortData)
 	return SortInfo->ascending ? 1 : -1;
 }
 
-int wxCALLBACK MyCompareFunctionDESC(wxIntPtr item1, wxIntPtr item2, wxIntPtr WXUNUSED(sortData))
-{
-    if (item1 < item2)
-        return 1;
-    if (item1 > item2)
-        return -1;
-
-    return 0;
-}
-
 class MyFrame : public wxFrame
 {
     wxListCtrl* m_item_list;
@@ -121,16 +115,15 @@ public:
     	}
     }
 
-    MyFrame() : wxFrame(NULL, wxID_ANY, wxString::Format(wxT("SQLite Viewer PID %i"),getpid()), wxPoint(50,50), wxSize(window_width,600))
-    {
-        wxPanel* mainPane = new wxPanel(this);
-        wxBoxSizer* sizer = new wxBoxSizer(wxHORIZONTAL);
+    void refresh() {
         list_ctrl_selected_col = -1;
         list_ctrl_selected_row = -1;
-        m_item_list = new wxListCtrl(mainPane, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLC_REPORT);
-        m_item_list->Connect(wxEVT_LIST_COL_CLICK, (wxObjectEventFunction)&MyFrame::OnLabelClick, NULL, this);
-        m_item_list->Connect(wxEVT_COMMAND_LIST_ITEM_RIGHT_CLICK, (wxObjectEventFunction)&MyFrame::OnRightClick, NULL, this);
-        m_item_list->Connect(wxEVT_LIST_ITEM_SELECTED, (wxObjectEventFunction)&MyFrame::OnItemSelected, NULL, this);
+        dataset.clear();
+        column_names.clear();
+        m_item_list_sort.clear();
+        column_value_length.clear();
+       	m_item_list->DeleteAllItems();
+       	m_item_list->DeleteAllColumns();
     	try
     	{
     	    SQLite::Database    db(dbpath.c_str());
@@ -174,7 +167,8 @@ public:
     	            item.SetData(n); // store row number in dataset, used by wxListCtrlCompare
     	            if(i==0)
     	            	m_item_list->InsertItem( item );
-    	            m_item_list->SetItem(n, i, query.getColumn(i).getText());
+    	            else
+    	            	m_item_list->SetItem(n, i, query.getColumn(i).getText());
     	            dataset[std::pair<int,int>(n, i)] = query.getColumn(i).getText();
     	    	}
     	    	n++;
@@ -185,6 +179,18 @@ public:
     	{
     	    std::cout << "exception: " << e.what() << std::endl;
     	}
+    }
+    MyFrame() : wxFrame(NULL, wxID_ANY, wxString::Format(wxT("SQLite Viewer PID %i built at %s %s"),getpid(), __DATE__, __TIME__), wxPoint(50,50), wxSize(window_width,600))
+    {
+        wxPanel* mainPane = new wxPanel(this);
+        wxBoxSizer* sizer = new wxBoxSizer(wxHORIZONTAL);
+
+        m_item_list = new wxListCtrl(mainPane, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLC_REPORT);
+        m_item_list->Connect(wxEVT_LIST_COL_CLICK, (wxObjectEventFunction)&MyFrame::OnLabelClick, NULL, this);
+        m_item_list->Connect(wxEVT_COMMAND_LIST_ITEM_RIGHT_CLICK, (wxObjectEventFunction)&MyFrame::OnRightClick, NULL, this);
+        m_item_list->Connect(wxEVT_LIST_ITEM_SELECTED, (wxObjectEventFunction)&MyFrame::OnItemSelected, NULL, this);
+
+        refresh();
 
         sizer->Add(m_item_list,1, wxEXPAND | wxALL, 10);
         mainPane->SetSizer(sizer);
@@ -198,7 +204,6 @@ public:
 		getostream() << __func__ << " sort on column " << m_sortInfo.col
 				<< std::endl;
 		m_item_list->SortItems(ListCompareFunction, (long) &m_sortInfo);
-
 	}
 	void OnRightClick(wxListEvent& event)
 	{
@@ -207,7 +212,12 @@ public:
 			return;
 		}
 	    wxMenu menu(wxT("Context Menu"));
-	    menu.Append(wxID_COPY, wxT("&Copy to clipboard"));
+	    if(table_name == std::string("sqlite_master")) {
+	    	menu.Append(wxID_OPEN, wxT("&Open this table"));
+	    } else {
+	    	menu.Append(wxID_COPY, wxT("&Copy to clipboard"));
+	    	menu.Append(wxID_BACKWARD, wxT("&View table list")); // Open sqlite_master
+	    }
 	    menu.Connect(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(MyFrame::OnPopupClick), NULL, this);
 	    PopupMenu(&menu, event.GetPoint());
 	}
@@ -229,15 +239,31 @@ public:
 	}
 	void OnPopupClick(wxCommandEvent &evt)
 	 {
-		getostream() << __func__ << "row " << list_ctrl_selected_row << ", column " << list_ctrl_selected_col<<  std::endl;
+		getostream() << __func__ << " row " << list_ctrl_selected_row << ", column " << list_ctrl_selected_col<<  std::endl;
 	 	switch(evt.GetId()) {
 	 		case wxID_COPY:
+	 			if(list_ctrl_selected_col<0 || list_ctrl_selected_col>=m_item_list->GetItemCount()) {
+	 				wxMessageBox( wxT("No row is selected, please select a row first!"), wxT("Error"), wxICON_INFORMATION);
+	 				break;
+	 			}
 	 			if ( (list_ctrl_selected_col>=0) && wxTheClipboard->Open())
 	 			{
 					wxTheClipboard->SetData( new wxTextDataObject(m_item_list->GetItemText(list_ctrl_selected_row, list_ctrl_selected_col)) );
 					wxTheClipboard->Close();
 	 			}
 	 			break;
+	 		case wxID_OPEN:
+	 			if(list_ctrl_selected_col<0 || list_ctrl_selected_col>=m_item_list->GetItemCount()) {
+	 				wxMessageBox( wxT("No row is selected, please select a row first!"), wxT("Error"), wxICON_INFORMATION);
+	 				break;
+	 			}
+	 			table_name = m_item_list->GetItemText(list_ctrl_selected_row, 1); // table name is column 1
+	 			getostream() << __func__ << "row " << list_ctrl_selected_row << ", table_name " << table_name<<  std::endl;
+	 			refresh();
+	 			break;
+	 		case wxID_BACKWARD:
+	 			table_name = "sqlite_master";
+	 			refresh();
 	 		default:
 	 			break;
 	 	}
