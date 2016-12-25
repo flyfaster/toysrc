@@ -37,6 +37,7 @@ public:
 	wxButton *m_btnClose;
 	wxButton *m_btnChooseRoot;
 	wxTextCtrl *m_filename_pattern_tc;
+	wxTextCtrl *m_filename_pattern_exclude;
 	wxTextCtrl *m_content_pattern_tc;
 	wxTextCtrl *m_result_tc;
 	wxTextCtrl *m_root_path_tc;

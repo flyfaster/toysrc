@@ -9,6 +9,8 @@
 #define FINDTHREAD_H_
 #include <string>
 typedef std::basic_string<wxChar> std_string;
+std::wstring ToStdWstring(const std::string& str);
+
 class FindThread {
 public:
 	FindThread();
@@ -18,6 +20,7 @@ public:
 	void Stop(bool bval);
 	bool Continue();
 	std_string m_file_name_pattern;
+	std_string m_file_name_pattern_exclude;
 	std_string m_root_path;
 	std_string m_content_pattern;
 

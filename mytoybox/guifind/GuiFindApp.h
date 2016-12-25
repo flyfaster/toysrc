@@ -10,6 +10,7 @@
 #include <boost/thread.hpp>
 #include <string>
 #include <boost/shared_ptr.hpp>
+#include <map>
 
 typedef std::basic_string<wxChar> std_string;
 class FindThread;
@@ -23,11 +24,11 @@ public:
 	int OnExit();
 	boost::shared_ptr<boost::thread> m_find_thread;
 	FindThread* m_find_handler;
-	void StartFind(std_string filenamepatter,
-			std_string contentpattern,
-			std_string rootpath);
+	void StartFind();
 	GuiFindDlg *m_find_dlg;
 	VerboseDialog *m_log_wnd;
+	std::map<std_string, std_string> properties;
+	void SetProperty(std_string key, std_string value);
 };
 DECLARE_APP(GuiFindApp)
 #endif /* GUIFINDAPP_H_ */

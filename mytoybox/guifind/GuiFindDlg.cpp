@@ -8,7 +8,8 @@
 #ifndef WX_PRECOMP
 #include "wx/wx.h"
 #endif
-
+#include <wx/utils.h>
+#include <wx/stdpaths.h>
 #include "wx/datetime.h"
 #include "wx/image.h"
 #include "wx/bookctrl.h"
@@ -48,12 +49,12 @@ void GuiFindDlg::CreateGUI()
     m_btnFind = new wxButton(this, btn_find_id, _T("Find"));
     m_btnCancel = new wxButton(this, btn_cancel_id, _T("Cancel"));
     m_btnChooseRoot = new wxButton(this, wxID_ANY, _T("Root..."));
-    m_content_pattern_tc = new wxTextCtrl(this, wxID_ANY, wxEmptyString,
-    		wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE);
     m_result_tc = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition,
     		wxDefaultSize, wxTE_MULTILINE);
     wxGridBagSizer *gbs = new wxGridBagSizer();
     m_filename_pattern_tc = new wxTextCtrl(this, wxID_ANY, wxEmptyString);
+    m_filename_pattern_exclude = new wxTextCtrl(this, wxID_ANY, wxEmptyString);
+
     m_btnCancel->Connect( wxEVT_COMMAND_BUTTON_CLICKED,
     		wxCommandEventHandler( GuiFindDlg::OnButton ), NULL, this );
     m_btnFind->Connect(btn_find_id, wxEVT_COMMAND_BUTTON_CLICKED,
@@ -72,22 +73,38 @@ void GuiFindDlg::CreateGUI()
     gbs->Add(m_filename_pattern_tc, wxGBPosition(row, col), wxGBSpan(1, col_span), wxEXPAND | wxHORIZONTAL, 5);
     row++;
     col = 0;
+    gbs->Add(new wxStaticText(this, wxID_ANY, _T("Exclude File Name")),
+            wxGBPosition(row,col), wxGBSpan(1, 1),
+            wxALIGN_CENTER | wxALL);
+	col++;
+	gbs->Add(m_filename_pattern_exclude, wxGBPosition(row, col), wxGBSpan(1, col_span), wxEXPAND | wxHORIZONTAL, 5);
+
+#if 0	// not supported yet
+    row++;
+    col = 0;
+    m_content_pattern_tc = new wxTextCtrl(this, wxID_ANY, wxEmptyString,
+    		wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE);
     gbs->Add(new wxStaticText(this, wxID_ANY, _T("Content")),
             wxGBPosition(row,col), wxGBSpan(1, 1),
             wxALIGN_CENTER | wxALL);
     col++;
     gbs->Add(m_content_pattern_tc, wxGBPosition(row, col), wxGBSpan(1, col_span), wxEXPAND | wxHORIZONTAL, 5);
+
+#endif
+
     row++;
     col = 0;
     gbs->Add(m_btnChooseRoot, wxGBPosition(row, col));
     col++;
-    m_root_path_tc = new wxTextCtrl(this, wxID_ANY, _T("/"),
+    m_root_path_tc = new wxTextCtrl(this, wxID_ANY, wxStandardPaths::Get().GetUserDir(wxStandardPaths::Dir_Downloads) , // wxString(getenv("HOME"))
                                         wxDefaultPosition,
                                         wxSize(150,wxDefaultCoord));
     gbs->Add(m_root_path_tc, wxGBPosition(row, col), wxGBSpan(1, col_span), wxEXPAND | wxHORIZONTAL);
     col = 0;
     row++;
     gbs->Add(m_result_tc, wxGBPosition(row, col), wxGBSpan(1, col_span + 1), wxEXPAND | wxHORIZONTAL | wxVERTICAL);
+
+
     row++;
     col = 0;
     gbs->Add(m_btnFind, wxGBPosition(row, col));
@@ -106,14 +123,14 @@ void GuiFindDlg::CreateGUI()
 }
 
 GuiFindDlg::GuiFindDlg()
-    : wxFrame(NULL, wxID_ANY, wxString(_T("Find file by name or content")),
+    : wxFrame(NULL, wxID_ANY, wxString::Format(_T("Find file by name\t PID:%lu"), wxGetProcessId()),
     		wxDefaultPosition, wxSize(800, 600)
     		)
 {
     CreateGUI();
 }
 GuiFindDlg::GuiFindDlg(wxWindow* parent)
-    : wxFrame(parent, wxID_ANY, wxString(_T("Find file by name or content")),
+    : wxFrame(parent, wxID_ANY, wxString::Format(_T("Find file by name\t PID:%lu"), wxGetProcessId()),
     		wxDefaultPosition, wxSize(800, 600)
     		)
 {
@@ -193,7 +210,12 @@ void GuiFindDlg::OnFind(wxCommandEvent &evt)
 	time(&now);
 	m_log <<ctime(&now) << " "<< __FUNCTION__ << std::endl;
 	m_log.flush();
-	new boost::thread(dummy_thread_func);
+	wxGetApp().SetProperty(ToStdWstring("m_filename_pattern_tc"), m_filename_pattern_tc->GetValue().ToStdWstring());
+//	wxGetApp().SetProperty(ToStdWstring("m_content_pattern_tc"), m_content_pattern_tc->GetValue().ToStdWstring());
+	wxGetApp().SetProperty(ToStdWstring("m_root_path_tc"), m_root_path_tc->GetValue().ToStdWstring());
+	wxGetApp().SetProperty(wxString("m_filename_pattern_exclude").ToStdWstring(), m_filename_pattern_exclude->GetValue().ToStdWstring());
+
+	wxGetApp().StartFind();
 }
 
 

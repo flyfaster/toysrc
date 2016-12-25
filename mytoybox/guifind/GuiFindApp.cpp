@@ -51,26 +51,35 @@ bool GuiFindApp::OnInit()
 //	m_log_wnd=new VerboseDialog(m_find_dlg);
 //	m_log_wnd->Show(true);
 	SetTopWindow(m_find_dlg);
-	new boost::thread(dummy_thread_func);
+//	new boost::thread(dummy_thread_func);
 	return true;
 }
 
-void GuiFindApp::StartFind(std_string filenamepatter,
-		std_string contentpattern, std_string rootpath)
+void GuiFindApp::StartFind()
 {
+	std_string filenamepatter = properties[wxString("m_filename_pattern_tc").ToStdWstring()];
+	std_string contentpattern = properties[wxString("m_content_pattern_tc").ToStdWstring()];
+	std_string rootpath = properties[wxString("m_root_path_tc").ToStdWstring()];
+	std_string exclude_filenames = properties[wxString("m_filename_pattern_exclude").ToStdWstring()];
+
 	if (m_find_handler==NULL)
 		m_find_handler=new FindThread;
 	else
 		m_find_handler->Stop(true);
 	m_find_handler->m_content_pattern=contentpattern;
 	m_find_handler->m_file_name_pattern=filenamepatter;
+	m_find_handler->m_file_name_pattern_exclude = exclude_filenames;
 	m_find_handler->m_root_path=rootpath;
 	m_find_handler->Stop(false);
 	boost::thread *pbt = NULL;
-//	pbt = new boost::thread(boost::ref(*m_find_handler));
-	pbt = new boost::thread(dummy_thread_func);
+	pbt = new boost::thread(boost::ref(*m_find_handler));
+//	pbt = new boost::thread(dummy_thread_func);
 //	new boost::thread(dummy_thread_func);
 //	pbt->detach();
 //	m_find_thread=boost::shared_ptr<boost::thread>(pbt);
 //	boost::thread(dummy_thread_func);
+}
+
+void GuiFindApp::SetProperty(std_string key, std_string value) {
+	properties[key] = value;
 }
