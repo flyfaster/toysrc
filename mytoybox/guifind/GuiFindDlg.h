@@ -26,7 +26,8 @@ public:
 	void OnUpdateResult(wxCommandEvent &evt);
 	void OnChooseRoot(wxCommandEvent& evt);
 	void OnCustomEvent(wxEvent &evt);
-
+	void OnClose(wxCloseEvent& event);
+	void OnTimerTimeout(wxTimerEvent& event);
 	void CreateGUI();
 	DECLARE_EVENT_TABLE()
 
@@ -41,9 +42,11 @@ public:
 	wxTextCtrl *m_content_pattern_tc;
 	wxTextCtrl *m_result_tc;
 	wxTextCtrl *m_root_path_tc;
-	boost::mutex m_result_mx;
-	std::list<wxString> m_result_list;
+	wxTimer* m_pTimer;
+
+
 	std::ofstream m_log;
+	bool m_wnd_closed;
 };
 
 // label: file name pattern

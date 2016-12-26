@@ -18,12 +18,13 @@
 #include "wx/gbsizer.h"
 #include <wx/textctrl.h>
 #include "wx/dirdlg.h"
-#include "FindThread.h"
+
 #include <iostream>
 #include <locale>
 #include <deque>
 #include <vector>
 #include <unordered_set>
+#include <chrono>
 #include <boost/thread.hpp>
 #include <boost/regex.hpp>
 #include <boost/filesystem.hpp>
@@ -31,6 +32,7 @@
 #include <boost/range/iterator_range.hpp>
 #include "GuiFindDlg.h"
 #include "GuiFindApp.h"
+#include "FindThread.h"
 
 void LogMessage(wxString msg)
 {
@@ -51,6 +53,7 @@ FindThread::~FindThread() {
 int FindThread::operator()()
 {
 	Run();
+	wxGetApp().findthreadcount--;
 	return 0;
 }
 
@@ -81,7 +84,7 @@ void prepare_regex_patterns(std::vector<boost::wregex>& exclude_patterns, std_st
 			   tok_iter != tokens.end(); ++tok_iter)
 		  {
 			  std::wcout << *tok_iter << std::endl;
-			  exclude_patterns.push_back(boost::wregex(*tok_iter));
+			  exclude_patterns.push_back(boost::wregex(*tok_iter, boost::regex::icase));
 		  }
 	  }
 }
@@ -104,11 +107,14 @@ bool regex_match(std::vector<boost::wregex>& exclude_patterns, std_string entry_
 
 void FindThread::Run()
 {
-	using namespace boost::filesystem;
+    auto t1 = std::chrono::high_resolution_clock::now();
+    match_files_list.clear();
+    exclude_patterns.clear();
+    expect_patterns.clear();
+    dirs.clear();
+    visited.clear();
 //	LogMessage(_T("FindThread::operator()() start"));
-	int total_file_count=0; int match_file_count = 0; int exclude_count = 0;
-	std::deque<std_string> dirs;
-	std::unordered_set<std_string> visited;
+	total_file_count=0; match_file_count = 0; exclude_count = 0;
 
 	typedef boost::tokenizer<boost::char_separator<wxChar>,std::wstring::const_iterator, std::wstring > tokenizer;
 	boost::char_separator<wxChar> sep(_T(":;"));
@@ -123,61 +129,23 @@ void FindThread::Run()
 				visited.insert(*tok_iter);
 		}
 	}
-	boost::wregex expression(m_file_name_pattern);
-	std::vector<boost::wregex> exclude_patterns, expect_patterns;
 	prepare_regex_patterns(exclude_patterns, m_file_name_pattern_exclude);
 	prepare_regex_patterns(expect_patterns, m_file_name_pattern);
 
-	while(dirs.size()) {
-		std_string onedir = *dirs.begin();
-		dirs.pop_front();
-	    path p(onedir); // should split to multiple path
-        if(!Continue()) {
-    		wxString msg;
-    		msg.Printf(_T("FindThread::operator()() operation cancelled in %p total_file_count=%d match_file_count=%d"), this, total_file_count, match_file_count);
-    		LogMessage(msg);
-        	break;
-        }
-	    if(is_directory(p)) {
-	        for(auto& entry : boost::make_iterator_range(directory_iterator(p), {})) {
-//	            std::cout << entry << "\n";
-	            if(!Continue()) {
-	        		wxString msg;
-	        		msg.Printf(_T("FindThread::operator()() operation cancelled in %p total_file_count=%d match_file_count=%d"), this, total_file_count, match_file_count);
-	        		LogMessage(msg);
-	            	break;
-	            }
-	            std_string entry_path_str = ToStdWstring(entry.path().string());
-	            if ( is_directory(entry.status()) )
-				{
-	      		  if(visited.count(entry_path_str)==0) {
-	      			  visited.insert(entry_path_str);
-	      			  dirs.push_back(entry_path_str);
-	      		  }
-				}
-	            bool expect_match=true;
-	            if(expect_patterns.size())
-	            	expect_match=regex_match(expect_patterns, entry_path_str);
-	            if(expect_match)
-	            {
-	            	bool exclude_match = regex_match(exclude_patterns, entry_path_str);
-	            	if(exclude_match) {
-	            		exclude_count++;
-	            	}
-	            	if(!exclude_match) {
-						wxGetApp().m_find_dlg->AppendResult(entry_path_str);
-						match_file_count++;
-	            	}
-	            }
-	            total_file_count++; // how many files searched
-	        }
-	    } else {
-	    	std::cout << p << " is NOT a directory \n";
-	    }
+	while(Continue() && dirs.size()) {
+		try {
+			Work();
+		} catch(boost::filesystem::filesystem_error& err) {
+			std::cerr << err.what() << std::endl;
+		}
 	}
+	Publish();
+    auto t2 = std::chrono::high_resolution_clock::now();
+    // integral duration: requires duration_cast
+    auto int_ms = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1);
 	wxString msg;
-	msg.Printf(_T("FindThread::operator()() operation completed in %p total_file_count=%d match_file_count=%d exclude_count=%d"),
-			this, total_file_count, match_file_count, exclude_count);
+	msg.Printf(_T("FindThread operation completed in %li milliseconds total_file_count=%d match_file_count=%d exclude_count=%d"),
+			int_ms.count(), total_file_count, match_file_count, exclude_count);
 	LogMessage(msg);
 }
 
@@ -191,6 +159,67 @@ bool FindThread::Continue()
 	return !m_stop;
 }
 
+void FindThread::Work() {
+	while(dirs.size()) {
+		std_string onedir = *dirs.begin();
+		dirs.pop_front();
+
+		boost::filesystem::path p(onedir); // should split to multiple path
+        if(!Continue()) {
+    		wxString msg;
+    		msg.Printf(_T("FindThread::operator()() operation cancelled in %p total_file_count=%d match_file_count=%d"), this, total_file_count, match_file_count);
+    		LogMessage(msg);
+        	break;
+        }
+	    if(boost::filesystem::is_directory(p)) {
+		        for(auto& entry : boost::make_iterator_range(boost::filesystem::directory_iterator(p), {})) {
+	//	            std::cout << entry << "\n";
+		            if(!Continue()) {
+		        		wxString msg;
+		        		msg.Printf(_T("FindThread::operator()() operation cancelled in %p total_file_count=%d match_file_count=%d"), this, total_file_count, match_file_count);
+		        		LogMessage(msg);
+		            	break;
+		            }
+		            std_string entry_path_str = ToStdWstring(entry.path().string());
+		            if ( boost::filesystem::is_directory(entry.status()) )
+					{
+		      		  if(visited.count(entry_path_str)==0) {
+		      			  visited.insert(entry_path_str);
+		      			  dirs.push_back(entry_path_str);
+		      		  }
+					}
+		            bool expect_match=true;
+		            if(expect_patterns.size())
+		            	expect_match=regex_match(expect_patterns, entry_path_str);
+		            if(expect_match)
+		            {
+		            	bool exclude_match = regex_match(exclude_patterns, entry_path_str);
+		            	if(exclude_match) {
+		            		exclude_count++;
+		            	}
+		            	if(!exclude_match) {
+		            		match_files_list.push_back(entry_path_str);	// should move this list to GUI in batch to improve performance
+//							wxGetApp().m_find_dlg->AppendResult(entry_path_str);
+							match_file_count++;
+		            	}
+		            	if(wxGetApp().needrefresh.exchange(false)) {
+		            		Publish();
+		            	}
+		            }
+		            total_file_count++; // how many files searched
+		        }
+	    } else {
+	    	std::cout << p << " is NOT a directory \n";
+	    }
+	}
+}
+
+void FindThread::Publish() {
+	boost::mutex::scoped_lock lk(wxGetApp().m_result_mx);
+	for(auto onepath: match_files_list)
+		wxGetApp().m_result_list.push_back(onepath);
+	match_files_list.clear();
+}
 //void dummy_thread_func()
 //{
 //	wxGetApp().m_find_dlg->AppendResult(_T("dummy_thread_func() start"));

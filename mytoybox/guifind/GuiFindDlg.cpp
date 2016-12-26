@@ -18,8 +18,13 @@
 #include "wx/sysopt.h"
 #include "wx/gbsizer.h"
 #include <wx/textctrl.h>
+#include <wx/timer.h>
 #include "wx/dirdlg.h"
 #include <boost/thread/mutex.hpp>
+#include <unordered_set>
+#include <deque>
+#include <vector>
+#include <boost/regex.hpp>
 #include "GuiFindDlg.h"
 #include "GuiFindApp.h"
 #include "FindThread.h"
@@ -38,6 +43,7 @@ void GuiFindDlg::OnCustomEvent(wxEvent &evt)
 	m_log <<ctime(&now) << " "<< __FUNCTION__ << std::endl;
 	m_log.flush();
 }
+int TIMER_ID = 100;
 int btn_id_base = 7000;
 int btn_cancel_id = btn_id_base+__LINE__;
 int btn_find_id = btn_id_base+__LINE__;
@@ -45,6 +51,10 @@ int btn_close_id = btn_id_base+__LINE__;
 IMPLEMENT_DYNAMIC_CLASS( GuiFindDlg, wxFrame )
 void GuiFindDlg::CreateGUI()
 {
+	m_wnd_closed = true;
+	m_pTimer = new wxTimer(this,TIMER_ID);
+
+
     m_btnClose = new wxButton(this, btn_close_id, _T("&Close"));
     m_btnFind = new wxButton(this, btn_find_id, _T("Find"));
     m_btnCancel = new wxButton(this, btn_cancel_id, _T("Cancel"));
@@ -63,6 +73,7 @@ void GuiFindDlg::CreateGUI()
     		wxCommandEventHandler(GuiFindDlg::OnButton), NULL, this);
     m_btnChooseRoot->Connect(wxEVT_COMMAND_BUTTON_CLICKED,
     		wxCommandEventHandler(GuiFindDlg::OnChooseRoot), NULL, this);
+    Connect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(GuiFindDlg::OnClose) );
     int col = 0;
     int row = 0;
     int col_span = 3;
@@ -120,6 +131,7 @@ void GuiFindDlg::CreateGUI()
     gbs->SetSizeHints(this);
     gbs->Fit(this);
     m_log.open("debug.txt");
+    m_wnd_closed = false;
 }
 
 GuiFindDlg::GuiFindDlg()
@@ -138,7 +150,7 @@ CreateGUI();
 }
 
 GuiFindDlg::~GuiFindDlg() {
-
+	m_wnd_closed = true;
 }
 void GuiFindDlg::OnChooseRoot(wxCommandEvent &evt)
 {
@@ -172,14 +184,17 @@ void GuiFindDlg::AppendResult(wxString msg)
 {// http://wiki.wxwidgets.org/Inter-Thread_and_Inter-Process_communication
 	// http://wiki.wxwidgets.org/Custom_Events
 	{
-	boost::mutex::scoped_lock lk(m_result_mx);
-	m_result_list.push_back(msg);
+	boost::mutex::scoped_lock lk(wxGetApp().m_result_mx);
+	if(m_wnd_closed)
+		return;
+	wxGetApp().m_result_list.push_back(msg);
 	}
+
 	time_t now;
 	time(&now);
 	m_log <<ctime(&now) << " "<< __FUNCTION__
 			<< " " << msg.utf8_str()
-			<< ", result list size " << m_result_list.size()
+			<< ", result list size " << wxGetApp().m_result_list.size()
 			<< std::endl;
 	m_log.flush();
 	wxCustomEvent event;
@@ -188,12 +203,12 @@ void GuiFindDlg::AppendResult(wxString msg)
 
 void GuiFindDlg::OnAppendResult(wxCustomEvent & evt)
 {
-	boost::mutex::scoped_lock lk(m_result_mx);
-	for (std::list<wxString>::iterator it=m_result_list.begin();
-			it!=m_result_list.end();
+	boost::mutex::scoped_lock lk(wxGetApp().m_result_mx);
+	for (std::list<wxString>::iterator it=wxGetApp().m_result_list.begin();
+			it!=wxGetApp().m_result_list.end();
 			it++)
 	m_result_tc->AppendText((*it)+_T("\n"));
-	m_result_list.clear();
+	wxGetApp().m_result_list.clear();
 	time_t now;
 	time(&now);
 	m_log <<ctime(&now) << " "<< __FUNCTION__ << std::endl;
@@ -206,6 +221,11 @@ void GuiFindDlg::OnUpdateResult(wxCommandEvent &aevt)
 }
 void GuiFindDlg::OnFind(wxCommandEvent &evt)
 {
+	wxGetApp().findthreadcount++;
+	m_pTimer->Start(30);
+	Connect(m_pTimer->GetId(),wxEVT_TIMER,wxTimerEventHandler( GuiFindDlg::OnTimerTimeout ), NULL, this );
+
+	m_result_tc->SetValue(wxEmptyString);
 	time_t now;
 	time(&now);
 	m_log <<ctime(&now) << " "<< __FUNCTION__ << std::endl;
@@ -218,5 +238,23 @@ void GuiFindDlg::OnFind(wxCommandEvent &evt)
 	wxGetApp().StartFind();
 }
 
+void GuiFindDlg::OnClose(wxCloseEvent& event) {
+	{
+		boost::mutex::scoped_lock lk(wxGetApp().m_result_mx);
+		m_wnd_closed = true;
+	}
+//	std::cout << __func__ << std::endl;
+    if ( event.CanVeto() )
+    {
+    }
+    Destroy();  // you may also do:  event.Skip();
+                // since the default event handler does call Destroy(), too
+}
 
-
+void GuiFindDlg::OnTimerTimeout(wxTimerEvent& event) {
+	if(wxGetApp().findthreadcount.load()<1) {
+		m_pTimer->Stop();
+	} else {
+		wxGetApp().needrefresh.exchange(true);
+	}
+}

@@ -11,6 +11,8 @@
 #include <string>
 #include <boost/shared_ptr.hpp>
 #include <map>
+#include <atomic>
+#include <list>
 
 typedef std::basic_string<wxChar> std_string;
 class FindThread;
@@ -29,6 +31,10 @@ public:
 	VerboseDialog *m_log_wnd;
 	std::map<std_string, std_string> properties;
 	void SetProperty(std_string key, std_string value);
+	std::atomic<int> findthreadcount;
+	std::atomic<bool> needrefresh;
+	boost::mutex m_result_mx;
+	std::list<wxString> m_result_list;
 };
 DECLARE_APP(GuiFindApp)
 #endif /* GUIFINDAPP_H_ */

@@ -16,6 +16,11 @@
 #include "wx/imaglist.h"
 #include "wx/sysopt.h"
 #include <boost/thread.hpp>
+#include <boost/program_options.hpp>
+#include <unordered_set>
+#include <deque>
+#include <vector>
+#include <boost/regex.hpp>
 #include "FindThread.h"
 #include "GuiFindApp.h"
 #include "GuiFindDlg.h"
@@ -23,9 +28,8 @@
 
 IMPLEMENT_APP(GuiFindApp)
 
-GuiFindApp::GuiFindApp() {
+GuiFindApp::GuiFindApp(): needrefresh(false) {
 	m_find_handler=NULL;
-
 }
 
 GuiFindApp::~GuiFindApp() {
@@ -42,6 +46,19 @@ int GuiFindApp::OnExit()
 }
 bool GuiFindApp::OnInit()
 {
+	boost::program_options::variables_map vm;
+    boost::program_options::options_description desc("Allowed options");
+	desc.add_options()("help,h", "produce help message")
+	  ;
+	boost::program_options::store(
+			boost::program_options::parse_command_line(wxGetApp().argc, (char**)wxGetApp().argv, desc), vm);
+	boost::program_options::notify(vm);
+	if(vm.count("help")) {
+		std::cout << desc << std::endl;
+		std::cout << "File Name: specify regex expression of file name that is interested\n";
+		std::cout << "Exclude File Name: specify regex expression of file name that should be excluded (not display in result area)\n";
+		return 0;
+	}
 	//GuiFindDlg dlg(NULL);
 	//    dlg.ShowModal();
 	m_log_wnd = NULL;

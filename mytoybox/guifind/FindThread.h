@@ -19,11 +19,19 @@ public:
 	void Run();
 	void Stop(bool bval);
 	bool Continue();
+	void Work();
+	void Publish();
 	std_string m_file_name_pattern;
 	std_string m_file_name_pattern_exclude;
 	std_string m_root_path;
 	std_string m_content_pattern;
-
+	std::deque<std_string> dirs;
+	std::deque<std_string> match_files_list;
+	std::unordered_set<std_string> visited;
+	std::vector<boost::wregex> exclude_patterns, expect_patterns;
+	int total_file_count;
+	int match_file_count;
+	int exclude_count;
 	volatile bool m_stop;
 };
 void dummy_thread_func();
