@@ -1,0 +1,22 @@
+{
+  "name": "sqliteviewer",
+  "version": "1.0.0",
+  "description": "2nd electron app",
+  "main": "main.js",
+  "scripts": {
+    "test": "electron main.js",
+    "start": "electron main.js",
+"postinstall" : "./postinstall.js"
+  },
+  "author": "onega",
+  "license": "ISC",
+  "devDependencies": {
+    "electron-prebuilt": "^1.4.13",
+    "sqlite3": "^3.1.8"
+  },
+  "dependencies": {
+    "shelljs": "^0.7.5",
+    "electron-rebuild": "^1.4.0",
+    "sqlite3": "^3.1.8"
+  }
+}

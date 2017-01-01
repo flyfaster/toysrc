@@ -1,0 +1,83 @@
+<html>
+    <body>
+        <div id="header" style="display: inline-block; float:left" >
+            Tables<br/>
+            <ul id="TableList" >
+            </ul>
+        </div>
+        <div id="placeholder" style="display: inline-block">
+            &nbsp;   &nbsp;
+        </div>
+        <div id="output" style="display: inline-block">
+            <table id="tabledisplay" border="1">
+            </table>  &nbsp;  
+        </div>
+    <script>
+        require('./sqliteviewer.js')
+
+        function showTable(event)
+        {
+            // console.log("Table name clicked: " + event.target.innerHTML);
+            console.log("Table name clicked: " + event.innerHTML);    
+            var table_name = event.innerHTML;
+            var sqlite3 = require("sqlite3").verbose();
+            var file = "test.db";
+            var db = new sqlite3.Database(file);  
+            // document.getElementById("tabledisplay").empty();
+        // get column names
+            var tablecontent = "<tr>";
+            var sql_get_column_list = "PRAGMA table_info(" + table_name +")";
+            var column_name_list = [];
+            db.serialize(function() {
+                db.all(sql_get_column_list, function(err, rows) {
+                    if(err) console.log(err);
+                    rows.forEach(function(col){
+                        console.log("Column name " + col.name);
+                        tablecontent += "<th>"+col.name + "</th>";
+                        column_name_list.push(col.name);
+                    });
+                    tablecontent += "</tr>"
+                    document.getElementById("tabledisplay").innerHTML = tablecontent;
+                });
+            });        
+
+            db.serialize(function() {  
+                var sql_get_table_list = "SELECT * FROM " + table_name;
+                db.each(sql_get_table_list, function(err, row) {        
+
+                    var rowhtml = "<tr>";
+                    for(var colname in column_name_list) {
+                        rowhtml += "<td>" + row[column_name_list[colname]] + "</td>";
+                        console.log( column_name_list[colname] + " value is " + rowhtml );
+                    }
+                    rowhtml += "</tr>";
+                    document.getElementById("tabledisplay").innerHTML += rowhtml;
+                });
+            });
+
+            db.close();
+        }
+    </script>
+     <div id="divDeveloperNotes" style="display: none;">
+        <pre>$ 
+            Install python-3.6.0-amd64.exe for all users
+        
+        npm install --save sqlite3
+        npm install --save electron-rebuild
+        npm install --save electron-prebuilt
+        node_modules/.bin/electron-rebuild
+
+
+            /cygdrive/c/apps/nodejs/npm test
+        > my_app_name@0.1.0 test C:\workspace\electron\aa
+        > electron main.js
+        $ npm start
+
+check out from git
+npm install
+node_modules/.bin/electron-rebuild
+npm start
+        </pre>
+     </div>
+    </body>
+</html>
