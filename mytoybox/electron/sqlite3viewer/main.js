@@ -3,6 +3,7 @@ const electron = require('electron');
 const {app} = electron;
 // Module to create native browser window.
 const {BrowserWindow} = electron;
+// var ipc = require('ipc')
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -10,13 +11,13 @@ let win;
 
 function createWindow() {
   // Create the browser window.
-  win = new BrowserWindow({width: 1024, height: 960});
+  win = new BrowserWindow({width: 1024, height: 600});
 
   // and load the index.html of the app.
   win.loadURL(`file://${__dirname}/sqliteviewer.html`);
 
   // Open the DevTools.
-//   win.webContents.openDevTools();
+  win.webContents.openDevTools();
 
   // Emitted when the window is closed.
   win.on('closed', () => {
