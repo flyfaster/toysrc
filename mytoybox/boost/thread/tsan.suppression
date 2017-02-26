@@ -1,0 +1,8 @@
+# ThreadSanitizer suppressions file for project X.
+#race:/usr/local/include/boost/lockfree/detail/freelist.hpp
+#race:/usr/local/include/boost/lockfree/detail/copy_payload.hpp
+#race:operator*
+#race:boost::lockfree::detail::tagged_index::set_index
+#race:boost::lockfree::detail::tagged_index::get_index
+race:boost::lockfree*
+#race:boost::*

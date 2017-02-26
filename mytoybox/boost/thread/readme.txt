@@ -65,3 +65,5 @@ sys	0m5.078s
 real	1m22.568s
 user	1m33.674s
 sys	0m23.794s
+
+TSAN_OPTIONS="suppressions=./tsan.suppression" ./lockfreetest

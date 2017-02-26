@@ -1,0 +1,9 @@
+# Ignore exactly this function (the names are mangled)
+fun:MyFooBar
+# Ignore MyFooBar(void) if it is in C++:
+fun:_Z8MyFooBarv
+# Ignore all function containing MyFooBar
+fun:*MyFooBar*
+# Ignore the whole file
+src:file_with_tricky_code.cc
+fun:boost::lockfree*

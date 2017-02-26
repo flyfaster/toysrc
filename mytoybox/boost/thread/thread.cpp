@@ -19,13 +19,17 @@
 #include <sstream>
 #include <link.h>
 #include <thread>
+#include <sys/wait.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <spawn.h>
+// #if defined(__has_feature) && __has_feature(thread_sanitizer) 
+// #define TSAN_ENABLED
+// #endif 
+
 static int callback(struct dl_phdr_info *info, size_t size, void *data)
 {
-    int j;
-   printf("name=%s (%d segments)\n", info->dlpi_name, info->dlpi_phnum);
-//    for (j = 0; j < info->dlpi_phnum; j++)
-//          printf("\t\t header %2d: address=%10p\n", j,
-//              (void *) (info->dlpi_addr + info->dlpi_phdr[j].p_vaddr));
+    printf("name=%s (%d segments)\n", info->dlpi_name, info->dlpi_phnum);
     return 0;
 }
 
@@ -53,7 +57,7 @@ int sleep_when_busy = 0;
 boost::atomic_int consumer_count (0);
 boost::lockfree::spsc_queue<int, boost::lockfree::capacity<102400> > spsc_queue;
 boost::lockfree::queue<int, boost::lockfree::capacity<1024*32> > mpmc_queue;
-const int iterations = 4000000;
+const int iterations = 100000;
 #define PI 3.14159265
 
 template<typename ContainerType>
@@ -103,14 +107,76 @@ void template_consumer(ContainerType& spsc_queue) {
     std::cout << __func__ << " done with "<< consumer_count << " objects in " << boost::typeindex::type_id_with_cvr<ContainerType>().pretty_name() << std::endl;
 }
 
+const char* get_self_path() {
+  static char selfpath[PATH_MAX];
+  if(selfpath[0])
+    return selfpath;
+  char path[PATH_MAX];
+  pid_t pid = getpid();
+  sprintf(path, "/proc/%d/exe", pid);
+  if (readlink(path, selfpath, PATH_MAX) == -1)
+    perror("readlink");
+    return selfpath;
+}
+
+__attribute__((constructor))
+static void set_thread_santinizer_suppressions() {
+    printf("%s pid %d %s TSAN_OPTIONS=%s\n",get_self_path(), getpid(),  __func__, getenv("TSAN_OPTIONS"));
+    //std::cout << get_self_path() << " pid " << getpid() << " " << __func__ << " TSAN_OPTIONS=" << getenv("TSAN_OPTIONS") << std::endl;
+}
+extern char **environ;
 int main(int argc, char* argv[]) {
+       pid_t pid = -1;
+       
+    if(getenv("TSAN_OPTIONS")==NULL) {
+        std::string selfpath = get_self_path();
+        size_t pos = selfpath.find_last_of('/');
+        if (pos==std::string::npos) {
+            std::cout << argv[0] << " failed to get self path: " << selfpath << std::endl;
+            exit(EXIT_FAILURE);
+        }
+        std::string selfdir = selfpath.substr(0, pos+1);
+        std::stringstream ss;
+        ss << "suppressions=" << selfdir << "tsan.suppression";
+        setenv("TSAN_OPTIONS", ss.str().c_str(), 1 );
+
+        int status = posix_spawn(&pid, get_self_path(), NULL, NULL, argv, environ);
+        if (status == 0) {
+            printf("Child pid: %i\n", pid);
+            if (waitpid(pid, &status, 0) != -1) {
+                printf("Child exited with status %i\n", status);
+            } else {
+                perror("waitpid");
+            }            
+        } else {
+            printf("posix_spawn: %s\n", strerror(status));
+        }
+        return 0;
+#if 0        
+        pid = fork();
+        if (pid == -1) {
+            perror("fork failed");
+            exit(EXIT_FAILURE);
+        }
+        else if (pid == 0) {
+            std::cout << argv[0] << " in child process " << getpid() << std::endl;
+            return execv(argv[0], argv);            
+        }
+        else {
+            int status;
+            (void)waitpid(pid, &status, 0);
+            return 0;
+        }   
+#endif        
+    }
+    std::cout <<argv[0] << " pid " << getpid() << " TSAN_OPTIONS=" << getenv("TSAN_OPTIONS") << std::endl;
     using namespace std;
         if(argc>1)
         sleep_when_busy = atoi(argv[1]);
-    cout <<"sleep_when_busy="<<sleep_when_busy << " boost::lockfree::queue is ";
+    cout << argv[0] << " pid " << getpid() << " sleep_when_busy="<<sleep_when_busy << " boost::lockfree::queue is ";
     if (!spsc_queue.is_lock_free()) cout << "not ";
     cout << "lockfree" << endl;
-        
+    
     auto dummyf=[](int ) {};
     mpmc_queue.consume_all(dummyf);
     spsc_queue.consume_all(dummyf);
@@ -126,10 +192,15 @@ int main(int argc, char* argv[]) {
         done = true;
         consumer_thread.join();
     };
-    benchmark_queue(spsc_queue);
-    benchmark_queue(mpmc_queue);
+    benchmark_queue(spsc_queue); // WARNING: ThreadSanitizer: data race (pid=13113) 
+    benchmark_queue(mpmc_queue); // http://stackoverflow.com/questions/37552866/why-does-threadsanitizer-report-a-race-with-this-lock-free-example
     
 #ifdef __linux__
 	dl_iterate_phdr(callback, NULL);
 #endif    
+}
+
+__attribute__((destructor))
+static void mydestructor() {
+    printf("%s pid %d\n",  __func__, getpid());
 }
