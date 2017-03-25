@@ -1,0 +1,17 @@
+char orblogfile[512];
+char current_dir[512];
+getcwd(current_dir, sizeof(current_dir));
+sprintf(orblogfile, "-ORBLogFile %s/orbserverlog%03d.txt", current_dir, site_number);
+ACE_ARGV_T <char> args_list;
+args_list.add (argv);
+args_list.add ("-ORBDottedDecimalAddresses 1");
+args_list.add("-ORBDebug");
+args_list.add ("-ORBDebugLevel 10");
+args_list.add("-ORBVerboseLogging 2");
+args_list.add(orblogfile);
+int argcnt = args_list.argc ();
+ACE_Argv_Type_Converter command_line (argc, args_list.argv ());
+char ** new_argv = command_line.get_ASCII_argv ();
+for( int i = 0; argcnt != i; i++ ) {
+                INFO_LOG( "new_argv[%d]: %s\n", i, new_argv[ i ] );
+}
