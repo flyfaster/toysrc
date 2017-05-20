@@ -67,3 +67,7 @@ wxString body = ("cl /EHsc /MD -DUNICODE=1 "
 wxMessageBox( body, caption, wxOK|wxICON_INFORMATION, this );
 }
 // miniwx.exe is built by VC++ 2010 + wxWidgets 2.9.1. File size: 2.17MB.
+//
+// on macOS Sierra Version 10.12.5
+// brew install wxmac
+// clang++ -o miniwx -std=c++11 $(/usr/local/opt/wxwidgets/bin/wx-config --cppflags --libs) miniwx.cpp
