@@ -59,7 +59,8 @@ int main(int argc, char** argv)
     {
         t.join();
     }
-    cout << "syscall number " << loops * 2 << endl;
+    cout << "number of syscall per thread " << loops * 2 << ", thread num " << num_cpus
+         << " total syscall num " << loops * 2 * num_cpus << endl;
     return 0;
 }
 
