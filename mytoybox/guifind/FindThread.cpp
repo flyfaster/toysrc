@@ -215,10 +215,10 @@ void FindThread::Work() {
 }
 
 void FindThread::Publish() {
-	boost::mutex::scoped_lock lk(wxGetApp().m_result_mx);
-	for(auto onepath: match_files_list)
-		wxGetApp().m_result_list.push_back(onepath);
-	match_files_list.clear();
+//	boost::mutex::scoped_lock lk(wxGetApp().m_result_mx);
+//	for(auto onepath: match_files_list)
+//		wxGetApp().m_result_list.push_back(onepath);
+//	match_files_list.clear();
 }
 //void dummy_thread_func()
 //{

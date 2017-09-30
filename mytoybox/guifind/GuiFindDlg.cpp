@@ -54,7 +54,6 @@ void GuiFindDlg::CreateGUI()
 	m_wnd_closed = true;
 	m_pTimer = new wxTimer(this,TIMER_ID);
 
-
     m_btnClose = new wxButton(this, btn_close_id, _T("&Close"));
     m_btnFind = new wxButton(this, btn_find_id, _T("Find"));
     m_btnCancel = new wxButton(this, btn_cancel_id, _T("Cancel"));
@@ -107,7 +106,11 @@ void GuiFindDlg::CreateGUI()
     col = 0;
     gbs->Add(m_btnChooseRoot, wxGBPosition(row, col));
     col++;
-    m_root_path_tc = new wxTextCtrl(this, wxID_ANY, wxStandardPaths::Get().GetUserDir(wxStandardPaths::Dir_Downloads) , // wxString(getenv("HOME"))
+    wxString default_root(getenv("HOME"));
+#if wxCHECK_VERSION(3, 1, 0)
+    default_root = wxStandardPaths::Get().GetUserDir(wxStandardPaths::Dir_Downloads);
+#endif
+    m_root_path_tc = new wxTextCtrl(this, wxID_ANY, default_root, // wxString(getenv("HOME"))
                                         wxDefaultPosition,
                                         wxSize(150,wxDefaultCoord));
     gbs->Add(m_root_path_tc, wxGBPosition(row, col), wxGBSpan(1, col_span), wxEXPAND | wxHORIZONTAL);
