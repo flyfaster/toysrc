@@ -19,6 +19,6 @@ find_package( Threads )
  
 include_directories(~/src/wxWidgets-3.1.0/include ~/src/wxWidgets-3.1.0/lib/wx/include/gtk3-unicode-3.1 )
 
-add_executable(guifind CustomEvent.cpp  FindThread.cpp  GuiFindApp.cpp  GuiFindDlg.cpp  VerboseDialog.cpp)
+add_executable(${PROJECT_NAME} CustomEvent.cpp  FindThread.cpp  GuiFindApp.cpp  GuiFindDlg.cpp  VerboseDialog.cpp)
 
-target_link_libraries (guifind boost_regex boost_thread boost_system boost_program_options boost_filesystem wx_gtk3u_adv-3.1 wx_gtk3u_aui-3.1 wx_gtk3u_core-3.1 wx_baseu-3.1 ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries (${PROJECT_NAME} boost_regex boost_thread boost_system boost_program_options boost_filesystem wx_gtk3u_adv-3.1 wx_gtk3u_aui-3.1 wx_gtk3u_core-3.1 wx_baseu-3.1 ${CMAKE_THREAD_LIBS_INIT})
