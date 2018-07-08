@@ -11,6 +11,7 @@
 #include <cxxabi.h>
 #include <execinfo.h>
 #include <signal.h>
+
 #include <bfd.h> // yum install binutils-devel
 #include "profiler.h"
 
@@ -168,7 +169,7 @@ void resolve(ptrtype address, char* buf_func, size_t sz) {
 		}
 	}
 	if (buf_func[0] == 0)
-		sprintf(buf_func, "unknown - %p", address);
+		sprintf(buf_func, "unknown - %p", (void*)address);
 }
 
 void mergeperf(std::map<ptrtype, sfuncperf>& dst,

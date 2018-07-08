@@ -4,6 +4,7 @@
 #include <errno.h>
 #include <unistd.h>
 #include <chrono>
+#include <thread>
 #include <string.h>
 #include <boost/program_options.hpp>
 #include <fstream>
@@ -30,21 +31,23 @@ int delay_timer_nsec(uint64_t time_nsec) {
 	stamp = bentime_nsec() + time_nsec;
 	tp.tv_sec = stamp / NSEC_PER_SEC;
 	tp.tv_nsec = stamp - (tp.tv_sec * NSEC_PER_SEC);
-	while (1) {
-		int rc = clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &tp, NULL); // resolution is not high
-		if (rc == 0)
-			return 0;
-		if (rc == EINTR)
-			continue;
-		return -1;
-	}
+	std::this_thread::sleep_for(std::chrono::nanoseconds(time_nsec));
+//	while (1) {
+//		int rc = clock_nanosleep(CLOCK_MONOTONIC, CLOCK_MONOTONIC, &tp, NULL); // resolution is not high
+//
+//		if (rc == 0)
+//			return 0;
+//		if (rc == EINTR)
+//			continue;
+//		return -1;
+//	}
 	return 0;
 }
 
 void forceleak() {
 //  std::cout << __FUNCTION__ << std::endl;
 	char* p = new char[1];   // new might return 0x80000000, say.
-	delete p;
+	delete[] p;
 	new char[1];             // new might return 0x80000000 again
 	// This last new is a leak, but doesn't seem it: p looks like it points to it
 	// HEAPCHECK=normal can report this leak
@@ -61,7 +64,7 @@ void testcall(int cnt) {
 	for (int i = 0; i < cnt; i++)
 		forceleak();
 }
-
+// brew install google-perftools
 int main(int argc, char* argv[]) {
 	std::cout
 			<< "add -lprofiler -ltcmalloc to the link-time step for your executable\n";
