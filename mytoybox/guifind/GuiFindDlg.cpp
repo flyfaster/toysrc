@@ -30,6 +30,8 @@
 #include "FindThread.h"
 int WORKER_EVENT = 111222;
 
+IMPLEMENT_DYNAMIC_CLASS( GuiFindDlg, wxFrame )
+
 BEGIN_EVENT_TABLE(GuiFindDlg, wxFrame)
 //	EVT_BUTTON(wxID_ANY, GuiFindDlg::OnButton)
 	EVT_COMMAND(WORKER_EVENT, wxEVT_NULL, GuiFindDlg::OnUpdateResult)
@@ -48,31 +50,36 @@ int btn_id_base = 7000;
 int btn_cancel_id = btn_id_base+__LINE__;
 int btn_find_id = btn_id_base+__LINE__;
 int btn_close_id = btn_id_base+__LINE__;
-IMPLEMENT_DYNAMIC_CLASS( GuiFindDlg, wxFrame )
+
 void GuiFindDlg::CreateGUI()
 {
-	m_wnd_closed = true;
-	m_pTimer = new wxTimer(this,TIMER_ID);
+    wxString default_root(getenv("HOME"));
+#if wxCHECK_VERSION(3, 1, 0)
+    default_root = wxStandardPaths::Get().GetUserDir(wxStandardPaths::Dir_Downloads);
+#endif
 
     m_btnClose = new wxButton(this, btn_close_id, _T("&Close"));
     m_btnFind = new wxButton(this, btn_find_id, _T("Find"));
     m_btnCancel = new wxButton(this, btn_cancel_id, _T("Cancel"));
-    m_btnChooseRoot = new wxButton(this, wxID_ANY, _T("Root..."));
-    m_result_tc = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition,
-    		wxDefaultSize, wxTE_MULTILINE);
-    wxGridBagSizer *gbs = new wxGridBagSizer();
-    m_filename_pattern_tc = new wxTextCtrl(this, wxID_ANY, wxEmptyString);
-    m_filename_pattern_exclude = new wxTextCtrl(this, wxID_ANY, wxEmptyString);
-
     m_btnCancel->Connect( wxEVT_COMMAND_BUTTON_CLICKED,
     		wxCommandEventHandler( GuiFindDlg::OnButton ), NULL, this );
     m_btnFind->Connect(btn_find_id, wxEVT_COMMAND_BUTTON_CLICKED,
     		wxCommandEventHandler(GuiFindDlg::OnFind), NULL, this);
     m_btnClose->Connect(wxEVT_COMMAND_BUTTON_CLICKED,
     		wxCommandEventHandler(GuiFindDlg::OnButton), NULL, this);
+
+    m_btnChooseRoot = new wxButton(this, wxID_ANY, _T("Root..."));
     m_btnChooseRoot->Connect(wxEVT_COMMAND_BUTTON_CLICKED,
     		wxCommandEventHandler(GuiFindDlg::OnChooseRoot), NULL, this);
-    Connect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(GuiFindDlg::OnClose) );
+
+    m_root_path_tc = new wxTextCtrl(this, wxID_ANY, default_root);
+
+    m_result_tc = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition,
+    		wxSize{200,100}, wxTE_READONLY | wxTE_MULTILINE); // crash on Mac without wxTE_READONLY
+    m_filename_pattern_tc = new wxTextCtrl(this, wxID_ANY, wxEmptyString);
+    m_filename_pattern_exclude = new wxTextCtrl(this, wxID_ANY, wxEmptyString);
+
+    wxGridBagSizer *gbs = new wxGridBagSizer();
     int col = 0;
     int row = 0;
     int col_span = 3;
@@ -89,35 +96,17 @@ void GuiFindDlg::CreateGUI()
 	col++;
 	gbs->Add(m_filename_pattern_exclude, wxGBPosition(row, col), wxGBSpan(1, col_span), wxEXPAND | wxHORIZONTAL, 5);
 
-#if 0	// not supported yet
-    row++;
-    col = 0;
-    m_content_pattern_tc = new wxTextCtrl(this, wxID_ANY, wxEmptyString,
-    		wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE);
-    gbs->Add(new wxStaticText(this, wxID_ANY, _T("Content")),
-            wxGBPosition(row,col), wxGBSpan(1, 1),
-            wxALIGN_CENTER | wxALL);
-    col++;
-    gbs->Add(m_content_pattern_tc, wxGBPosition(row, col), wxGBSpan(1, col_span), wxEXPAND | wxHORIZONTAL, 5);
-
-#endif
-
     row++;
     col = 0;
     gbs->Add(m_btnChooseRoot, wxGBPosition(row, col));
     col++;
-    wxString default_root(getenv("HOME"));
-#if wxCHECK_VERSION(3, 1, 0)
-    default_root = wxStandardPaths::Get().GetUserDir(wxStandardPaths::Dir_Downloads);
-#endif
-    m_root_path_tc = new wxTextCtrl(this, wxID_ANY, default_root, // wxString(getenv("HOME"))
-                                        wxDefaultPosition,
-                                        wxSize(150,wxDefaultCoord));
-    gbs->Add(m_root_path_tc, wxGBPosition(row, col), wxGBSpan(1, col_span), wxEXPAND | wxHORIZONTAL);
+    gbs->Add(m_root_path_tc, wxGBPosition(row, col), wxGBSpan(1, col_span),
+             wxEXPAND | wxHORIZONTAL);
     col = 0;
     row++;
-    gbs->Add(m_result_tc, wxGBPosition(row, col), wxGBSpan(1, col_span + 1), wxEXPAND | wxHORIZONTAL | wxVERTICAL);
-
+    gbs->Add(m_result_tc, wxGBPosition(row, col), wxGBSpan(1, col_span+1),
+             wxEXPAND | wxHORIZONTAL | wxVERTICAL);
+    gbs->AddGrowableRow(row);
 
     row++;
     col = 0;
@@ -128,13 +117,10 @@ void GuiFindDlg::CreateGUI()
     gbs->Add(m_btnClose, wxGBPosition(row, col));
 
     gbs->AddGrowableCol(col_span);
-    gbs->AddGrowableRow(3);
 
     this->SetSizer(gbs);
     gbs->SetSizeHints(this);
     gbs->Fit(this);
-    m_log.open("debug.txt");
-    m_wnd_closed = false;
 }
 
 GuiFindDlg::GuiFindDlg()
@@ -142,14 +128,11 @@ GuiFindDlg::GuiFindDlg()
     		wxDefaultPosition, wxSize(800, 600)
     		)
 {
+	Connect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(GuiFindDlg::OnClose) );
+	m_pTimer = new wxTimer(this,TIMER_ID);
     CreateGUI();
-}
-GuiFindDlg::GuiFindDlg(wxWindow* parent)
-    : wxFrame(parent, wxID_ANY, wxString::Format(_T("Find file by name\t PID:%lu"), wxGetProcessId()),
-    		wxDefaultPosition, wxSize(800, 600)
-    		)
-{
-CreateGUI();
+    m_log.open("debug.txt");
+    m_wnd_closed = false;
 }
 
 GuiFindDlg::~GuiFindDlg() {

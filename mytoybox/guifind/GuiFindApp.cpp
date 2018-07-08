@@ -28,10 +28,6 @@
 
 IMPLEMENT_APP(GuiFindApp)
 
-GuiFindApp::GuiFindApp(): needrefresh(false) {
-	m_find_handler=NULL;
-}
-
 GuiFindApp::~GuiFindApp() {
 	if (m_find_handler)
 	{
@@ -61,8 +57,7 @@ bool GuiFindApp::OnInit()
 	}
 	//GuiFindDlg dlg(NULL);
 	//    dlg.ShowModal();
-	m_log_wnd = NULL;
-	m_find_dlg=new GuiFindDlg(NULL);
+	m_find_dlg=new GuiFindDlg();
 	m_find_dlg->Center();
 	m_find_dlg->Show(true);
 //	m_log_wnd=new VerboseDialog(m_find_dlg);

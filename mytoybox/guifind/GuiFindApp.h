@@ -20,19 +20,18 @@ class GuiFindDlg;
 class VerboseDialog;
 class GuiFindApp : public wxApp {
 public:
-	GuiFindApp();
-	virtual ~GuiFindApp();
-	bool OnInit();
-	int OnExit();
+	~GuiFindApp() override;
+	bool OnInit() override;
+	int OnExit() override;
 	boost::shared_ptr<boost::thread> m_find_thread;
-	FindThread* m_find_handler;
+	FindThread* m_find_handler{nullptr};
 	void StartFind();
-	GuiFindDlg *m_find_dlg;
-	VerboseDialog *m_log_wnd;
+	GuiFindDlg *m_find_dlg{nullptr};
+	VerboseDialog *m_log_wnd{nullptr};
 	std::map<std_string, std_string> properties;
 	void SetProperty(std_string key, std_string value);
 	std::atomic<int> findthreadcount;
-	std::atomic<bool> needrefresh;
+	std::atomic<bool> needrefresh{false};
 	boost::mutex m_result_mx;
 	std::list<wxString> m_result_list;
 };

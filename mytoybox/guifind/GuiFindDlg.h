@@ -17,7 +17,6 @@
 class GuiFindDlg : public wxFrame {
 public:
 	GuiFindDlg();
-	GuiFindDlg(wxWindow* parent);
 	virtual ~GuiFindDlg();
 	void OnButton(wxCommandEvent& event);
 	void OnFind(wxCommandEvent& event);
@@ -33,20 +32,20 @@ public:
 
     DECLARE_DYNAMIC_CLASS(GuiFindDlg)
 
-	wxButton *m_btnFind;
-	wxButton *m_btnCancel;
-	wxButton *m_btnClose;
-	wxButton *m_btnChooseRoot;
-	wxTextCtrl *m_filename_pattern_tc;
-	wxTextCtrl *m_filename_pattern_exclude;
-	wxTextCtrl *m_content_pattern_tc;
-	wxTextCtrl *m_result_tc;
-	wxTextCtrl *m_root_path_tc;
-	wxTimer* m_pTimer;
+	wxButton *m_btnFind{nullptr};
+	wxButton *m_btnCancel{nullptr};
+	wxButton *m_btnClose{nullptr};
+	wxButton *m_btnChooseRoot{nullptr};
+	wxTextCtrl *m_filename_pattern_tc{nullptr};
+	wxTextCtrl *m_filename_pattern_exclude{nullptr};
+	wxTextCtrl *m_content_pattern_tc{nullptr};
+	wxTextCtrl *m_result_tc{nullptr};
+	wxTextCtrl *m_root_path_tc{nullptr};
+	wxTimer* m_pTimer{nullptr};
 
 
 	std::ofstream m_log;
-	bool m_wnd_closed;
+	bool m_wnd_closed{true};
 };
 
 // label: file name pattern
