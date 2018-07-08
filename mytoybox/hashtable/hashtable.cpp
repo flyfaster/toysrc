@@ -199,7 +199,7 @@ int main(int argc, char* argv[])
 
 	try{
 		record rec;
-		sprintf(rec.key, "%d", mytable.capacity());
+		sprintf(rec.key, "%zu", mytable.capacity());
 		mytable.get(rec.key, rec);
 		std::cout << "expect exception when element does not exist."<<std::endl;
 	} catch(const std::exception& ex){
