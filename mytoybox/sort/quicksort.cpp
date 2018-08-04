@@ -92,58 +92,54 @@ void quickSort3(int arr[], int left, int right) {
 }
 
 std::array<int, 16> unsortarr, sortarr1, sortarr2, sortarr3;
-int main(int argc, char* argv[]) {
-	boost::timer::auto_cpu_timer processtimer;
-	cout << argv[0] << " start\n";
-//	for (int i=0; i<4; )
-//	{
-//		int data = 0;
-//		data = i++;
-//		std::cout << data <<std::endl;
-//	}
-//	for (int i=0; i<4; )
-//	{
-//		int data = 0;
-//		data = ++i;
-//		std::cout << data <<std::endl;
-//	}
-//	return 0;
-	std::array<int, 5> test;
-	size_t index=0;
-	test[index++] = 3;
-	test[index++] = 4;
-	test[index++] = 5;
-	test[index++] = 1;
-	test[index++] = 2;
+int main(int argc, char* argv[])
+{
+    boost::timer::auto_cpu_timer processtimer;
+    cout << argv[0] << " start\n";
+    //	for (int i=0; i<4; )
+    //	{
+    //		int data = 0;
+    //		data = i++;
+    //		std::cout << data <<std::endl;
+    //	}
+    //	for (int i=0; i<4; )
+    //	{
+    //		int data = 0;
+    //		data = ++i;
+    //		std::cout << data <<std::endl;
+    //	}
+    //	return 0;
 
+    for (int i = 0; i < 1; i++)
+    {
+        for (auto&& i : unsortarr) // http://en.cppreference.com/w/cpp/language/range-for
+            i = rand() % 16;
+        std::copy(unsortarr.begin(), unsortarr.end(), sortarr1.begin());
+        std::copy(unsortarr.begin(), unsortarr.end(), sortarr2.begin());
+        memcpy(sortarr3.data(), unsortarr.data(), sizeof(unsortarr));
+        {
+            boost::timer::auto_cpu_timer t;
+            quickSort(sortarr1.data(), 0, unsortarr.size() - 1);
+        }
+        cout << "quicksort done\n";
+        {
+            boost::timer::auto_cpu_timer t;
+            quickSort2(sortarr2.data(), 0, unsortarr.size() - 1);
+        }
+        cout << "quickSort2 done\n";
+        quickSort3(sortarr3.data(), 0, unsortarr.size() - 1);
+        cout << "quickSort3 done\n";
 
-	for (int i = 0; i <1; i++) {
-		for (auto&& i : unsortarr) // http://en.cppreference.com/w/cpp/language/range-for
-			i = rand()%16;
-		std::copy(unsortarr.begin(), unsortarr.end(), sortarr1.begin());
-		std::copy(unsortarr.begin(), unsortarr.end(), sortarr2.begin());
-		memcpy(sortarr3.data(), unsortarr.data(), sizeof(unsortarr));
-		{
-			boost::timer::auto_cpu_timer t;
-			quickSort(sortarr1.data(), 0, unsortarr.size() - 1);
-		}
-		cout << "quicksort done\n";
-		{
-			boost::timer::auto_cpu_timer t;
-			quickSort2(sortarr2.data(), 0, unsortarr.size() - 1);
-		}
-		cout << "quickSort2 done\n";
-	quickSort3(sortarr3.data(), 0, unsortarr.size()-1); cout <<"quickSort3 done\n";
-
-		for (size_t i = 0; i < unsortarr.size(); i++) {
-			if (sortarr1[i] != sortarr2[i])
-				std::cout << i << " diff12 " << sortarr1[i] << ", "
-						<< sortarr2[i] << std::endl;
-			if (sortarr1[i] != sortarr3[i])
-				std::cout << i << " diff13 " << sortarr1[i] << ", "
-						<< sortarr3[i] << std::endl;
-		}
-	}
-	cout << argv[0] << " done\n";
-	return 0;
+        for (size_t i = 0; i < unsortarr.size(); i++)
+        {
+            if (sortarr1[i] != sortarr2[i])
+                std::cout << i << " diff12 " << sortarr1[i] << ", " << sortarr2[i]
+                          << std::endl;
+            if (sortarr1[i] != sortarr3[i])
+                std::cout << i << " diff13 " << sortarr1[i] << ", " << sortarr3[i]
+                          << std::endl;
+        }
+    }
+    cout << argv[0] << " done\n";
+    return 0;
 }
