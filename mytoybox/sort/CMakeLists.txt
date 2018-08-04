@@ -12,6 +12,8 @@ add_executable(heapsort heapsort.cpp)
 add_executable(mergesort mergesort.cpp)
 add_executable(quicksort quicksort.cpp)
 
+target_link_libraries (mergesort
+         Boost::timer)
 target_link_libraries (quicksort
          Boost::timer  Boost::system
         ${CMAKE_THREAD_LIBS_INIT})
