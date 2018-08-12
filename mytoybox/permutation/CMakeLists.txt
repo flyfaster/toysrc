@@ -5,5 +5,12 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_BUILD_TYPE "Debug" CACHE
       STRING "Choose the type of build." FORCE)
       
-add_executable(${PROJECT_NAME} permutation.cpp )
+find_package(Boost REQUIRED COMPONENTS program_options)
+      
+add_executable(permutation permutation.cpp )
 
+add_executable(median median.cpp )
+
+target_link_libraries (median
+	Boost::program_options 
+	)

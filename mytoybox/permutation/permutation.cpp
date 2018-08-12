@@ -3,8 +3,11 @@
 #include <algorithm>
 #include <iterator>
 #include <utility>
+#include <numeric>
 #include <set>
+#include <unordered_set>
 #include <chrono>
+#include <boost/functional/hash.hpp>
 using namespace std;
 
 void permutation1(vector<int>& nums, int n, vector<vector<int>>& res)
@@ -63,28 +66,75 @@ void heaps_permutation(vector<int>& nums, int n, vector<vector<int>>& res)
     heaps_permutation(nums, n - 1, res);
 }
 
+void search(vector<int>& permutation, int n, vector<int>& chosen, vector<vector<int>>& res) {
+	if (permutation.size() == n) {
+		res.emplace_back(permutation);
+	} else {
+		for (int i = 0; i < n; i++) {
+			if (chosen[i])
+				continue;
+			chosen[i] = true;
+			permutation.push_back(i);
+			search(permutation, n, chosen, res);
+			chosen[i] = false;
+			permutation.pop_back();
+		}
+	}
+}
+
+void search_permutation(vector<int>& permutation, int n, vector<vector<int>>& res) {
+	vector<int> chosen(permutation.size(), 0);
+	search(permutation, n, chosen, res);
+}
+
+void stl_permutation(vector<int>& permutation, int n, vector<vector<int>>& res) {
+	permutation.resize(n);
+	std::iota(permutation.begin(), permutation.end(), 1);
+	do {
+		res.emplace_back(permutation);
+	} while (next_permutation(permutation.begin(), permutation.end()));
+}
+
+struct hash_vec
+{
+    size_t operator()(vector<int> const& s) const
+    {
+        return boost::hash_range(s.begin(), s.end());
+    }
+};
+
 template <typename PermutationFunc>
 void check_permutation_algorithm(const char* alg_name, PermutationFunc alg)
 {
-    vector<int> nums{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-    set<vector<int>> sv;
+    vector<int> nums(10);
+    iota(nums.begin(), nums.end(), 1);
+
     vector<vector<int>> res;
     std::chrono::system_clock::time_point app_start_time =
         std::chrono::system_clock::now();
     permutation1(nums, nums.size(), res);
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
         std::chrono::system_clock::now() - app_start_time);
+
+    unordered_set<vector<int>, hash_vec> sv(res.size());
     for (auto& vec : res)
-        sv.insert(vec);
+        sv.emplace(vec);
     cout << alg_name << " generated " << res.size() << " rows in " << duration.count()
          << " milliseconds, there are " << sv.size() << " unique permutations\n";
 }
 
 int main()
 {
+    std::chrono::system_clock::time_point app_start_time =
+        std::chrono::system_clock::now();
     check_permutation_algorithm("Remove method", permutation1);
     check_permutation_algorithm("Insert method", permutation2);
     check_permutation_algorithm("heaps_permutation", heaps_permutation);
+    check_permutation_algorithm("search_permutation", search_permutation);
+    check_permutation_algorithm("stl_permutation", stl_permutation);
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
+        std::chrono::system_clock::now() - app_start_time);
+    cout << "Program done in " << duration.count() << " milliseconds\n";
     return 0;
 }
 
