@@ -12,3 +12,5 @@ add_executable(math math.cpp )
 target_link_libraries (math
 	Boost::program_options 
 	)
+	
+add_executable(bitcount bitcount.cpp )
