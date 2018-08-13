@@ -11,6 +11,12 @@ add_executable(permutation permutation.cpp )
 
 add_executable(median median.cpp )
 
+add_executable(dominotiling dominotiling.cpp )
+
 target_link_libraries (median
+	Boost::program_options 
+	)
+
+target_link_libraries (dominotiling
 	Boost::program_options 
 	)
