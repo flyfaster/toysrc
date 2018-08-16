@@ -19,3 +19,5 @@ add_test(bst_test bst)
 add_test(rb_tree_test rb_tree)
 
 add_executable(rbtree2 rbtree2.cpp)
+
+add_executable(rbtree3 rbtree3.cpp)
