@@ -7,6 +7,8 @@
 #include <iomanip>
 #include <vector>
 #include <utility>
+#include <limits>
+#include <cmath>
 
 using namespace std;
 
@@ -136,8 +138,34 @@ private:
 	std::function<bool(T const& , T const& )> m_eq;
 };
 
+using pii = pair<int, int>;
+
+struct universal_hashing
+{
+    universal_hashing(size_t buckets)
+    {
+        while (buckets)
+        {
+            ++M;
+            buckets >>= 1;
+        }
+        b = b % (size_t) std::pow(2, w - M);
+    }
+    size_t operator()(const pii& data) const
+    {
+        // https://en.wikipedia.org/wiki/Universal_hashing
+        return (a * data.first + b) >> (w - M);
+    }
+
+private:
+    static constexpr size_t w = std::numeric_limits<int>::digits;
+    size_t M;
+    size_t a = 104723; // where a is a random odd positive integer with a<2^{w}
+    size_t b = 104231; // b is a random non-negative integer with b<2^{w-M}
+};
+
 int main() {
-	using pii = pair<int, int>;
+
 	std::function<size_t(const pii& data)> hasher = [](const pii& data) ->size_t {
 		return 104723 * (size_t)data.first + (size_t)104231;
 	};
@@ -146,7 +174,7 @@ int main() {
 		return lhs.first == rhs.first;
 	};
 
-	hash_table<pii> ht( (size_t)5, hasher, eq);
+	hash_table<pii> ht( (size_t)5, universal_hashing(5), eq);
 
 	vector<int> putlist{1, 4, 2, 5, 9};
 	vector<int> getlist{3, 5, 6};
