@@ -128,10 +128,8 @@ void gen_subset(vector<int>& nums, int n, vector<vector<int>>& res) {
 	std::function<void(int)> search;
 	search = [&nums, &subset, &res, &search](int k) {
 		if (k==nums.size())
-		{
-			res.emplace_back(subset);
-			return;
-		}
+			return res.emplace_back(subset);
+
 		search(k+1);
 		subset.push_back(nums[k]);
 		search(k+1);
