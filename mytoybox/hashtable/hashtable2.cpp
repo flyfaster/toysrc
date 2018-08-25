@@ -14,6 +14,7 @@ using namespace std;
 
 template<typename T>
 class hash_table {
+	static constexpr size_t eof_slot = std::numeric_limits<size_t>::max();
 	template<typename T2>
 	struct slot{
 		T2 m_data;
@@ -33,7 +34,7 @@ public:
 			++m_cnt;
 			m_stg[pos].is_valid = true;
 			m_stg[pos].m_data = data;
-			m_stg[pos].next = m_sz;
+			m_stg[pos].next = eof_slot;
 			return;
 		}
 
@@ -45,7 +46,7 @@ public:
 			return;
 		}
 
-		size_t empty_pos = m_sz;
+		size_t empty_pos = eof_slot;
 		auto prev = pos;
 		// check next until found same key, or next is null
 		while(m_stg[pos].next < m_sz)
@@ -71,7 +72,7 @@ public:
 					++m_cnt;
 					m_stg[empty_pos].is_valid = true;
 					m_stg[empty_pos].m_data = data;
-					m_stg[empty_pos].next = m_sz;
+					m_stg[empty_pos].next = eof_slot;
 					m_stg[pos].next = empty_pos;
 					return;
 				}
@@ -95,7 +96,7 @@ public:
 	bool del(T const& data) {
 		size_t hc = m_hash(data) % m_sz;
 
-		if (m_stg[hc].is_valid && m_stg[hc].next == m_sz)
+		if (m_stg[hc].is_valid && m_stg[hc].next == eof_slot)
 		{ // the chain contains single element
 			m_stg[hc].is_valid = false;
 			return true;
@@ -106,18 +107,18 @@ public:
 			if (m_eq(data, m_stg[pos].m_data))
 			{
 				auto next_elem = m_stg[pos].next;
-				if (next_elem >= m_sz) {
+				if (next_elem > m_sz) {
 					// it is last element in the chain
 					// mark this slot as deleted
 					m_stg[pos].is_valid = false;
 					// mark its parent point to end
-					m_stg[parent].next = m_sz;
+					m_stg[parent].next = eof_slot;
 					return true;
 				}
 				// it is middle element in the chain, copy next element to pos
 				m_stg[pos] = m_stg[next_elem];
 				m_stg[next_elem].is_valid = false;
-				m_stg[next_elem].next = m_sz;
+				m_stg[next_elem].next = eof_slot;
 				return true;
 			}
 			parent = pos;
@@ -136,6 +137,7 @@ private:
 	std::unique_ptr<slot<T>[]> m_stg;
 	std::function<size_t(const T& )> m_hash;
 	std::function<bool(T const& , T const& )> m_eq;
+
 };
 
 using pii = pair<int, int>;
@@ -165,6 +167,9 @@ private:
 };
 
 int main() {
+	unsigned int data = -1;
+	data >>= 5;
+	std::cout << "-1>>4 is " << std::hex << data << std::dec << "\n";
 
 	std::function<size_t(const pii& data)> hasher = [](const pii& data) ->size_t {
 		return 104723 * (size_t)data.first + (size_t)104231;
