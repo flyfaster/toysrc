@@ -27,3 +27,8 @@ add_executable(linear_sort linear_sort.cpp)
 target_link_libraries (linear_sort 
 	Boost::unit_test_framework Boost::system 
 	${CMAKE_THREAD_LIBS_INIT})
+	
+add_executable(binary_search binary_search.cpp)
+target_link_libraries (binary_search 
+	Boost::unit_test_framework Boost::system 
+	${CMAKE_THREAD_LIBS_INIT})
