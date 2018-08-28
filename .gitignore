@@ -1,0 +1,7 @@
+/.metadata/
+RemoteSystemsTempFiles
+bld
+.settings
+.pydevproject
+a.out
+*.dSYM
