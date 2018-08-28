@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.5)
 project(sort)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_BUILD_TYPE "Debug" CACHE
       STRING "Choose the type of build." FORCE)
 
@@ -20,5 +20,10 @@ target_link_libraries (quicksort
         
 add_executable(insertion_sort insertion_sort.cpp)
 target_link_libraries (insertion_sort 
+	Boost::unit_test_framework Boost::system 
+	${CMAKE_THREAD_LIBS_INIT})
+	
+add_executable(linear_sort linear_sort.cpp)
+target_link_libraries (linear_sort 
 	Boost::unit_test_framework Boost::system 
 	${CMAKE_THREAD_LIBS_INIT})
