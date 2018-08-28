@@ -13,10 +13,8 @@ using namespace std;
 void permutation1(vector<int>& nums, int n, vector<vector<int>>& res)
 {
     if (n == 1)
-    {
-        res.emplace_back(nums);
-        return;
-    }
+    	return res.emplace_back(nums);
+
     for (int i = 0; i < n; ++i)
     {
         swap(nums[i], nums[n - 1]);
@@ -28,10 +26,8 @@ void permutation1(vector<int>& nums, int n, vector<vector<int>>& res)
 void permutation2(vector<int>& nums, int n, vector<vector<int>>& res)
 {
     if (n == 1)
-    {
-        res.emplace_back(vector<int>{nums[n - 1]});
-        return;
-    }
+        return res.emplace_back(vector<int>{nums[n - 1]});
+
     vector<vector<int>> res2;
     permutation2(nums, n - 1, res2);
     for (const auto& vec : res2)
@@ -51,10 +47,8 @@ void permutation2(vector<int>& nums, int n, vector<vector<int>>& res)
 void heaps_permutation(vector<int>& nums, int n, vector<vector<int>>& res)
 {
     if (n == 1)
-    {
-        res.emplace_back(nums);
-        return;
-    }
+        return res.emplace_back(nums);
+
     for (int i = 0; i < n - 1; ++i)
     {
         heaps_permutation(nums, n - 1, res);
