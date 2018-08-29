@@ -144,11 +144,25 @@ void gen_subset2(vector<int>& nums, int n, vector<vector<int>>& res) {
 	}
 }
 
+void permutation_via_remove(vector<int>& nums, int n, vector<vector<int>>& res)
+{
+    if (n == 1)
+        return res.push_back(nums);
+    for (int i = 0; i < n - 1; ++i)
+    {
+        swap(nums[i], nums[n - 1]);
+        permutation_via_remove(nums, n - 1, res);
+        swap(nums[i], nums[n - 1]);
+    }
+    permutation_via_remove(nums, n - 1, res); // i==n-1
+}
+
 int main()
 {
     std::chrono::system_clock::time_point app_start_time =
         std::chrono::system_clock::now();
     check_complete_search_algorithm("Remove method", permutation1);
+    check_complete_search_algorithm("permutation_via_remove method", permutation_via_remove);
     check_complete_search_algorithm("Insert method", permutation2);
     check_complete_search_algorithm("heaps_permutation", heaps_permutation);
     check_complete_search_algorithm("search_permutation", search_permutation);

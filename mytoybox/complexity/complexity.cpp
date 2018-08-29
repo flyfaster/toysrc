@@ -32,6 +32,21 @@ size_t exp_func(size_t n, size_t& cnt)
     return exp_func(n - 1, cnt) + exp_func(n - 2, cnt);
 }
 
+size_t master_theorem(size_t a, size_t b, size_t n, size_t& cnt)
+{
+    ++cnt;
+    if (n <= 1)
+        return n;
+    size_t res = 0;
+    auto loops = a;
+    do
+    {
+        res += master_theorem(a, b, n / b, cnt);
+//        loops--;
+    } while (loops-- > 1);
+    return res;
+}
+
 BOOST_AUTO_TEST_CASE(check_complexity)
 {
     cout << "BOOST_AUTO_TEST_CASE(check_complexity)" << endl;
@@ -51,4 +66,15 @@ BOOST_AUTO_TEST_CASE(check_complexity)
         BOOST_CHECK(cnt > (size_t) std::pow(golden_ratio, n));
         BOOST_CHECK(cnt < (size_t) std::pow(golden_ratio, n + 1));
     }
+
+    size_t a = 2;
+    size_t b = 2;
+    n = 100;
+    do {
+        cnt = 0;
+        master_theorem(a, b, n, cnt);
+        cout << "master_theorem(" << a << "," <<b<<","<<n<<") executed " << cnt << " times\n";
+        n = n << 1;
+    } while(cnt < 10000);
+
 }
