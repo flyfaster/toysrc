@@ -91,7 +91,35 @@ void quickSort3(int arr[], int left, int right) {
             quickSort3(arr, i, right);
 }
 
-std::array<int, 16> unsortarr, sortarr1, sortarr2, sortarr3;
+std::array<int, 1024> unsortarr, sortarr1, sortarr2, sortarr3, sortarr4;
+
+int partition(int* nums, int beg, int end)
+{
+    if (end - beg <= 1)
+        return beg;
+    auto pivot = nums[end - 1];
+    int i = beg - 1; // track elements less or equal than x
+    for (int j = beg; j < end - 1; ++j)
+    {
+        if (nums[j] <= pivot)
+        {
+            ++i;
+            swap(nums[i], nums[j]);
+        }
+    }
+    swap(nums[++i], nums[end - 1]);
+    return i;
+}
+
+void quicksort_mit(int* nums, int beg, int end)
+{
+    if (end - beg <= 1)
+        return;
+    int q = partition(nums, beg, end);
+    quicksort_mit(nums, beg, q);
+    quicksort_mit(nums, q + 1, end);
+}
+
 int main(int argc, char* argv[])
 {
     boost::timer::auto_cpu_timer processtimer;
@@ -113,9 +141,11 @@ int main(int argc, char* argv[])
     for (int i = 0; i < 1; i++)
     {
         for (auto&& i : unsortarr) // http://en.cppreference.com/w/cpp/language/range-for
-            i = rand() % 16;
+            i = rand() % unsortarr.size();
+
         std::copy(unsortarr.begin(), unsortarr.end(), sortarr1.begin());
         std::copy(unsortarr.begin(), unsortarr.end(), sortarr2.begin());
+        std::copy(unsortarr.begin(), unsortarr.end(), sortarr4.begin());
         memcpy(sortarr3.data(), unsortarr.data(), sizeof(unsortarr));
         {
             boost::timer::auto_cpu_timer t;
@@ -130,6 +160,9 @@ int main(int argc, char* argv[])
         quickSort3(sortarr3.data(), 0, unsortarr.size() - 1);
         cout << "quickSort3 done\n";
 
+        quicksort_mit(sortarr4.data(), 0, unsortarr.size());
+        cout << "quicksort_mit done\n";
+
         for (size_t i = 0; i < unsortarr.size(); i++)
         {
             if (sortarr1[i] != sortarr2[i])
@@ -137,6 +170,10 @@ int main(int argc, char* argv[])
                           << std::endl;
             if (sortarr1[i] != sortarr3[i])
                 std::cout << i << " diff13 " << sortarr1[i] << ", " << sortarr3[i]
+                          << std::endl;
+
+            if (sortarr1[i] != sortarr4[i])
+                std::cout << i << " diff14 " << sortarr1[i] << ", " << sortarr4[i]
                           << std::endl;
         }
     }
