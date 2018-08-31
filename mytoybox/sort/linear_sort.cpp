@@ -11,7 +11,7 @@
 #define BOOST_TEST_MODULE linear_sort
 #include <boost/test/unit_test.hpp>
 #include <boost/test/results_reporter.hpp>
-
+using namespace std;
 /*
 A: input array
 B: output array to store sorted data
@@ -31,6 +31,39 @@ COUNTING-SORT(A; B; k)
 11 	B[C[A[j]]] = A[j]	// stable sort
 12 	--C[A[j]];
 */
+void counting_sort(const vector<int>& src, vector<int>& dst, int universe)
+{
+    vector<int> counters(universe + 1, 0);
+    for (auto data : src)
+        ++counters[data];
+    std::partial_sum(counters.begin(), counters.end(), counters.begin());
+    for (int i = src.size() - 1; i >= 0; --i)
+    {
+        --counters[src[i]];
+        dst[counters[src[i]]] = src[i];
+    }
+}
+
+BOOST_AUTO_TEST_CASE(check_counting_sort)
+{
+    cout << "BOOST_AUTO_TEST_CASE(check counting_sort.)" << endl;
+    vector<int> src;
+    int universe = 1024 * 64;
+    while (src.size() < 8192)
+        src.push_back(rand() % universe);
+    vector<int> out1(src.size());
+    counting_sort(src, out1, universe);
+
+    vector<int> out2;
+    out2.assign(src.begin(), src.end());
+    sort(out2.begin(), out2.end());
+
+    for (size_t i = 0; i < src.size(); ++i)
+    {
+        BOOST_TEST_CONTEXT("check_counting_sort(" << i << ")")
+        BOOST_CHECK_EQUAL(out2[i], out1[i]);
+    }
+}
 
 /*
 RADIX-SORT(A, d)
@@ -49,7 +82,8 @@ bucket-sort(A)	// assume A is uniformly distributed in [0,1)
 	concatenate the lists B[0],...,B[n-1] together in order
 
 */
-using namespace std;
+
+
 
 BOOST_AUTO_TEST_CASE(check_linear_sort)
 {

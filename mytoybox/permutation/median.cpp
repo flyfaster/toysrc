@@ -120,3 +120,17 @@ int main(int argc, char* argv[])
 
     return 0;
 }
+
+/*
+randomized-select(A, p, r, nth)
+	if p==r
+		return A[p]
+	pivot_pos = randomized_partition(A, p, r)
+	k = pivot_pos - p + 1
+	if nth == k
+		return A[pivot_pos]
+	if nth < k
+		return randomized-select(A, p, k, nth)
+	return randomized-select(A, pivot_pos+1, r, nth-k)
+
+*/

@@ -26,3 +26,13 @@ add_executable(suffix_array suffix_array.cpp)
 target_link_libraries (suffix_array 
 	Boost::regex Boost::program_options Boost::filesystem Boost::system Boost::unit_test_framework
 	${CMAKE_THREAD_LIBS_INIT})
+	
+add_executable(segment_tree segment_tree.cpp)
+target_link_libraries (segment_tree 
+	Boost::regex Boost::program_options Boost::filesystem Boost::system Boost::unit_test_framework
+	${CMAKE_THREAD_LIBS_INIT})
+	
+add_executable(fenwick_tree fenwick_tree.cpp)
+target_link_libraries (fenwick_tree 
+	Boost::regex Boost::program_options Boost::filesystem Boost::system Boost::unit_test_framework
+	${CMAKE_THREAD_LIBS_INIT})
