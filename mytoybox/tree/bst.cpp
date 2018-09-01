@@ -4,6 +4,11 @@
 #include <stack>
 #include "basictreenode.h"
 #include "traverse_tree.h"
+#define BOOST_TEST_DYN_LINK
+#define BOOST_TEST_MODULE bst
+#include <boost/test/unit_test.hpp>
+#include <boost/test/results_reporter.hpp>
+
 using namespace std;
 
 template<typename T>
@@ -11,8 +16,7 @@ class bst_node: public basic_tree_node
 {
 public:
 	bst_node(const T& cc): data(cc) {}
-	bst_node(): data(0) {}
-    T data;
+    T data{};
     bst_node* get_left() { return static_cast<bst_node*>(left);}
     bst_node* get_right() { return static_cast<bst_node*>(right);}
 };
@@ -29,7 +33,6 @@ class bst_tree
 {
 public:
     typedef bst_node<T> node_type;
-    bst_tree ();
     ~bst_tree ();
     void set_root(node_type* nn) { root = nn; }
     template<typename Functor>
@@ -47,14 +50,68 @@ public:
         void traverse_breadth_first(Functor f) {
     	::traverse_breadth_first<bst_tree<T>::node_type, Functor>(f, root);
     }
+
+    node_type* find(T const& data)
+    {
+        node_type* node = root;
+        while (node)
+        {
+            if (node->data == data)
+                return node;
+
+            if (node->data > data)
+            {
+                node = node->get_left();
+            }
+            else
+                node = node->get_right();
+        }
+        return node;
+    }
+
+    node_type* insert(T const& data)
+    {
+        if (!root)
+        {
+            root = new node_type(data);
+            return root;
+        }
+        node_type* node = root;
+        while (true)
+        {
+        	if (node->data == data)
+        		return node;
+
+            if (node->data > data)
+            {
+                if (node->get_left())
+                    node = node->get_left();
+                else {
+                	node_type* res = new node_type(data);
+                	node->set_left(res);
+                	return res;
+                }
+                continue;
+            }
+
+            if (node->get_right())
+            	node = node->get_right();
+            else {
+            	node_type* res = new node_type(data);
+            	node->set_right(res);
+            	return res;
+            }
+        }
+    }
+
 private:
-	node_type *root;
+    node_type* root{nullptr};
 };
 
-int main (int argc, char* argv[])
+BOOST_AUTO_TEST_CASE(check_bst)
 {
-	cout << argv[0] << " start\n";
-	typedef bst_tree<char> mytree_type;
+    cout << "BOOST_AUTO_TEST_CASE(binary_search_tree)" << endl;
+	using mytree_type = bst_tree<char>;
 	mytree_type tree;
     mytree_type::node_type* anode = new mytree_type::node_type('A');
     mytree_type::node_type* bnode = new mytree_type::node_type('B');
@@ -63,8 +120,57 @@ int main (int argc, char* argv[])
     mytree_type::node_type* enode = new mytree_type::node_type('E');
     mytree_type::node_type* fnode = new mytree_type::node_type('F');
     mytree_type::node_type* gnode = new mytree_type::node_type('G');
-    mytree_type::node_type* inode = new mytree_type::node_type('I');
     mytree_type::node_type* hnode = new mytree_type::node_type('H');
+    mytree_type::node_type* inode = new mytree_type::node_type('I');
+
+    tree.set_root (fnode);
+    bnode = tree.insert('B');
+    //fnode->left = bnode;
+    fnode->right = gnode;
+    bnode->left = anode;
+    bnode->right = dnode;
+    dnode->left = cnode;
+    dnode->right = enode;
+    gnode->right = inode;
+    inode->left = hnode;
+
+
+    BOOST_CHECK_EQUAL('A', tree_min(fnode)->data);
+    BOOST_CHECK_EQUAL('C', tree_predecessor(fnode, 'D')->data);
+    BOOST_CHECK_EQUAL('I', tree_max(fnode)->data);
+    BOOST_CHECK_EQUAL('E', tree_successor(fnode, 'D')->data);
+
+    for(char target='B'; target<='I'; ++target) {
+    	BOOST_TEST_CONTEXT("check BST predecessor(" << target << ")")
+    	BOOST_CHECK(target-1 == tree_predecessor(fnode, target)->data);
+
+    	auto x = bst_search(fnode, target);
+    	BOOST_CHECK_EQUAL(target-1, bst_predecessor(fnode, x)->data);
+    }
+
+    for(char target='A'; target<'I'; ++target) {
+    	BOOST_TEST_CONTEXT("check BST successor(" << target << ")")
+    	BOOST_CHECK_EQUAL(target+1, tree_successor(fnode, target)->data);
+
+    	auto x = bst_search(fnode, target);
+    	BOOST_CHECK_EQUAL(target+1, bst_successor(fnode, x)->data);
+    }
+}
+
+int main1 (int argc, char* argv[])
+{
+	cout << argv[0] << " start\n";
+	using mytree_type = bst_tree<char>;
+	mytree_type tree;
+    mytree_type::node_type* anode = new mytree_type::node_type('A');
+    mytree_type::node_type* bnode = new mytree_type::node_type('B');
+    mytree_type::node_type* cnode = new mytree_type::node_type('C');
+    mytree_type::node_type* dnode = new mytree_type::node_type('D');
+    mytree_type::node_type* enode = new mytree_type::node_type('E');
+    mytree_type::node_type* fnode = new mytree_type::node_type('F');
+    mytree_type::node_type* gnode = new mytree_type::node_type('G');
+    mytree_type::node_type* hnode = new mytree_type::node_type('H');
+    mytree_type::node_type* inode = new mytree_type::node_type('I');
 
     tree.set_root (fnode);
     fnode->left = bnode;
@@ -99,12 +205,6 @@ int main (int argc, char* argv[])
 template<typename T> template<typename Functor>
 void bst_tree<T>::traverse_post_order(Functor f){
 	::traverse_post_order<bst_tree<T>::node_type, Functor>(f, root);
-}
-
-template<typename T>
-bst_tree<T>::bst_tree ()
-{
-	root = nullptr;
 }
 
 template<typename T>

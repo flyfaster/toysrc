@@ -14,9 +14,9 @@
 template<typename node_type, typename Functor>
 void traverse_pre_order(Functor f, basic_tree_node* root){
 	// http://en.wikipedia.org/wiki/Tree_traversal#Pre-order
-	typedef std::stack<node_type*> NodeStack;
+	using NodeStack = std::stack<node_type*>;
 	NodeStack parentStack;
-	node_type *node = static_cast<node_type*>( root);;
+	node_type *node = static_cast<node_type*>( root);
 	while (!parentStack.empty() || node != nullptr) {
 		if (node != nullptr) {
 			f(*node);
@@ -35,7 +35,7 @@ void traverse_in_order(Functor f, basic_tree_node* root){
 	// http://en.wikipedia.org/wiki/Tree_traversal#In-order
 	typedef std::stack<node_type*> NodeStack;
 	NodeStack parentStack;
-	node_type *node = static_cast<node_type*>( root);;
+	node_type *node = static_cast<node_type*>( root);
 	while (!parentStack.empty() || node != nullptr) {
 		if (node != nullptr) {
 			parentStack.push(node);
@@ -74,25 +74,173 @@ void traverse_post_order(Functor f, basic_tree_node* root){
 	}
 }
 
-template<typename node_type, typename Functor>
+template <typename node_type, typename Functor>
 void traverse_breadth_first(Functor f, basic_tree_node* root)
 { // http://en.wikipedia.org/wiki/Tree_traversal#Breadth-first_2
-	std::queue<node_type*> Q;
+    std::queue<node_type*> Q;
     if (root == nullptr)
         return;
-    Q.push (static_cast<node_type*>(root));
-    while (!Q.empty ())
+    Q.push(static_cast<node_type*>(root));
+    while (!Q.empty())
     {
-    	node_type *p;
-        p = Q.front ();
-        Q.pop ();
+        node_type* p = Q.front();
+        Q.pop();
         f(*p);
-        if (p -> get_left())
-            Q.push (p -> get_left());
-        if (p -> get_right())
-            Q.push (p -> get_right());
+        if (p->get_left())
+            Q.push(p->get_left());
+        if (p->get_right())
+            Q.push(p->get_right());
     }
 }
 
+template <typename node_type>
+node_type* tree_min(node_type* root)
+{
+    while (root && root->get_left())
+        root = root->get_left();
+    return root;
+}
+
+template <typename node_type>
+node_type* tree_max(node_type* root)
+{
+    while (root && root->get_right())
+        root = root->get_right();
+    return root;
+}
+
+template <typename node_type>
+node_type* tree_parent(node_type* root, node_type* target)
+{
+    if (root == nullptr || root == target)
+        return nullptr;
+    node_type* parent = root;
+    while (root->data != target->data)
+    {
+        parent = root;
+        if (root->data > target->data)
+            root = root->get_left();
+        else
+            root = root->get_right();
+    }
+    return parent;
+}
+
+template <typename node_type>
+node_type* bst_predecessor(node_type* root, node_type* target)
+{ // http://www.crazyforcode.com/inorder-predecessor-binary-search-tree/
+	if (target->get_left())
+		return tree_max(target->get_left());
+
+	node_type* predecessor = nullptr;
+	while (root) {
+		if (target->data > root->data) {
+			predecessor = root;
+			root = root->get_right();
+		} else if (target->data < root->data) {
+			root = root->get_left();
+		} else
+			break; // found target
+	}
+	return predecessor;
+}
+
+template <typename node_type>
+node_type* bst_successor(node_type* root, node_type* target)
+{ // http://www.crazyforcode.com/inorder-successor-binary-search-tree/
+	if (target->get_right())
+		return tree_min(target->get_right());
+
+	node_type* successor = nullptr;
+	while (root) {
+		if (target->data < root->data) {
+			successor = root;
+			root = root->get_left();
+		} else if (target->data > root->data) {
+			root = root->get_right();
+		} else
+			break; // found target
+	}
+	return successor;
+}
+
+template <typename node_type, typename T>
+node_type* bst_search(node_type* root, T const& target)
+{
+    std::stack<node_type*> parentStack;
+    while (root && root->data != target)
+    {
+        parentStack.push(root);
+        if (root->data > target)
+            root = root->get_left();
+        else
+            root = root->get_right();
+    }
+    return root;
+}
+
+template <typename node_type, typename T>
+node_type* tree_predecessor(node_type* root, T const& target)
+{
+	std::stack<node_type*> parentStack;
+	while(root && root->data != target)
+	{
+		parentStack.push(root);
+		if (root->data > target)
+			root = root->get_left();
+		else
+			root = root->get_right();
+	}
+
+    if (!root) // target is not in the tree
+        return nullptr;
+
+    auto target_node = root;
+    if (target_node->get_left())
+    	return tree_max(target_node->get_left());
+    // if it does not have left child, predecessor is its first left ancestor
+    auto parent = parentStack.empty() ? nullptr : parentStack.top();
+    while (parent && parent->get_left() == root)
+    {
+        root = parent;
+        parentStack.pop();
+        parent = parentStack.empty() ? nullptr : parentStack.top();
+    }
+
+    return parent;
+}
+
+template <typename node_type, typename T>
+node_type* tree_successor(node_type* root, T const& target)
+{
+    std::stack<node_type*> parentStack;
+    while (root && root->data != target)
+    {
+        parentStack.push(root);
+        if (root->data < target)
+            root = root->get_right();
+        else
+            root = root->get_left();
+    }
+
+    if (!root) // target is not in the tree
+        return nullptr;
+
+    if (root->get_right())
+        return tree_min(root->get_right());
+
+    node_type* parent = parentStack.empty() ? nullptr : parentStack.top();
+    while (parent && parent->get_right() == root)
+    {
+        root = parent;
+        parentStack.pop();
+        if (!parentStack.empty())
+        {
+            parent = parentStack.top();
+        }
+    }
+
+    return parent;
+}
 
 #endif /* TRAVERSE_TREE_H_ */

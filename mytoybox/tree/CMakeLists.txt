@@ -2,6 +2,7 @@ project(tree)
 cmake_minimum_required(VERSION 3.5)
 include (CTest)
 set(CMAKE_CXX_STANDARD 14) 
+set(CMAKE_BUILD_TYPE Debug)
 
 find_package(Boost REQUIRED COMPONENTS filesystem program_options unit_test_framework regex system)
 find_package(Threads)
@@ -10,7 +11,9 @@ find_package(wxWidgets COMPONENTS core base REQUIRED)
 include(${wxWidgets_USE_FILE})
  
 add_executable(bst bst.cpp basictreenode.cpp)
-
+target_link_libraries (bst 
+	Boost::regex Boost::program_options Boost::filesystem Boost::system Boost::unit_test_framework
+	${CMAKE_THREAD_LIBS_INIT})
 #add_executable(avl_test avl_test.cpp avl_tree.cpp basictreenode.cpp)
 
 add_executable(rb_tree rb_tree.cpp basictreenode.cpp)

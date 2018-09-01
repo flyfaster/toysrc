@@ -7,15 +7,10 @@
 
 #include "basictreenode.h"
 
-basic_tree_node::basic_tree_node() {
-	left = nullptr;
-	right = nullptr;
+basic_tree_node::~basic_tree_node()
+{
+    delete left;
+    left = nullptr;
+    delete right;
+    right = nullptr;
 }
-
-basic_tree_node::~basic_tree_node() {
-	delete left;
-	left = nullptr;
-	delete right;
-	right = nullptr;
-}
-
