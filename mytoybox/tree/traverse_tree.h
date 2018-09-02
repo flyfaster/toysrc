@@ -10,7 +10,7 @@
 #include "basictreenode.h"
 #include <stack>
 #include <queue>
-
+#include <cassert>
 template<typename node_type, typename Functor>
 void traverse_pre_order(Functor f, basic_tree_node* root){
 	// http://en.wikipedia.org/wiki/Tree_traversal#Pre-order
@@ -180,33 +180,46 @@ node_type* bst_search(node_type* root, T const& target)
 }
 
 template <typename node_type, typename T>
-node_type* tree_predecessor(node_type* root, T const& target)
+std::stack<node_type*> bst_search_path(node_type* root, T const& target)
 {
-	std::stack<node_type*> parentStack;
-	while(root && root->data != target)
-	{
-		parentStack.push(root);
-		if (root->data > target)
-			root = root->get_left();
-		else
-			root = root->get_right();
-	}
-
-    if (!root) // target is not in the tree
-        return nullptr;
-
-    auto target_node = root;
-    if (target_node->get_left())
-    	return tree_max(target_node->get_left());
-    // if it does not have left child, predecessor is its first left ancestor
-    auto parent = parentStack.empty() ? nullptr : parentStack.top();
-    while (parent && parent->get_left() == root)
+    std::stack<node_type*> path_stack;
+    while (root && root->data != target)
     {
-        root = parent;
-        parentStack.pop();
-        parent = parentStack.empty() ? nullptr : parentStack.top();
+        path_stack.push(root);
+        if (root->data > target)
+            root = root->get_left();
+        else
+            root = root->get_right();
     }
 
+    if (root && root->data == target)
+        path_stack.push(root);
+    else
+        return std::stack<node_type*>{}; // return empty stack if target is not found
+    return path_stack;
+}
+
+template <typename node_type, typename T>
+node_type* tree_predecessor(node_type* root, T const& target)
+{
+    auto path_stack = bst_search_path(root, target);
+    if (path_stack.empty())
+        return nullptr;
+    auto target_node = path_stack.top();
+    path_stack.pop();
+
+    if (target_node->get_left())
+        return tree_max(target_node->get_left());
+    assert(target_node->data == target);
+
+    // if it does not have left child, predecessor is its first left ancestor
+    auto parent = path_stack.empty() ? nullptr : path_stack.top();
+    while (parent && parent->get_left() == target_node)
+    {
+        target_node = parent;
+        path_stack.pop();
+        parent = path_stack.empty() ? nullptr : path_stack.top();
+    }
     return parent;
 }
 
