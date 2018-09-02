@@ -181,7 +181,8 @@ node_type* bst_search(node_type* root, T const& target)
 
 template <typename node_type, typename T>
 std::stack<node_type*> bst_search_path(node_type* root, T const& target)
-{
+{ // return path to target in a stack if target is found.
+	// target is on the top of the stack, its parent is underneath
     std::stack<node_type*> path_stack;
     while (root && root->data != target)
     {
@@ -226,31 +227,22 @@ node_type* tree_predecessor(node_type* root, T const& target)
 template <typename node_type, typename T>
 node_type* tree_successor(node_type* root, T const& target)
 {
-    std::stack<node_type*> parentStack;
-    while (root && root->data != target)
-    {
-        parentStack.push(root);
-        if (root->data < target)
-            root = root->get_right();
-        else
-            root = root->get_left();
-    }
-
-    if (!root) // target is not in the tree
+    auto path_stack = bst_search_path(root, target);
+    if (path_stack.empty())
         return nullptr;
+    auto target_node = path_stack.top();
+    path_stack.pop();
 
-    if (root->get_right())
-        return tree_min(root->get_right());
+    if (target_node->get_right())
+        return tree_min(target_node->get_right());
+    assert(target_node->data == target);
 
-    node_type* parent = parentStack.empty() ? nullptr : parentStack.top();
-    while (parent && parent->get_right() == root)
+    node_type* parent = path_stack.empty() ? nullptr : path_stack.top();
+    while (parent && parent->get_right() == target_node)
     {
-        root = parent;
-        parentStack.pop();
-        if (!parentStack.empty())
-        {
-            parent = parentStack.top();
-        }
+    	target_node = parent;
+        path_stack.pop();
+        parent = path_stack.empty() ? nullptr : path_stack.top();
     }
 
     return parent;
