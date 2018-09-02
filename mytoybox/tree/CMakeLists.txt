@@ -39,3 +39,8 @@ add_executable(fenwick_tree fenwick_tree.cpp)
 target_link_libraries (fenwick_tree 
 	Boost::regex Boost::program_options Boost::filesystem Boost::system Boost::unit_test_framework
 	${CMAKE_THREAD_LIBS_INIT})
+
+add_executable(cartesian_tree cartesian_tree.cpp)
+target_link_libraries (cartesian_tree 
+	Boost::regex Boost::program_options Boost::filesystem Boost::system Boost::unit_test_framework
+	${CMAKE_THREAD_LIBS_INIT})
