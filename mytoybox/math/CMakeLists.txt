@@ -13,8 +13,8 @@ target_link_libraries (math
 	Boost::program_options 
 	)
 	
-add_executable(bitcount bitcount.cpp )
-
+add_executable(bitcount bitcount.cpp)
+add_executable(sampling sampling.cpp)
 add_executable(combinatorics combinatorics.cpp)
 
 target_link_libraries (combinatorics 
