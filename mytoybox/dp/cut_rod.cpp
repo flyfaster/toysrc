@@ -79,3 +79,81 @@ BOOST_AUTO_TEST_CASE(check_cut_rod_recursive)
     BOOST_CHECK_EQUAL(max_value, cut_rod_dp_top_down(prices, len));
     BOOST_CHECK_EQUAL(max_value, cut_rod_dp_bottom_up(prices, len));
 }
+
+class coinChanger {
+public:
+    vector<int> memo;
+    int coinChange(vector<int>& coins, int amount) {
+        memo.assign(amount+1, -1);
+        for (auto c: coins)
+            if (c<memo.size())
+                memo[c] = 1;
+        memo[0] = 0;
+        sort(coins.begin(), coins.end());
+        for (int i=1; i<=amount; ++i) {
+            int res = memo[i];
+            for(auto c: coins)
+            {
+                if (c>i)
+                    break;
+                if (memo[i-c]<0)
+                    continue;
+                int tmp = 1+memo[i-c];
+                if (res<0 || res>tmp)
+                    res = tmp;
+            }
+            memo[i] = res;
+        }
+        return memo[amount];
+    }
+};
+
+class paint_house {
+public:
+
+    int minCost(vector<vector<int>>& costs) {
+    	vector<int> memos[3];
+        if (costs.empty() || costs[0].empty())
+            return 0;
+        for(int i=0; i<std::extent<decltype(memos)>::value ; ++i)
+            memos[i].assign(costs.size()+1, numeric_limits<int>::max());
+        memos[0][0] = costs[0][0];
+        memos[1][0] = costs[0][1];
+        memos[2][0] = costs[0][2];
+        for (int i=1; i<costs.size(); ++i){
+            memos[0][i] = costs[i][0] + min(memos[1][i-1], memos[2][i-1]);
+            memos[1][i] = costs[i][1] + min(memos[0][i-1], memos[2][i-1]);
+            memos[2][i] = costs[i][2] + min(memos[1][i-1], memos[0][i-1]);
+        }
+        return min(memos[0][costs.size()-1], min(memos[1][costs.size()-1],memos[2][costs.size()-1]));
+    }
+    int minCostII(vector<vector<int>>& costs) {
+        if (costs.empty() || costs[0].empty())
+            return 0;
+        int colors = costs[0].size();
+        int houses = costs.size();
+        // for each house, store min cost for each color
+        vector<vector<int>> memos(houses, vector<int>(colors, numeric_limits<int>::max()));
+        memos[0] = costs[0];
+
+        for (int i=1; i<houses; ++i) {
+            for(int j=0; j<colors; ++j) {
+                int& res = memos[i][j];
+                // check all colors.
+                // alternative is tracking two minimum {cost,color} for each house
+                for(int otherhousecolor=0; otherhousecolor<colors; ++otherhousecolor)
+                {
+                    if (j==otherhousecolor)
+                        continue;
+                    res = min(res, costs[i][j] + memos[i-1][otherhousecolor]) ;
+                }
+            }
+        }
+
+        int res = memos[houses-1][0];
+        for (int j=1; j<colors; ++j)
+            res = min(res, memos[houses-1][j]);
+        return res;
+    }
+
+};
