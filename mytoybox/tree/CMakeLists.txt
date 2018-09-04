@@ -44,3 +44,8 @@ add_executable(cartesian_tree cartesian_tree.cpp)
 target_link_libraries (cartesian_tree 
 	Boost::regex Boost::program_options Boost::filesystem Boost::system Boost::unit_test_framework
 	${CMAKE_THREAD_LIBS_INIT})
+	
+add_executable(construct_bst_from_preorder construct_bst_from_preorder.cpp)
+target_link_libraries (construct_bst_from_preorder 
+	Boost::regex Boost::program_options Boost::filesystem Boost::system Boost::unit_test_framework
+	${CMAKE_THREAD_LIBS_INIT})
