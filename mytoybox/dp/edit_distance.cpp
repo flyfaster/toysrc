@@ -22,6 +22,11 @@ struct myhash
     }
 };
 
+/*
+distance(a,b) = min(distance(a, b-1)+1,
+					distance(a-1, b)+1,
+					distance(a-1, b-1)+cost(a,b))
+*/
 class edit_distance
 {
 public:

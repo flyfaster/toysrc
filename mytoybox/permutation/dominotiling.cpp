@@ -32,6 +32,11 @@ struct app_setup_t
     int cols = 7;
 };
 
+/*
+let count(k, x) denote the number of ways to construct a solution for rows 1..k
+of the grid such that string x corresponds to row k.
+*/
+
 class domino_tiling
 {
     int m_height = 0;

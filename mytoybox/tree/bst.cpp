@@ -2,6 +2,8 @@
 #include <cstddef>
 #include <queue>
 #include <stack>
+#include <list>
+#include <tuple>
 #include "basictreenode.h"
 #include "traverse_tree.h"
 #define BOOST_TEST_DYN_LINK
@@ -157,49 +159,50 @@ BOOST_AUTO_TEST_CASE(check_bst)
     }
 }
 
-int main1 (int argc, char* argv[])
+auto sorted_list_to_bst(list<int>::iterator beg, int n)
 {
-	cout << argv[0] << " start\n";
-	using mytree_type = bst_tree<char>;
-	mytree_type tree;
-    mytree_type::node_type* anode = new mytree_type::node_type('A');
-    mytree_type::node_type* bnode = new mytree_type::node_type('B');
-    mytree_type::node_type* cnode = new mytree_type::node_type('C');
-    mytree_type::node_type* dnode = new mytree_type::node_type('D');
-    mytree_type::node_type* enode = new mytree_type::node_type('E');
-    mytree_type::node_type* fnode = new mytree_type::node_type('F');
-    mytree_type::node_type* gnode = new mytree_type::node_type('G');
-    mytree_type::node_type* hnode = new mytree_type::node_type('H');
-    mytree_type::node_type* inode = new mytree_type::node_type('I');
+    if (n <= 0)
+        return std::make_tuple(beg, (bst_node<int>*) nullptr);
+    auto [lbeg, lroot] = sorted_list_to_bst(beg, n / 2);
+    auto root = new bst_node<int>(*lbeg);
+    root->left = lroot;
+    auto [rbeg, rroot] = sorted_list_to_bst(++lbeg, n - 1 - n / 2);
+    root->right = rroot;
+    return std::make_tuple(rbeg, root);
+}
 
-    tree.set_root (fnode);
-    fnode->left = bnode;
-    fnode->right = gnode;
-    bnode->left = anode;
-    bnode->right = dnode;
-    dnode->left = cnode;
-    dnode->right = enode;
-    gnode->right = inode;
-    inode->left = hnode;
+void inorder(bst_node<int>* root, list<int>& out)
+{
+    if (!root)
+        return;
+    inorder(root->get_left(), out);
+    out.push_back(root->data);
+    inorder(static_cast<bst_node<int>*>(root->right), out);
+}
 
-    auto print_to_stdout=[](mytree_type::node_type& node){ std::cout<<(node) << " ";};
-    cout << "Traversal By Preorder:\n";
-    tree.traverse_pre_order (print_to_stdout);
-    cout << endl;
-    cout << "Traversal By Inorder:\n";
-    tree.traverse_in_order (print_to_stdout);
-    cout << endl;
-    cout << "Traversal By Postorder:\n";
-    tree.traverse_post_order (print_to_stdout);
-    cout << endl;
-    cout << "Breadth first traverse:\n";
-    tree.traverse_breadth_first (print_to_stdout);
-    cout << std::endl;
-    cout << "check memory leak\n";
-    cout << "valgrind --tool=memcheck --leak-check=yes --show-reachable=yes --num-callers=20 --track-fds=yes "
-    		<< argv[0] << std::endl;
-    cout << argv[0] << " done\n";
-    return 0;
+int depth(basic_tree_node* root)
+{
+    if (!root)
+        return 0;
+    return 1 + max(depth(root->left), depth(root->right));
+}
+
+BOOST_AUTO_TEST_CASE(check_sorted_list_to_bst)
+{
+    cout << "BOOST_AUTO_TEST_CASE(sorted_list_to_bst)" << endl;
+    list<int> nums;
+    for (int i = 0; i < 15; ++i)
+        nums.push_back(i);
+
+    auto [iter, root] = sorted_list_to_bst(nums.begin(), nums.size());
+
+    BOOST_CHECK(iter == nums.end());
+    list<int> dst;
+    inorder(static_cast<bst_node<int>*>(root), dst);
+    copy(dst.begin(), dst.end(), ostream_iterator<int>(cout, " "));
+    cout << "\n";
+    BOOST_CHECK(std::equal(nums.begin(), nums.end(), dst.begin()));
+    BOOST_CHECK_EQUAL(4, depth(root));
 }
 
 template<typename T> template<typename Functor>

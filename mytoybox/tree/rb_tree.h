@@ -83,7 +83,7 @@ public:
 		}
 	};
 	rb_node *root;
-	Value get(rb_node *p, Key key) throw (rb_exception);
+	Value get(rb_node *p, Key key) /* throw (rb_exception) */;
 	rb_node *getInOrderSuccessorNode(rb_node *p);
 	/*
 	 * Returns minimum key of subtree rooted at p
@@ -614,7 +614,7 @@ typename rb_tree<Key, Value>::rb_node *rb_tree<Key, Value>::remove(rb_node *p, K
 /*
  * Returns key's associated value. The search for key starts in the subtree rooted at p.
  */
-template<typename Key, typename Value>  Value rb_tree<Key, Value>::get(rb_node *p, Key key) throw(rb_exception)
+template<typename Key, typename Value>  Value rb_tree<Key, Value>::get(rb_node *p, Key key) /* throw (rb_exception) */
 {
    while (p != nullptr) {
        if      (key < p->key) p = p->get_left();
