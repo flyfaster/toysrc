@@ -85,3 +85,99 @@ BOOST_AUTO_TEST_CASE(check_construct_bst_from_preorder)
     for (int i = 0; i < size; ++i)
     	BOOST_CHECK_EQUAL(out[i], arr[i]);
 }
+
+auto bst_from_preorder_inorder(vector<int> const& pre, int pre_pos,
+                               vector<int> const& inorder, int start, int end)
+{
+    if (start > end)
+        return std::make_tuple(static_cast<bst_node*>(nullptr), pre_pos);
+
+    auto nd = new bst_node(pre[pre_pos++]);
+    if (start == end)
+        return std::make_tuple(nd, pre_pos);
+
+    int mid = find(inorder.begin() + start,
+    		inorder.begin() + end, nd->data) - inorder.begin();
+    auto [lroot, next_pre_pos] =
+        bst_from_preorder_inorder(pre, pre_pos, inorder, start, mid - 1);
+    auto [rroot, next_pos] =
+        bst_from_preorder_inorder(pre, next_pre_pos, inorder, mid + 1, end);
+    nd->left = lroot;
+    nd->right = rroot;
+    return std::make_tuple(nd, next_pos);
+}
+
+int depth(bst_node* root)
+{
+    if (!root)
+        return 0;
+    return 1 + max(depth(root->left), depth(root->right));
+}
+
+BOOST_AUTO_TEST_CASE(check_bst_from_preorder_inorder)
+{
+    cout << "BOOST_AUTO_TEST_CASE(bst_from_preorder_inorder)" << endl;
+
+    vector<int> in{4, 2, 5, 1, 6, 3};
+    vector<int> pre{1, 2, 4, 5, 3, 6};
+    auto [root, pos] = bst_from_preorder_inorder(pre, 0, in, 0, in.size() - 1);
+
+    vector<int> out;
+    inorder(root, out);
+
+    BOOST_CHECK_EQUAL(1, root->data);
+    BOOST_CHECK(equal(in.begin(), in.end(), out.begin()));
+
+    BOOST_CHECK_EQUAL(3, depth(root));
+}
+
+auto bst_from_post_in(vector<int> const& post, int post_pos, vector<int> const& inorder,
+                      int start, int end)
+{
+    if (start > end)
+        return std::make_tuple(static_cast<bst_node*>(nullptr), post_pos);
+    auto root = new bst_node(post[post_pos--]);
+    if (start == end)
+        return make_tuple(root, post_pos);
+
+    auto mid = find(inorder.begin() + start, inorder.begin() + end, root->data) -
+               inorder.begin();
+    auto [rroot, rpos] = bst_from_post_in(post, post_pos, inorder, mid + 1, end);
+    auto [lroot, lpos] = bst_from_post_in(post, rpos, inorder, start, mid - 1);
+    root->left = lroot;
+    root->right = rroot;
+    return make_tuple(root, lpos);
+}
+
+void post_order_visit(bst_node* root, vector<int>& out)
+{
+    if (!root)
+        return;
+    post_order_visit(root->left, out);
+    post_order_visit(root->right, out);
+    out.push_back(root->data);
+}
+
+BOOST_AUTO_TEST_CASE(check_bst_from_post_in)
+{
+    cout << "BOOST_AUTO_TEST_CASE(bst_from_post_in)" << endl;
+
+    vector<int> in{4, 8, 2, 5, 1, 6, 3, 7};
+    vector<int> post{8, 4, 5, 2, 6, 7, 3, 1};
+    auto [root, pos] = bst_from_post_in(post, post.size() - 1, in, 0, in.size() - 1);
+
+    vector<int> out;
+    post_order_visit(root, out);
+
+    BOOST_CHECK_EQUAL(1, root->data);
+    BOOST_CHECK_EQUAL(2, root->left->data);
+    BOOST_CHECK_EQUAL(3, root->right->data);
+
+    BOOST_CHECK(equal(post.begin(), post.end(), out.begin()));
+
+    out.clear();
+    inorder(root, out);
+    BOOST_CHECK(equal(in.begin(), in.end(), out.begin()));
+
+    BOOST_CHECK_EQUAL(4, depth(root));
+}
