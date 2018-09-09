@@ -92,19 +92,17 @@ auto bst_from_preorder_inorder(vector<int> const& pre, int pre_pos,
     if (start > end)
         return std::make_tuple(static_cast<bst_node*>(nullptr), pre_pos);
 
-    auto nd = new bst_node(pre[pre_pos++]);
+    auto root = new bst_node(pre[pre_pos++]);
     if (start == end)
-        return std::make_tuple(nd, pre_pos);
+        return std::make_tuple(root, pre_pos);
 
-    int mid = find(inorder.begin() + start,
-    		inorder.begin() + end, nd->data) - inorder.begin();
-    auto [lroot, next_pre_pos] =
+    int mid = find(inorder.begin() + start, inorder.begin() + end, root->data) -
+              inorder.begin();
+    std::tie(root->left, pre_pos) =
         bst_from_preorder_inorder(pre, pre_pos, inorder, start, mid - 1);
-    auto [rroot, next_pos] =
-        bst_from_preorder_inorder(pre, next_pre_pos, inorder, mid + 1, end);
-    nd->left = lroot;
-    nd->right = rroot;
-    return std::make_tuple(nd, next_pos);
+    std::tie(root->right, pre_pos) =
+        bst_from_preorder_inorder(pre, pre_pos, inorder, mid + 1, end);
+    return std::make_tuple(root, pre_pos);
 }
 
 int depth(bst_node* root)
@@ -142,11 +140,12 @@ auto bst_from_post_in(vector<int> const& post, int post_pos, vector<int> const& 
 
     auto mid = find(inorder.begin() + start, inorder.begin() + end, root->data) -
                inorder.begin();
-    auto [rroot, rpos] = bst_from_post_in(post, post_pos, inorder, mid + 1, end);
-    auto [lroot, lpos] = bst_from_post_in(post, rpos, inorder, start, mid - 1);
-    root->left = lroot;
-    root->right = rroot;
-    return make_tuple(root, lpos);
+
+    std::tie(root->right, post_pos) =
+        bst_from_post_in(post, post_pos, inorder, mid + 1, end);
+    std::tie(root->left, post_pos) =
+        bst_from_post_in(post, post_pos, inorder, start, mid - 1);
+    return make_tuple(root, post_pos);
 }
 
 void post_order_visit(bst_node* root, vector<int>& out)
