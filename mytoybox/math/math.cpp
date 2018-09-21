@@ -2,6 +2,11 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <iterator>
+#define BOOST_TEST_DYN_LINK
+#define BOOST_TEST_MODULE math
+#include <boost/test/unit_test.hpp>
+#include <boost/test/results_reporter.hpp>
 
 using namespace std;
 
@@ -37,17 +42,57 @@ int max_sub_sum(const vector<int>& array)
     return best;
 }
 
-int main()
+int gcd(int greater, int smaller)
 {
-    for (int i = 0; i < 9; ++i)
+    while (smaller != 0)
+    {
+        greater %= smaller;
+        std::swap(greater, smaller);
+    }
+    return std::abs(greater);
+}
+
+std::vector<int> get_prime(int n)
+{
+    vector<int> isprime(max(2, n + 1), 1);         // init all prime, at least 2 [0,1].
+    fill(isprime.begin(), isprime.begin() + 2, 0); // 0 and 1 are not prime
+    for (int i = 2; i * i <= n; ++i)
+    {
+        if (isprime[i])
+            for (int j = i + i; j <= n; j += i)
+                isprime[j] = 0; // not prime
+    }
+    vector<int> prime_list;
+    for (int i = 2; i <= n; ++i)
+        if (isprime[i])
+            prime_list.push_back(i);
+    return prime_list;
+}
+
+BOOST_AUTO_TEST_CASE(check_get_prime)
+{
+    cout << "BOOST_AUTO_TEST_CASE(get the list of primes up to n.)" << endl;
+    int n = 1000;
+
+    auto prime_list = get_prime(1000);
+    BOOST_CHECK_EQUAL(prime_list.size(), 168);
+    BOOST_CHECK_EQUAL(prime_list[0], 2);
+    BOOST_CHECK_EQUAL(prime_list[1], 3);
+    BOOST_CHECK_EQUAL(*prime_list.rbegin(), 997);
+}
+
+BOOST_AUTO_TEST_CASE(check_binet_formula)
+{
+    cout << "BOOST_AUTO_TEST_CASE(binet_formula)" << endl;
+    int n = 20;
+    cout << "binet_formula\n";
+    for (int i = 0; i < n; ++i)
         cout << binet_formula(i) << " ";
     cout << "\n";
 
-    for (int i = 0; i < 20; ++i)
+    for (int i = 0; i < n * 2; ++i)
     {
-        if (binet_formula(i) != fibonacci(i))
-            cout << i << "th value mismatch " << binet_formula(i) << " " << fibonacci(i)
-                 << "\n";
+        BOOST_TEST_CONTEXT("fibonacci(" << i << ")")
+        BOOST_CHECK_EQUAL(binet_formula(i), fibonacci(i));
     }
-    return 0;
 }

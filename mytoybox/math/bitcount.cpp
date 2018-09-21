@@ -35,7 +35,7 @@ void process_subset(int x)
     do
     {
         cout << b << " ";
-    } while (b = (b - x) & x);
+    } while ((b = (b - x) & x));
     cout << "\n";
 }
 

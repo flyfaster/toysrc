@@ -30,23 +30,27 @@ void traverse_pre_order(Functor f, basic_tree_node* root){
 	}
 }
 
-template<typename node_type, typename Functor>
-void traverse_in_order(Functor f, basic_tree_node* root){
-	// http://en.wikipedia.org/wiki/Tree_traversal#In-order
-	typedef std::stack<node_type*> NodeStack;
-	NodeStack parentStack;
-	node_type *node = static_cast<node_type*>( root);
-	while (!parentStack.empty() || node != nullptr) {
-		if (node != nullptr) {
-			parentStack.push(node);
-			node = node->get_left();
-		} else {
-			node = parentStack.top();
-			parentStack.pop();
-			f(*node);
-			node = node->get_right();
-		}
-	}
+template <typename node_type, typename Functor>
+void traverse_in_order(Functor f, basic_tree_node* root)
+{
+    // http://en.wikipedia.org/wiki/Tree_traversal#In-order
+    std::stack<node_type*> parentStack;
+    node_type* node = static_cast<node_type*>(root);
+    while (!parentStack.empty() || node)
+    {
+        if (node)
+        {
+            parentStack.push(node);
+            node = node->get_left();
+        }
+        else
+        {
+            node = parentStack.top();
+            parentStack.pop();
+            f(*node);
+            node = node->get_right();
+        }
+    }
 }
 
 template<typename node_type, typename Functor>

@@ -49,3 +49,8 @@ add_executable(construct_bst_from_preorder construct_bst_from_preorder.cpp)
 target_link_libraries (construct_bst_from_preorder 
 	Boost::regex Boost::program_options Boost::filesystem Boost::system Boost::unit_test_framework
 	${CMAKE_THREAD_LIBS_INIT})
+	
+add_executable(sparse_table sparse_table.cpp)
+target_link_libraries (sparse_table 
+	Boost::regex Boost::program_options Boost::filesystem Boost::system Boost::unit_test_framework
+	${CMAKE_THREAD_LIBS_INIT})
