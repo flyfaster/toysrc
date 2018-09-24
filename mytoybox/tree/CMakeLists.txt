@@ -24,6 +24,7 @@ add_test(rb_tree_test rb_tree)
 add_executable(rbtree2 rbtree2.cpp)
 
 add_executable(rbtree3 rbtree3.cpp)
+add_executable(unionfind unionfind.cpp)
 
 add_executable(suffix_array suffix_array.cpp)
 target_link_libraries (suffix_array 
