@@ -3,7 +3,7 @@
 #include <limits>
 using namespace std;
 
-int get_bits(int data)
+int count_bits(int data)
 {
     bitset<numeric_limits<decltype(data)>::digits> d_bits(data);
     return d_bits.count();
@@ -44,7 +44,7 @@ int main()
     int mismatch_cnt = 0;
     for (int i = 0; i < 64; ++i)
     {
-        auto a = get_bits(i);
+        auto a = count_bits(i);
         auto b = countbits1(i);
         auto c = countbits(i);
         if (a != b || a != c)
@@ -53,11 +53,12 @@ int main()
                  << ", " << c << "\n";
             ++mismatch_cnt;
         }
+
         {
             int x = i;
             int a = x & ~(x - 1); // only right most bit left, other bits are 0
             int b = x & (-x);
-            if (a != b || get_bits(a) > 1)
+            if (a != b || count_bits(a) > 1)
             {
                 cout << i << " lowest bit " << a << "!=" << b << "\n";
                 ++mismatch_cnt;

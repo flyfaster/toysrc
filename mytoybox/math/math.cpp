@@ -96,3 +96,23 @@ BOOST_AUTO_TEST_CASE(check_binet_formula)
         BOOST_CHECK_EQUAL(binet_formula(i), fibonacci(i));
     }
 }
+
+BOOST_AUTO_TEST_CASE(check_round)
+{
+    cout << "BOOST_AUTO_TEST_CASE(lrint vs lround)" << endl;
+    int n = 2000;
+    for (int i = 1; i < n; ++i)
+    {
+    	auto order = std::log2(i);
+        BOOST_TEST_CONTEXT("lrint and lround(" << i << ")")
+        BOOST_CHECK_EQUAL(std::lrint(order), std::lround(order));
+    }
+
+    for (int i = 1; i < n; ++i)
+    {
+    	auto order = std::log2(i);
+    	auto c = (order - std::floor(order))>=0.5? std::ceil(order):std::floor(order);
+        BOOST_TEST_CONTEXT("lrint and ceil, floor(" << i << ")")
+        BOOST_CHECK(std::lrint(order)==c);
+    }
+}

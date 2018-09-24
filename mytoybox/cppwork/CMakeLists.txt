@@ -25,3 +25,5 @@ add_executable(container container.cpp)
 target_link_libraries (container 
 	Boost::unit_test_framework Boost::system 
 	${CMAKE_THREAD_LIBS_INIT})
+	
+add_executable(init_list init_list.cpp)

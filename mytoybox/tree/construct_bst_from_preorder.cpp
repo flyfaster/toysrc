@@ -157,6 +157,21 @@ void post_order_visit(bst_node* root, vector<int>& out)
     out.push_back(root->data);
 }
 
+auto is_height_balanced(bst_node* root)
+{
+    if (!root)
+        return make_tuple(true, -1);
+    auto [is_balance, left_height] = is_height_balanced(root->left);
+    if (!is_balance)
+        return make_tuple(is_balance, left_height);
+    auto [is_right_balance, right_height] = is_height_balanced(root->right);
+    if (!is_right_balance)
+        return make_tuple(is_right_balance, right_height);
+    if (abs(left_height - right_height) <= 1)
+        return make_tuple(true, max(left_height, right_height) + 1);
+    return make_tuple(false, max(left_height, right_height) + 1);
+}
+
 BOOST_AUTO_TEST_CASE(check_bst_from_post_in)
 {
     cout << "BOOST_AUTO_TEST_CASE(bst_from_post_in)" << endl;
@@ -167,6 +182,10 @@ BOOST_AUTO_TEST_CASE(check_bst_from_post_in)
 
     vector<int> out;
     post_order_visit(root, out);
+
+    auto [balance, height] = is_height_balanced(root);
+    BOOST_CHECK(balance);
+    BOOST_CHECK_EQUAL((int)log2(in.size()), height);
 
     BOOST_CHECK_EQUAL(1, root->data);
     BOOST_CHECK_EQUAL(2, root->left->data);
