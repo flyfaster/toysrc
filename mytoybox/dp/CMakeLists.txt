@@ -16,3 +16,8 @@ add_executable(cut_rod cut_rod.cpp)
 target_link_libraries (cut_rod 
 	Boost::regex Boost::program_options Boost::filesystem Boost::system Boost::unit_test_framework
 	${CMAKE_THREAD_LIBS_INIT})
+	
+add_executable(lis lis.cpp)
+target_link_libraries (lis 
+	Boost::regex Boost::program_options Boost::filesystem Boost::system Boost::unit_test_framework
+	${CMAKE_THREAD_LIBS_INIT})

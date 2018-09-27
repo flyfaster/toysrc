@@ -1,6 +1,11 @@
 #include <bitset>
 #include <iostream>
 #include <limits>
+#define BOOST_TEST_DYN_LINK
+#define BOOST_TEST_MODULE bitcount
+#include <boost/test/unit_test.hpp>
+#include <boost/test/results_reporter.hpp>
+
 using namespace std;
 
 int count_bits(int data)
@@ -39,7 +44,7 @@ void process_subset(int x)
     cout << "\n";
 }
 
-int main()
+BOOST_AUTO_TEST_CASE(check_num_bits)
 {
     int mismatch_cnt = 0;
     for (int i = 0; i < 64; ++i)
@@ -65,11 +70,22 @@ int main()
             }
         }
     }
-    if (!mismatch_cnt)
-        cout << "Got the same result by counting bits in different ways.\n";
+    BOOST_CHECK_EQUAL(0, mismatch_cnt);
 
     for (int x = 0; x < 16; ++x)
         process_subset(x);
 
-    return 0;
 }
+
+BOOST_AUTO_TEST_CASE(check_longest_increasing_subsequence_max_sum)
+{
+    int src = 5;
+    int target = src & (src-1);
+    BOOST_TEST_CONTEXT("src & (src-1) clear right most 1")
+    BOOST_CHECK_EQUAL(4, target);
+
+    target = src & ~(src-1);
+    BOOST_TEST_CONTEXT("src & ~(src-1) get right most 1")
+    BOOST_CHECK_EQUAL(1, target);
+}
+

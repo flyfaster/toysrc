@@ -14,6 +14,10 @@ target_link_libraries (math
 	${CMAKE_THREAD_LIBS_INIT})
 	
 add_executable(bitcount bitcount.cpp)
+target_link_libraries (bitcount 
+	Boost::regex Boost::program_options Boost::filesystem Boost::system Boost::unit_test_framework
+	${CMAKE_THREAD_LIBS_INIT})
+	
 add_executable(sampling sampling.cpp)
 add_executable(combinatorics combinatorics.cpp)
 
