@@ -30,19 +30,20 @@ Rabin-Karp(T, pattern, radix, prime)
 size_t rabin_karp(const char* txt, const char* pattern)
 {
     size_t radix = 256;
-    size_t prime = 997; // 7919
+    size_t prime = 100000007; // 65537
     size_t n = strlen(txt);
     size_t m = strlen(pattern);
-//    size_t h = (size_t) std::pow(radix, m - 1)%prime;
     size_t pattern_hash = 0;
     size_t txt_hash = 0;
-    size_t h = 1;
 
     if (n < m)
         return -1;
 
+    size_t h = 1;
     for (int i = 0; i < m - 1; ++i)
         h = (h * radix) % prime;
+    // std::pow overflow so it can't be used
+    //h = (size_t) std::pow(radix, m - 1)%prime;
 
     for (int i = 0; i < m; ++i)
     {
