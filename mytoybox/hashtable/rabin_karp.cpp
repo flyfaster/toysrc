@@ -29,24 +29,26 @@ Rabin-Karp(T, pattern, radix, prime)
 
 size_t rabin_karp(const char* txt, const char* pattern)
 {
-    size_t radix = 26;
+    size_t radix = 256;
     size_t prime = 997; // 7919
     size_t n = strlen(txt);
     size_t m = strlen(pattern);
-    size_t h = (size_t) std::pow(radix, m - 1);
+//    size_t h = (size_t) std::pow(radix, m - 1)%prime;
     size_t pattern_hash = 0;
     size_t txt_hash = 0;
+    size_t h = 1;
 
     if (n < m)
         return -1;
+
+    for (int i = 0; i < m - 1; ++i)
+        h = (h * radix) % prime;
 
     for (int i = 0; i < m; ++i)
     {
         pattern_hash = ((radix * pattern_hash + pattern[i]) % prime);
         txt_hash = ((radix * txt_hash + txt[i]) % prime);
     }
-
-
 
     for (int s = 0; s <= n - m; ++s)
     {
@@ -58,10 +60,10 @@ size_t rabin_karp(const char* txt, const char* pattern)
 
         if (s < n - m)
         {
-        	txt_hash = (radix * (txt_hash - txt[s]*h) + txt[s+m]) % prime;
-
-        	while (txt_hash < txt[s] * h)
+        	while(txt_hash < txt[s]*h)
         		txt_hash += prime;
+
+        	txt_hash = (radix * (txt_hash - txt[s]*h) + txt[s+m]) % prime;
         }
     }
     return -1;
@@ -89,4 +91,14 @@ BOOST_AUTO_TEST_CASE(check_rabin_karp)
     pattern = text;
     BOOST_TEST_CONTEXT("search " << text << " for " << pattern)
     BOOST_CHECK_EQUAL(0, rabin_karp(text.c_str(), pattern.c_str()));
+
+    text = "Supercalifragilisticexpialidocious";
+    pattern = "fragilisticexpiali";
+    BOOST_TEST_CONTEXT("search " << text << " for " << pattern)
+    BOOST_CHECK_EQUAL(text.find(pattern), rabin_karp(text.c_str(), pattern.c_str()));
+
+    pattern = "ticexpialidocious";
+    BOOST_TEST_CONTEXT("search " << text << " for " << pattern)
+    BOOST_CHECK_EQUAL(text.find(pattern), rabin_karp(text.c_str(), pattern.c_str()));
+
 }
