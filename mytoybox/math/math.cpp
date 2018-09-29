@@ -1,8 +1,10 @@
-#include <cmath>
-#include <iostream>
-#include <vector>
 #include <algorithm>
+#include <cmath>
+#include <iomanip>
+#include <iostream>
 #include <iterator>
+#include <limits>
+#include <vector>
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE math
 #include <boost/test/unit_test.hpp>
@@ -115,4 +117,48 @@ BOOST_AUTO_TEST_CASE(check_round)
         BOOST_TEST_CONTEXT("lrint and ceil, floor(" << i << ")")
         BOOST_CHECK(std::lrint(order)==c);
     }
+
+    float fd = 100000000.0;
+    while (fd * 10.0 > fd)
+    {
+        fd *= 10.0;
+        auto next = std::nextafter(fd, fd * 1.1);
+        cout << "nextafter " << std::setprecision(20) << fd << " is " << next << endl;
+        if (next - fd > 2)
+        	break;
+    }
+    //    nextafter 1000000000 is 1000000000.0000001192
+    //    nextafter 10000000000 is 10000000000.000001907
+    //    nextafter 99999997952 is 99999997952.000015259
+    //    nextafter 999999995904 is 999999995904.00012207
+    //    nextafter 9999999827968 is 9999999827968.0019531
+    //    nextafter 100000000376832 is 100000000376832.01562
+    //    nextafter 999999986991104 is 999999986991104.125
+    //    nextafter 10000000272564224 is 10000000272564226
+    //    nextafter 99999998430674944 is 99999998430674960
+
+    fd = 10000000272564224.f;
+    for (int i = 0;; i++)
+    {
+        if (fd < fd + i)
+        {
+            cout << std::setprecision(30) << fd << " + " << i << "=" << (fd + i) << endl;
+            auto epsilon = fd * std::numeric_limits<decltype(fd)>::epsilon();
+            cout << std::setprecision(30) << fd
+                 << " * FLT_EPSILON = " << (fd * std::numeric_limits<decltype(fd)>::epsilon())
+                 << endl;
+            cout << "i/epsilon = " << i/epsilon <<endl;
+            break;
+        }
+    }
+//    10000000272564224 + 536870945=10000001346306048
+//    10000000272564224 * FLT_EPSILON = 1192092928
+//    i/epsilon = 0.450360000133514404296875
+    auto fd1 = std::numeric_limits<float>::max() - 1;
+    auto fd2 = std::numeric_limits<float>::max() - 2;
+    // 3.40282346638528859811704183485e+38 == 3.40282346638528859811704183485e+38
+    if (fd1 == fd2)
+    	cout << fd1 << " == " << fd2 << endl;
+    else
+    	cout << fd1 << " != " << fd2 << endl;
 }
