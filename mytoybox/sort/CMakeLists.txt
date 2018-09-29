@@ -10,6 +10,10 @@ find_package(Boost REQUIRED COMPONENTS timer thread system program_options unit_
 
 add_executable(heapsort heapsort.cpp)
 add_executable(mergesort mergesort.cpp)
+target_link_libraries (mergesort 
+	Boost::unit_test_framework Boost::system 
+	${CMAKE_THREAD_LIBS_INIT})
+	
 add_executable(quicksort quicksort.cpp)
 
 target_link_libraries (mergesort

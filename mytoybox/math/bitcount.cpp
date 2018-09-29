@@ -74,18 +74,84 @@ BOOST_AUTO_TEST_CASE(check_num_bits)
 
     for (int x = 0; x < 16; ++x)
         process_subset(x);
-
 }
 
-BOOST_AUTO_TEST_CASE(check_longest_increasing_subsequence_max_sum)
+int get_msb(int n)
+{
+    n |= n >> 1;
+    n |= n >> 2;
+    n |= n >> 4;
+    n |= n >> 8;
+    n |= n >> 16;
+    n += 1;
+    return n >> 1;
+}
+
+BOOST_AUTO_TEST_CASE(check_msb)
 {
     int src = 5;
-    int target = src & (src-1);
-    BOOST_TEST_CONTEXT("src & (src-1) clear right most 1")
-    BOOST_CHECK_EQUAL(4, target);
+    BOOST_TEST_CONTEXT("Get MSB of " << src)
+    BOOST_CHECK_EQUAL(4, get_msb(src));
 
-    target = src & ~(src-1);
-    BOOST_TEST_CONTEXT("src & ~(src-1) get right most 1")
-    BOOST_CHECK_EQUAL(1, target);
+    src = 1;
+    BOOST_TEST_CONTEXT("Get MSB of " << src)
+    BOOST_CHECK_EQUAL(1, get_msb(src));
+
+    for (src = 1; src < 65536; ++src)
+    {
+        int exponent = (int) std::log2(src);
+        BOOST_TEST_CONTEXT("Get MSB of " << src)
+        BOOST_CHECK_EQUAL(1 << exponent, get_msb(src));
+    }
 }
 
+int clear_lsb(int n)
+{
+    return n & (n - 1);
+}
+
+int get_lsb(int n)
+{
+    return n & ~(n - 1);
+}
+
+int get_lsb2(int n)
+{
+    return n & -n;
+}
+
+BOOST_AUTO_TEST_CASE(check_lsb)
+{
+    int src = 5;
+    int target = src & (src - 1);
+    BOOST_TEST_CONTEXT("src & (src-1) clear LSB from " << src)
+    BOOST_CHECK_EQUAL(4, clear_lsb(src));
+
+    target = get_lsb(src);
+    BOOST_TEST_CONTEXT("src & ~(src-1) get LSB from " << src)
+    BOOST_CHECK_EQUAL(1, target);
+
+    target = src & -src;
+    BOOST_TEST_CONTEXT("src & -src get LSB from " << src)
+    BOOST_CHECK_EQUAL(1, target);
+
+    src = 6;
+    target = get_lsb2(src);
+    BOOST_TEST_CONTEXT("src & -src get LSB from " << src)
+    BOOST_CHECK_EQUAL(2, target);
+
+    src = 7;
+    target = src & -src;
+    BOOST_TEST_CONTEXT("src & -src get right most 1 from " << src)
+    BOOST_CHECK_EQUAL(1, target);
+
+    src = 0;
+    target = src & -src;
+    BOOST_TEST_CONTEXT("src & -src get right most 1 from " << src)
+    BOOST_CHECK_EQUAL(0, target);
+
+    src = 0;
+    target = src & (src - 1);
+    BOOST_TEST_CONTEXT("src & (src-1) clear right most 1 from " << src)
+    BOOST_CHECK_EQUAL(0, target);
+}

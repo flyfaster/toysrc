@@ -2,7 +2,13 @@
 #include <array>
 #include <iterator>
 #include <vector>
+#include <random>
 #include <boost/timer/timer.hpp>
+#define BOOST_TEST_DYN_LINK
+#define BOOST_TEST_MODULE mergesort
+#include <boost/test/unit_test.hpp>
+#include <boost/test/results_reporter.hpp>
+
 using namespace std;
 
 template<typename I>
@@ -165,13 +171,17 @@ int compare_array(std::array<T, N>& left, std::array<T,N>& right) {
 	}
 	return unmatchcnt;
 }
-int main(int argc, char* argv[])
+
+BOOST_AUTO_TEST_CASE(check_merge_sort)
 {
 	std::cout << "http://rosettacode.org/wiki/Sorting_algorithms/Merge_sort#C.2B.2B" <<std::endl;
 	std::cout << "g++ -o mergesort.exe -std=c++11 mergesort.cpp" << std::endl;
 	std::array<int, 64> unsortarr, sortarr1, sortarr2, sortarr3;
+    std::random_device rd;
+    std::uniform_int_distribution<int> dist(0, unsortarr.size() * 2);
+
 	for (auto&& i : unsortarr) // http://en.cppreference.com/w/cpp/language/range-for
-		i = rand() % (unsortarr.size() * 2);
+		i = dist(rd);
 	std::copy(unsortarr.begin(), unsortarr.end(), sortarr1.begin());
 	std::copy(unsortarr.begin(), unsortarr.end(), sortarr2.begin());
 	std::copy(unsortarr.begin(), unsortarr.end(), sortarr3.begin());
@@ -181,6 +191,149 @@ int main(int argc, char* argv[])
 
 	compare_array(sortarr1, sortarr2);
 	compare_array(sortarr2, sortarr3);
-	std::cout <<argv[0] << " done\n";
-	return 0;
+}
+
+struct node
+{
+    node(int d, node* n) : data(d), next(n)
+    {
+    }
+    int data = 0;
+    node* next = nullptr;
+};
+
+std::pair<node*, node*> split(node* head)
+{
+    node* slow = head;
+    node* fast = head->next;
+    while (fast)
+    {
+        fast = fast->next;
+        if (fast)
+        {
+            fast = fast->next;
+            slow = slow->next;
+        }
+    }
+    fast = slow->next;
+    slow->next = nullptr;
+    return std::make_pair(head, fast);
+}
+
+node* merge_list(node* lhs, node* rhs)
+{
+    if (!lhs)
+        return rhs;
+    if (!rhs)
+        return lhs;
+    auto liter = lhs;
+    auto riter = rhs;
+    node* head = lhs->data < rhs->data ? lhs : rhs;
+    if (head == liter)
+        liter = liter->next;
+    else
+        riter = riter->next;
+
+    node* cur = head;
+    while (liter && riter)
+    {
+        if (liter->data < riter->data)
+        {
+            cur->next = liter;
+            liter = liter->next;
+        }
+        else
+        {
+            cur->next = riter;
+            riter = riter->next;
+        }
+        cur = cur->next;
+    }
+    if (liter)
+        cur->next = liter;
+    else
+        cur->next = riter;
+    return head;
+}
+
+node* merge_sort(node* head)
+{
+	if (!head || !head->next)
+		return head;
+	auto two_lists = split(head);
+	auto lhs = merge_sort(two_lists.first);
+	auto rhs = merge_sort(two_lists.second);
+	return merge_list(lhs, rhs);
+}
+
+std::vector<int> list_to_vec(node* head)
+{
+    vector<int> res;
+    while (head)
+    {
+        res.push_back(head->data);
+        head = head->next;
+    }
+    return res;
+}
+
+node* vec_to_list(std::vector<int>& nums)
+{
+	if (nums.empty())
+		return nullptr;
+	node* head = new node(nums[0], nullptr);
+	node* cur = head;
+
+	for (int i=1; i<nums.size(); ++i)
+	{
+		cur->next = new node(nums[i], nullptr);
+		cur = cur->next;
+	}
+	return head;
+}
+
+void free_list(node* head)
+{
+    while (head)
+    {
+        auto next = head->next;
+        delete head;
+        head = next;
+    }
+}
+
+BOOST_AUTO_TEST_CASE(check_merge_sort_list)
+{
+	{
+	std::vector<int> nums{3, 2, 1};
+    node* head = vec_to_list(nums);
+
+    auto sorted_head = merge_sort(head);
+    BOOST_CHECK_EQUAL(1, sorted_head->data);
+    BOOST_CHECK_EQUAL(2, sorted_head->next->data);
+    BOOST_CHECK_EQUAL(3, sorted_head->next->next->data);
+    BOOST_CHECK_EQUAL(nullptr, sorted_head->next->next->next);
+    free_list(sorted_head);
+	}
+
+    std::random_device rd;
+    std::uniform_int_distribution<int> dist(0, 1 << 30);
+    for (int i = 0; i < 128; ++i)
+    {
+        vector<int> nums;
+        for (int j = 0; j < i; j++)
+            nums.push_back(dist(rd));
+
+        auto head = vec_to_list(nums);
+
+        head = merge_sort(head);
+
+        auto res = list_to_vec(head);
+
+        sort(nums.begin(), nums.end());
+        BOOST_CHECK_EQUAL(nums.size(), res.size());
+        BOOST_TEST_CONTEXT("size " << nums.size())
+        BOOST_CHECK(std::equal(nums.begin(), nums.end(), res.begin()));
+        free_list(head);
+    }
 }
