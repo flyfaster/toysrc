@@ -71,6 +71,73 @@ public:
         return node;
     }
 
+    node_type* insert2(T const& data)
+    {
+        if (!root)
+            return root = new node_type(data);
+
+        node_type* cur = root;
+        node_type* parent = nullptr;
+        while (cur)
+        {
+            parent = cur;
+            if (cur->data == data)
+                return cur;
+
+            cur = (cur->data < data) ? cur->get_right() : cur->get_left();
+        }
+
+        node_type* res = new node_type(data);
+        if (parent->data < data)
+            parent->set_right(res);
+        else
+            parent->set_left(res);
+        return res;
+    }
+
+    bool del(T const& data)
+    {
+    	node_type* cur = root;
+    	node_type* parent = nullptr;
+    	while (cur && cur->data != data)
+    	{
+    		parent = cur;
+    		cur = data < cur->data ? cur->get_left() : cur->get_right();
+    	}
+    	if (!cur)
+    		return false;
+    	auto key_node = cur;
+    	if (key_node->get_right())
+    	{
+    		// find min of rtree
+    		auto rk = key_node->get_right();
+    		auto rp = key_node; // parent
+    		while (rk->get_left())
+    		{
+    			rp = rk;
+    			rk = rk->get_left();
+    		}
+    		key_node->data = rk->data; // replace with successor
+    		if (rp->get_left() == rk)
+    			rp->set_left(rk->get_right());
+    		else
+    			rp->set_right(rk->get_right());
+    	}
+    	else	// no right kid
+    	{
+    		if (root == key_node)
+    			root = key_node;
+    		else
+    		{
+    			if (parent->get_left() == key_node)
+    				parent->set_left(key_node->get_left());
+    			else
+    				parent->set_right(key_node->get_left());
+    		}
+    	}
+    	return true;
+    }
+
     node_type* insert(T const& data)
     {
         if (!root)

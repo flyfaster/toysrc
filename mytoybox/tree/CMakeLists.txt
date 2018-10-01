@@ -55,3 +55,13 @@ add_executable(sparse_table sparse_table.cpp)
 target_link_libraries (sparse_table 
 	Boost::regex Boost::program_options Boost::filesystem Boost::system Boost::unit_test_framework
 	${CMAKE_THREAD_LIBS_INIT})
+
+#include_directories(/usr/include/c++/4.2.1)
+#include_directories(/usr/local/Cellar/gcc/8.1.0/include/c++/8.1.0/experimental 
+#/usr/local/Cellar/gcc/8.1.0/include/c++/8.1.0
+#/usr/local/Cellar/gcc/8.1.0/include/c++/8.1.0
+#/usr/local/Cellar/gcc/8.1.0/include/c++/8.1.0/x86_64-apple-darwin16.7.0)
+add_executable(bst_rank bst_rank.cpp)
+target_link_libraries (bst_rank 
+	Boost::regex Boost::program_options Boost::filesystem Boost::system Boost::unit_test_framework
+	${CMAKE_THREAD_LIBS_INIT})

@@ -52,7 +52,8 @@ rbptr rb_build_tree(rbptr root)
     {
         if (sscanf(arg, "%d", &k) == 1)
         {
-            if (p = (struct red_black_node*) malloc(sizeof(struct red_black_node)))
+        	p = (red_black_node*) malloc(sizeof(red_black_node));
+            if (p)
             {
                 p->key = k;
                 p->lft = &NIL;
