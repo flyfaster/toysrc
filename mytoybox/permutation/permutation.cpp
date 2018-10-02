@@ -13,7 +13,10 @@ using namespace std;
 void permutation1(vector<int>& nums, int n, vector<vector<int>>& res)
 {
     if (n == 1)
-    	return res.emplace_back(nums);
+    {
+        res.emplace_back(nums); // C++17 return type is reference
+        return;
+    }
 
     for (int i = 0; i < n; ++i)
     {
@@ -23,10 +26,30 @@ void permutation1(vector<int>& nums, int n, vector<vector<int>>& res)
     }
 }
 
+void permutation_via_remove(vector<int>& nums, int n, vector<vector<int>>& res)
+{
+    if (n == 1)
+    {
+        res.push_back(nums);
+        return;
+    }
+
+    for (int i = 0; i < n - 1; ++i)
+    {
+        swap(nums[i], nums[n - 1]);
+        permutation_via_remove(nums, n - 1, res);
+        swap(nums[i], nums[n - 1]);
+    }
+    permutation_via_remove(nums, n - 1, res); // i==n-1
+}
+
 void permutation2(vector<int>& nums, int n, vector<vector<int>>& res)
 {
     if (n == 1)
-        return res.emplace_back(vector<int>{nums[n - 1]});
+    {
+        res.emplace_back(vector<int>{nums[n - 1]});
+        return;
+    }
 
     vector<vector<int>> res2;
     permutation2(nums, n - 1, res2);
@@ -47,7 +70,10 @@ void permutation2(vector<int>& nums, int n, vector<vector<int>>& res)
 void heaps_permutation(vector<int>& nums, int n, vector<vector<int>>& res)
 {
     if (n == 1)
-        return res.emplace_back(nums);
+    {
+        res.emplace_back(nums);
+        return;
+    }
 
     for (int i = 0; i < n - 1; ++i)
     {
@@ -117,44 +143,66 @@ void check_complete_search_algorithm(const char* alg_name, PermutationFunc alg)
          << " milliseconds, there are " << sv.size() << " unique permutations\n";
 }
 
-void gen_subset(vector<int>& nums, int n, vector<vector<int>>& res) {
-	vector<int> subset;
-	std::function<void(int)> search;
-	search = [&nums, &subset, &res, &search](int k) {
-		if (k==nums.size())
-			return res.emplace_back(subset);
-
-		search(k+1);
-		subset.push_back(nums[k]);
-		search(k+1);
-		subset.pop_back();
-	};
-	search(0);
-}
-
-void gen_subset2(vector<int>& nums, int n, vector<vector<int>>& res) {
-	for (int i=0; i< (1<<n); ++i) {
-		bitset<numeric_limits<int>::digits> bits(i);
-		vector<int> subset;
-		for (int bit=0; bit<n; ++bit) {
-			if (bits[bit])
-				subset.push_back(nums[bit]);
-		}
-		res.emplace_back(move(subset));
-	}
-}
-
-void permutation_via_remove(vector<int>& nums, int n, vector<vector<int>>& res)
+void gen_subset(vector<int>& nums, int n, vector<vector<int>>& res)
 {
-    if (n == 1)
-        return res.push_back(nums);
-    for (int i = 0; i < n - 1; ++i)
+    vector<int> subset;
+    std::function<void(int)> search;
+    search = [&nums, &subset, &res, &search](int k) {
+        if (k == nums.size())
+        {
+            res.emplace_back(subset);
+            return;
+        }
+
+        search(k + 1);
+        subset.push_back(nums[k]);
+        search(k + 1);
+        subset.pop_back();
+    };
+    search(0);
+}
+
+void gen_subset2(vector<int>& nums, int n, vector<vector<int>>& res)
+{
+    for (int i = 0; i < (1 << n); ++i)
     {
-        swap(nums[i], nums[n - 1]);
-        permutation_via_remove(nums, n - 1, res);
-        swap(nums[i], nums[n - 1]);
+        bitset<numeric_limits<int>::digits> bits(i);
+        vector<int> subset;
+        for (int bit = 0; bit < n; ++bit)
+        {
+            if (bits[bit])
+                subset.push_back(nums[bit]);
+        }
+        res.emplace_back(move(subset));
     }
-    permutation_via_remove(nums, n - 1, res); // i==n-1
+}
+
+void DirectedCombinations(int n, int k, int offset, vector<int>& partial_combination,
+                          vector<vector<int>>& result)
+{
+    if (size(partial_combination) == k)
+    {
+        result.emplace_back(partial_combination);
+        return;
+    }
+
+    // Generate remaining combinations over {offset, ..., n - 1} of size
+    // num_remaining.
+    const int num_remaining = k - size(partial_combination);
+    for (int i = offset; i <= n && num_remaining <= n - i + 1; ++i)
+    {
+        partial_combination.emplace_back(i);
+        DirectedCombinations(n, k, i + 1, partial_combination, result);
+        partial_combination.pop_back();
+    }
+}
+
+vector<vector<int>> Combinations(int n, int k)
+{
+    vector<vector<int>> result;
+    vector<int> partial_combination;
+    DirectedCombinations(n, k, 1, partial_combination, result);
+    return result;
 }
 
 int main()
