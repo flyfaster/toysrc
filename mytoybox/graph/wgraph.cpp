@@ -34,12 +34,12 @@ const char* bellman_ford = R"(
 relax(u, v, w)
 	if v.d > u.d +w(u,v)
 		v.d = u.d + w(u,v)
-		v.pi = u // parent
+		v.parent = u
 
 init_single_source(G, s)
 	for each vertex v in G.V
 		v.d = inf
-		v.pi = nil
+		v.parent = nil
 	s.d = 0
 
 bellman-ford(G, w, s)
@@ -120,6 +120,7 @@ int edge_classification(x, y)
 	if (processed[y] && (entry_time[y]>entry_time[x])) return FORWARD;
 	if (processed[y] && (entry_time[y]<entry_time[x])) return CROSS;
 }
+
 proc_edge(int x, int y)
 {
 	int class = edge_classification(x, y);
@@ -142,5 +143,5 @@ topsort(graph* g)
 			dfs(g, i);
 	print_stack(&sorted); // report topological order
 }
-}
+
 )";

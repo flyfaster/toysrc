@@ -8,7 +8,6 @@
 #include <algorithm>
 #include <numeric>
 
-// knapsack problem
 using namespace std;
 
 vector<int> w{1,3,3,5};
@@ -145,6 +144,35 @@ int MinimumPathWeight(const vector<vector<int>>& triangle)
         prev_row.swap(curr_row);
     }
     return *min_element(cbegin(prev_row), cend(prev_row));
+}
+
+int MinimumMessiness(const vector<string>& words, int line_length)
+{	// sentence screen fitting, line breaking algorithm, word wrapping
+    // minimum_messiness[i] is the minimum messiness when placing words[0, i].
+    vector<int> minimum_messiness(size(words), numeric_limits<int>::max());
+    int num_remaining_blanks = line_length - size(words[0]);
+    minimum_messiness[0] = num_remaining_blanks * num_remaining_blanks;
+    for (int i = 1; i < size(words); ++i)
+    {
+        num_remaining_blanks = line_length - size(words[i]);
+        minimum_messiness[i] =
+            minimum_messiness[i - 1] + num_remaining_blanks * num_remaining_blanks;
+        // Try adding words[i - 1], words[i - 2], ...
+        for (int j = i - 1; j >= 0; --j)
+        {
+            num_remaining_blanks -= (size(words[j]) + 1);
+            if (num_remaining_blanks < 0)
+            {
+                // Not enough space to add more words.
+                break;
+            }
+            int first_j_messiness = j - 1 < 0 ? 0 : minimum_messiness[j - 1];
+            int current_line_messiness = num_remaining_blanks * num_remaining_blanks;
+            minimum_messiness[i] =
+                min(minimum_messiness[i], first_j_messiness + current_line_messiness);
+        }
+    }
+    return minimum_messiness.back();
 }
 
 bool MatchAllWordsInDict(const string& s, const unordered_map<string, int>& word_to_freq,

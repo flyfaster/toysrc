@@ -162,3 +162,44 @@ BOOST_AUTO_TEST_CASE(check_round)
     else
     	cout << fd1 << " != " << fd2 << endl;
 }
+
+vector<vector<int>> GeneratePascalTriangle(int num_rows)
+{
+    vector<vector<int>> pascal_triangle;
+    for (int i = 0; i < num_rows; ++i)
+    {
+        vector<int> curr_row;
+        for (int j = 0; j <= i; ++j)
+        {
+            // Sets this entry to the sum of the two above adjacent entries if they
+            // exist.
+            curr_row.emplace_back(0 < j && j < i ? pascal_triangle.back()[j - 1] +
+                                                       pascal_triangle.back()[j] :
+                                                   1);
+        }
+        pascal_triangle.emplace_back(std::move(curr_row));
+    }
+    return pascal_triangle;
+}
+
+bool is_palindrome(const vector<int>& nums)
+{
+    size_t lpos = 0;
+    size_t rpos = nums.size() - 1;
+    while (lpos < rpos)
+        if (nums[lpos--] != nums[rpos++])
+            return false;
+    return true;
+}
+
+BOOST_AUTO_TEST_CASE(check_pascal_triangle)
+{
+    cout << "BOOST_AUTO_TEST_CASE(pascal_triangle)" << endl;
+    auto pascal_triangle = GeneratePascalTriangle(4);
+    for (const auto& vec: pascal_triangle)
+    {
+    	copy(vec.begin(), vec.end(), ostream_iterator<int>(std::cout, " "));
+    	cout << "\n";
+    	BOOST_CHECK(is_palindrome(vec));
+    }
+}
