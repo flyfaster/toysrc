@@ -18,7 +18,7 @@ void Dijkstra(vii* G, // adjacency list
 		int source,
 		int N, vi& Dist)
 {
-    priority_queue<pii, vector<pii>, greater<pii>> Q; // min heap, pii.first: dist, pii.second: vertex
+    priority_queue<pii, vector<pii>, greater<pii>> Q; // min heap, pii.first: distance, pii.second: vertex
     Dist.assign(N, std::numeric_limits<int>::max());
     Dist[source] = 0;
     Q.push({0, source});
@@ -26,14 +26,14 @@ void Dijkstra(vii* G, // adjacency list
     {
         int u = Q.top().second;
         Q.pop();
-        for (auto& c : G[u])
+        for (auto& edge : G[u])
         {
-            int v = c.first; // end vertex
-            int w = c.second; // edge distance
+            int v = edge.first; // end vertex
+            int w = edge.second; // edge distance
             if (Dist[v] > Dist[u] + w)
             {
                 Dist[v] = Dist[u] + w;
-                Q.push({Dist[v], v});
+                Q.emplace(Dist[v], v);
             }
         }
     }

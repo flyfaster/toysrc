@@ -32,12 +32,12 @@ struct graph2 {
 
 const char* bellman_ford = R"(
 relax(u, v, w)
-	if v.d > u.d +w(u,v)
+	if v.d > u.d + w(u,v)
 		v.d = u.d + w(u,v)
 		v.parent = u
 
 init_single_source(G, s)
-	for each vertex v in G.V
+	for v in G.V
 		v.d = inf
 		v.parent = nil
 	s.d = 0
@@ -45,12 +45,25 @@ init_single_source(G, s)
 bellman-ford(G, w, s)
 	init_single_source(G, s)
 	for i=1 to |G.V|-1
-		for each edge (u,v) in G.E
+		for edge (u,v) in G.E
 			relax(u, v, w)
-	for each edge (u,v) in G.E
-		if v.d > u.d+w(u,v)
+	for edge (u,v) in G.E
+		if v.d > u.d + w(u,v)
 			return false; // negative cycle
 	return true; // no negative cycle
+
+// IOI	O(V*E)
+for (int i = 1; i <= n; i++) 
+	distance[i] = INF;
+distance[source] = 0;
+for (int i = 1; i <= n-1; i++) {
+	for (auto e : edges) {
+		int a, b, w;
+		tie(a, b, w) = e;
+		distance[b] = min(distance[b], distance[a]+w);
+	}
+}
+
 )";
 
 const char* topological_sort=R"(
@@ -104,6 +117,7 @@ void dfs(graph* g, int v)
 	processed[v] = true;
 }
 )";
+
 const char* topological_sort=R"(
 find_cycle(int x, int y) // undirected graph
 {
@@ -144,4 +158,35 @@ topsort(graph* g)
 	print_stack(&sorted); // report topological order
 }
 
+)";
+
+const char* MST_KRUSKAL=R"(
+MST-KRUSKAL(G, w)
+	A = set(); // edge set of the MST
+	for v : G.V
+		make_set(v)
+	sort(G.E) into nondecreasing order by w
+	for edge(u,v) : G.E 
+		if find_set(u) != find_set(v)
+			A.insert(edge(u,v))
+			union(u,v)
+	return A
+)";
+
+const char* MST_PRIM=R"(
+MST-PRIM(G, w, root)
+	for u : G.V
+		u.key = INF
+		u.parent = null
+	root.key = 0
+	Q = G.V	// Q is min-priority queue, better using Fibonacci heap
+	while !Q.empty()
+		u = Q.extract_min()
+		for v : G.Adj[u]
+			if v in Q and w(u,v) < v.key
+				v.parent = u
+				v.key = w(u,v)
+
+when the algorithm terminates, the MST A for G is 
+A = {(v, v.parent) : v in V - {root}}
 )";

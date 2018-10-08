@@ -155,3 +155,13 @@ BOOST_AUTO_TEST_CASE(check_lsb)
     BOOST_TEST_CONTEXT("src & (src-1) clear right most 1 from " << src)
     BOOST_CHECK_EQUAL(0, target);
 }
+
+BOOST_AUTO_TEST_CASE(check_shift)
+{
+    int src = -1;
+    int target = src >> 1;	// sign bit is preserved
+    BOOST_TEST_CONTEXT("verify arithmetic shift of C++ " << src)
+    BOOST_CHECK_EQUAL(src, target);
+    unsigned int usrc = 0xFFFFFFFF;
+    BOOST_CHECK_EQUAL(usrc/2, usrc>>1);
+}

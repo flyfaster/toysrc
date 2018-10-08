@@ -12,18 +12,41 @@
 
 using namespace std;
 
+const char* dfs=R"(
+dfs(G)
+	for u in G.V
+		u.color = white
+		u.parent = null
+	time = 0
+	for u in G.V
+		if u.color==white
+			dfs_visit(G, u)
+
+dfs_visit(G, u)
+	u.d = ++time	// discover time
+	u.color = gray
+	for v in G.Adj[u]
+		if v.color == white
+			v.parent = u
+			dfs_visit(G, v)
+	u.color = black
+	u.f = ++time	// finish time
+
+)";
+
 const char* bfs=R"(
-bfs(G,s)
-	for each v in G.V - {s}
+bfs(G,s)	// CLRS P595
+	for v in G.V - {s}
 		v.color = white
 		v.parent = null
 		v.d = INF
 	s.color = gray
 	s.parent = null
 	s.d = 0
+	std::queue Q;
 	Q.push(s)
 	while !Q.empty()
-		u = Q.top()
+		u = Q.front()
 		Q.pop()
 		u.color = gray
 		for each v in G.Adj[u]
@@ -34,7 +57,7 @@ bfs(G,s)
 				v.d = u.d + 1
 		u.color = black
 
-print_path(G, s, v)
+print_path(G, s, v)	// CLRS P601
 	if s == v
 		print s
 	else if v.parent == null
@@ -43,37 +66,27 @@ print_path(G, s, v)
 		print_path(G, s, v.parent)
 	print v
 
-dfs(G)
-	for each u in G.V
-		u.color=white
-		u.parent = null
-	time = 0
-	for each u in G.V
-		if u.color==white
-			dfs-visit(G, u)
-
-dfs-visit(G, u)
-	u.d = ++time	// discover time
-	u.color = gray
-	for each v in G.Adj[u]
-		if v.color==white
-			v.parent = u
-			dfs-visit(G, v)
-	u.color = black
-	u.f = ++time	// finish time
 
 topological-sort(G)
 	dfs(G) to calculate finish time
 	push_front when each vertex is finished process
 	return linked list
 
+)";
+
+const char* SCC=R"(
 strong-connected-components(G)
 	DFS(G) calculate finish time
 	compute transpose G
 	DFS( transpose G), in the main dfs loop, consider vertex in order of decreasing u.f
 	output vertices of each tree calculated in previous step as SCC.	
 
-// single source to all vertices shorted path
+tarjanSCC see https://github.com/luisfcofv/competitive-programming-book/blob/master/ch4/ch4_01_dfs.cpp
+
+)";
+
+const char* bellman_ford_sssp=R"(
+// single source shorted paths with negative weight cycle
 BellmanFord(list vertices, list edges, vertex source)
    // This implementation takes in a graph, represented as
    // lists of vertices and edges, and fills two arrays
@@ -97,14 +110,20 @@ BellmanFord(list vertices, list edges, vertex source)
    // Step 3: check for negative-weight cycles
    for each edge (u, v) with weight w in edges:
        if distance[u] + w < distance[v]:
-           error "Graph contains a negative-weight cycle"
+           error "detect negative-weight cycle"
    
    return distance, predecessor
 
-Floyd-Warshall	(all pair shortest paths)
-for (int i=1; i<=n; ++i)
-	for (int j=1; j<=n; ++j)
+)";
+
+const char* floyd_warshall_apsp=R"(
+Floyd-Warshall	(all pairs shortest paths)
+std::vector<std::vector<int>> p(n, std::vector<int>(n, -1); // track parent vertex
+
+for (int i = 1; i <= n; ++i)
+	for (int j = 1; j <= n; ++j)
 	{
+		p[i][j] = i;
 		if (i==j)	distance[i][j] = 0;
 		else if (adj[i][j])	distance[i][j] = adj[i][j];
 		else	distance[i][j] = std::numeric_limits::infinity();
@@ -113,8 +132,19 @@ for (int i=1; i<=n; ++i)
 for (int k=1; k<=n; ++k)
 	for (int i=1; i<=n; ++i)
 		for (int j=1; j<=n; ++j)
-			distance[i][j] = min(distance[i][j], distance[i][k]+distance[k][j];
+		{
+			if (distance[i][j] > distance[i][k]+distance[k][j])
+			{
+				p[i][j]= p[k][j];
+				distance[i][j] = min(distance[i][j], distance[i][k]+distance[k][j]);
+			}
+		}
 
+void printpath(int i, int j)
+{
+	if (i!=j) printpath(i, p[i][j]);
+	printf("%d ", j);
+}
 
 )";
 
