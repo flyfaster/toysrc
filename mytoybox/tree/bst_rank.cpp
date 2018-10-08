@@ -46,7 +46,7 @@ struct RankNode
         }
     }
 
-    int getRank(int d)
+    int order_of_key(int d)	// return -1 if d is not in the tree
     {
         if (d == data)
         {
@@ -57,16 +57,25 @@ struct RankNode
             if (!left)
                 return -1;
             else
-                return left->getRank(d);
+                return left->order_of_key(d);
         }
         else
         {
-            int right_rank = right == nullptr ? -1 : right->getRank(d);
+            int right_rank = right == nullptr ? -1 : right->order_of_key(d);
             if (right_rank == -1)
                 return -1;
             else
                 return left_size + 1 + right_rank;
         }
+    }
+
+    int find_by_order(int rank)
+    {
+        if (rank == left_size)
+            return data;
+        if (rank < left_size)
+            return left->find_by_order(rank);
+        return right->find_by_order(rank - left_size - 1);
     }
 };
 
@@ -114,13 +123,15 @@ BOOST_AUTO_TEST_CASE(check_sorted_list_to_bst)
 
     for (int data: Arr)
     {
-    	BOOST_CHECK_EQUAL(rank[data], root->getRank(data));
+    	BOOST_CHECK_EQUAL(rank[data], root->order_of_key(data));
     }
 
 
     for (int data: sorted_arr)
     {
-    	BOOST_CHECK_EQUAL(rank[data], root->getRank(data));
+    	BOOST_CHECK_EQUAL(rank[data], root->order_of_key(data));
     }
-}
 
+    for (int rank = 0; rank < sorted_arr.size(); ++rank)
+        BOOST_CHECK_EQUAL(sorted_arr[rank], root->find_by_order(rank));
+}

@@ -104,7 +104,7 @@ public:
     		parent = cur;
     		cur = data < cur->data ? cur->get_left() : cur->get_right();
     	}
-    	if (!cur)
+    	if (!cur)	// data is not in the tree
     		return false;
     	auto key_node = cur;
     	if (key_node->get_right())
@@ -126,7 +126,7 @@ public:
     	else	// no right kid
     	{
     		if (root == key_node)
-    			root = key_node;
+    			root = key_node->get_left();
     		else
     		{
     			if (parent->get_left() == key_node)
