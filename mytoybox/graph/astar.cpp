@@ -2,7 +2,40 @@
 #include <cmath>
 #include <iostream>
 #include <list>
+#include <set>
+#include <sstream>
 // refer to https://rosettacode.org/wiki/A*_search_algorithm#C.2B.2B
+
+const char* A_star=R"(
+// A* Search Algorithm
+g = the movement cost to move from the starting point to a given cell on the grid, following the path generated to get there.
+h = the estimated movement cost to move from that given cell on the grid to the final destination.
+f = g + h
+
+1.  Initialize the open list, put the starting node on the open list (you can leave its f at zero)
+2.  Initialize the closed list
+3.  while the open list is not empty
+    a) find the node with the least f on the open list, call it "q"
+    b) pop q off the open list
+    c) generate q's 8 successors and set their parents to q
+   
+    d) for each successor
+        i) if successor is the goal, stop search
+          successor.g = q.g + distance between successor and q
+          successor.h = distance from goal to successor (heuristics- Manhattan, Diagonal and Euclidean Heuristics)
+          successor.f = successor.g + successor.h
+
+        ii) if a node with the same position as successor is in the OPEN list which has a 
+           lower f than successor, skip this successor
+
+        iii) if a node with the same position as successor is in the CLOSED list which has
+            a lower f than successor, skip this successor, otherwise, add  the node to the open list
+     end (for loop)
+  
+    e) push q on the closed list
+    end (while loop) 
+)";
+
 struct point
 {
     point(int a = 0, int b = 0)
@@ -10,13 +43,19 @@ struct point
         x = a;
         y = b;
     }
-    bool operator==(const point& o)
+    bool operator==(const point& o) const
     {
         return o.x == x && o.y == y;
     }
     point operator+(const point& o) const
     {
         return point(o.x + x, o.y + y);
+    }
+    std::string to_string() const
+    {
+        std::stringstream strm;
+        strm << "x=" << x << ",y=" << y;
+        return strm.str();
     }
     int x, y;
 };
@@ -44,20 +83,32 @@ struct map
 
 struct node
 {
-    bool operator==(const node& o)
+    bool operator==(const node& o) const
     {
         return pos == o.pos;
     }
-    bool operator==(const point& o)
+    bool operator==(const point& o) const
     {
         return pos == o;
     }
-    bool operator<(const node& o)
+    bool operator<(const node& o) const
     {
-        return dist + cost < o.dist + o.cost;
+        return h + cost < o.h + o.cost;
+    }
+    std::string to_string() const
+    {
+        std::stringstream strm;
+        strm << "pos:" << pos.to_string() << "\tparent:" << parent.to_string()
+             << "\tdist=" << h << ",cost=" << cost;
+        return strm.str();
+    }
+    int full_cost() const
+    {
+    	return h + cost;
     }
     point pos, parent;
-    int dist, cost;
+    int h; // heuristic - the estimated movement cost to move from that given square on the grid to the final destination.
+    int cost;
 };
 
 class aStar
@@ -98,27 +149,27 @@ public:
         return (p.x > -1 && p.y > -1 && p.x < m.w && p.y < m.h);
     }
 
-    bool existPoint(const point& p, int cost)
+    bool is_pt_done(const point& p, int cost)
     {
-        auto i = std::find(closed.begin(), closed.end(), p);
-        if (i != closed.end())
+        auto iter = std::find(closed.begin(), closed.end(), p);
+        if (iter != closed.end())
         {
-            if ((*i).cost + (*i).dist < cost)
+            if (iter->full_cost() < cost)
                 return true;
             else
             {
-                closed.erase(i);
+                closed.erase(iter);
                 return false;
             }
         }
-        i = std::find(open.begin(), open.end(), p);
-        if (i != open.end())
+        iter = std::find(open.begin(), open.end(), p);
+        if (iter != open.end())
         {
-            if ((*i).cost + (*i).dist < cost)
+            if (iter->full_cost() < cost)
                 return true;
             else
             {
-                open.erase(i);
+                open.erase(iter);
                 return false;
             }
         }
@@ -139,11 +190,11 @@ public:
             {
                 int nc = stepCost + n.cost;
                 int dist = heuristic(neighbour);
-                if (!existPoint(neighbour, nc + dist))
+                if (!is_pt_done(neighbour, nc + dist))
                 {
                     node m;
                     m.cost = nc;
-                    m.dist = dist;
+                    m.h = dist;
                     m.pos = neighbour;
                     m.parent = n.pos;
                     open.push_back(m);
@@ -162,7 +213,7 @@ public:
         n.cost = 0;
         n.pos = s;
         n.parent = 0;
-        n.dist = heuristic(s);
+        n.h = heuristic(s);
         open.push_back(n);
         while (!open.empty())
         {
@@ -183,13 +234,12 @@ public:
         path.push_front(closed.back().pos);
         point parent = closed.back().parent;
 
-        for (std::list<node>::reverse_iterator i = closed.rbegin(); i != closed.rend();
-             i++)
+        for (auto iter = closed.rbegin(); iter != closed.rend(); iter++)
         {
-            if ((*i).pos == parent && !((*i).pos == start))
+            if (iter->pos == parent && !(iter->pos == start))
             {
-                path.push_front((*i).pos);
-                parent = (*i).parent;
+                path.push_front(iter->pos);
+                parent = iter->parent;
             }
         }
         path.push_front(start);
@@ -231,7 +281,7 @@ int main(int argc, char* argv[])
         }
 
         std::cout << "\nPath cost " << c << ": ";
-        for (std::list<point>::iterator i = path.begin(); i != path.end(); i++)
+        for (auto i = path.begin(); i != path.end(); i++)
         {
             std::cout << "(" << (*i).x << ", " << (*i).y << ") ";
         }
