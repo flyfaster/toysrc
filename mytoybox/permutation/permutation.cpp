@@ -223,6 +223,32 @@ int main()
     return 0;
 }
 
+class Solution {
+public:
+    vector<vector<int>> combine(int n, int k) {
+        vector<int> nums(n, 0);
+        std::iota(nums.begin(), nums.end(), 1);
+        vector<vector<int>> res;
+        vector<int> subset;
+        std::function<void(int)> search;
+        search = [&nums, &subset, &res, &search, k](int target) {
+            if (k == subset.size())
+            {
+                res.emplace_back(subset);
+                return;
+            }
+            if (target >=nums.size())
+                return;
+
+            search(target + 1);
+            subset.push_back(nums[target]);
+            search(target + 1);
+            subset.pop_back();
+        };
+        search(0);
+        return res;
+    }
+};
 //Remove method generated 3628800 rows in 793 milliseconds, there are 3628800 unique permutations
 //Insert method generated 3628800 rows in 714 milliseconds, there are 3628800 unique permutations
 //heaps_permutation generated 3628800 rows in 707 milliseconds, there are 3628800 unique permutations

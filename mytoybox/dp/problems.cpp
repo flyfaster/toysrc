@@ -252,7 +252,16 @@ vector<int> FindAllSubstrings(const string& s, const vector<string>& words)
 }
 
 /* Returns length of longest common substring of X[0..m-1]
-   and Y[0..n-1] */
+   and Y[0..n-1]
+   O(m*n) time
+The longest common suffix has following optimal substructure property
+   LCSuff(X, Y, m, n) = LCSuff(X, Y, m-1, n-1) + 1 if X[m-1] = Y[n-1]
+                        0  Otherwise (if X[m-1] != Y[n-1])
+
+The maximum length Longest Common Suffix is the longest common substring.
+   LCSubStr(X, Y, m, n)  = Max(LCSuff(X, Y, i, j)) where 1 <= i <= m
+                                                     and 1 <= j <= n
+*/
 int LCSubStr(char *X, char *Y, int m, int n)
 {
     // Create a table to store lengths of longest common suffixes of
