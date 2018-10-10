@@ -98,7 +98,7 @@ BellmanFord(list vertices, list edges, vertex source)
    vector<int> distance(std::size(vertices), numeric_limits<int>::max());
    vector<int> predecessor(std::size(vertices), -1);
 
-   distance[source] = 0              // The weight is zero at the source
+   distance[source] = 0; // The weight is zero at the source
    
    // Step 2: relax edges repeatedly
    for i from 1 to size(vertices)-1:
@@ -110,7 +110,7 @@ BellmanFord(list vertices, list edges, vertex source)
    // Step 3: check for negative-weight cycles
    for each edge (u, v) with weight w in edges:
        if distance[u] + w < distance[v]:
-           error "detect negative-weight cycle"
+           error "detected negative-weight cycle"
    
    return distance, predecessor
 
@@ -148,7 +148,7 @@ void printpath(int i, int j)
 
 )";
 
-void floydWarshall (vector<vector<int>> graph)
+void floydWarshall (const vector<vector<int>>& graph)
 {
 	int V = graph.size();
     /* dist[][] will be the output matrix that will finally have the shortest

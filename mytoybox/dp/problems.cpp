@@ -1,43 +1,75 @@
-#include <iostream>
+#include <algorithm>
 #include <cstddef>
+#include <deque>
+#include <iostream>
+#include <numeric>
 #include <queue>
 #include <stack>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#include <algorithm>
-#include <numeric>
 
 using namespace std;
 
 vector<int> w{1,3,3,5};
 // possible(x,k) = possible(x-w[k], k-1) | possible(x, k-1)
 
-void knapsack(vector<int> const& w,
+bool knapsack(vector<int> const& w,
 		int n, // number of items to use
 		int W) // total weights
 {
-	vector<vector<int>> possible(W, vector<int>(n));
-	possible[0][0] = true;
+	vector<vector<int>> possible(W+1, vector<int>(n+1, 0));	// IOI
+	for (int i=0; i<possible.size(); ++i)
+		possible[i][0] = true;
+
     for (int k = 1; k <= n; k++)
         for (int x = 0; x <= W; x++)
+        {
+        	possible[x][k] |= possible[x][k - 1];
             if (x >= w[k])
                 possible[x][k] |= possible[x - w[k]][k - 1];
-    possible[x][k] |= possible[x][k - 1];
+        }
+    return possible[W][n];
 }
 
-void knapsack(vector<int> const& w, int W)
+bool knapsack(vector<int> const& w, int capacity)
 {
-    vector<int> possible(W, false);
+    vector<int> possible(capacity+1, 0);	// IOI
     possible[0] = true;
     for (int k = 1; k <= w.size(); k++)
-        for (int x = W; x >= 0; x--)
-            if (x < possible.size() && possible[x])
-                possible[x + w[k]] = true;
+        for (int x = capacity; x >= 0; x--)
+        {
+        	auto item_size = w[k];
+
+            if (x + item_size < possible.size() && possible[x])
+                possible[x + item_size] = true;
+        }
+    return possible[capacity];
 }
 
-struct Item {
-  int weight, value;
+// can partition set to two sets with equal sum?
+bool subset_sum(vector<int> nums, int sum)
+{
+    deque<bool> dp(sum + 1, 0);
+    dp[0] = true;
+
+    for (int num : nums)
+    {
+        for (int i = sum; i > 0; i--)
+        {
+            if (i >= num)
+            {
+                dp[i] = dp[i] || dp[i - num];
+            }
+        }
+    }
+
+    return dp[sum];
+}
+
+struct Item
+{
+    int weight, value;
 };
 
 // Returns the optimum value when we choose from items[0, k] and have a
@@ -50,7 +82,7 @@ int OptimumSubjectToItemAndCapacity(const vector<Item>& items, int items_rbound,
 
     // V[i][j] holds the optimum value when we choose from items[0, i] and have
     // a capacity of j.
-    if (V[items_rbound][available_capacity] == -1)
+    if (V[items_rbound][available_capacity] == -1) // not processed yet
     {
         int without_curr_item = OptimumSubjectToItemAndCapacity(items, items_rbound - 1,
                                                                 available_capacity, V);
@@ -216,5 +248,38 @@ vector<int> FindAllSubstrings(const string& s, const vector<string>& words)
             result.emplace_back(i);
         }
     }
+    return result;
+}
+
+/* Returns length of longest common substring of X[0..m-1]
+   and Y[0..n-1] */
+int LCSubStr(char *X, char *Y, int m, int n)
+{
+    // Create a table to store lengths of longest common suffixes of
+    // substrings.   Note that LCSuff[i][j] contains length of longest
+    // common suffix of X[0..i-1] and Y[0..j-1]. The first row and
+    // first column entries have no logical meaning, they are used only
+    // for simplicity of program
+	vector<vector<int>> LCSuff(m+1, vector<int>(n+1, 0));
+    int result = 0;  // To store length of the longest common substring
+
+    /* Following steps build LCSuff[m+1][n+1] in bottom up fashion. */
+    for (int i = 0; i <= m; i++)
+    {
+        for (int j = 0; j <= n; j++)
+        {
+            if (i == 0 || j == 0)
+                LCSuff[i][j] = 0;
+
+            else if (X[i - 1] == Y[j - 1])
+            {
+                LCSuff[i][j] = LCSuff[i - 1][j - 1] + 1;
+                result = max(result, LCSuff[i][j]);
+            }
+            else
+                LCSuff[i][j] = 0;
+        }
+    }
+
     return result;
 }
