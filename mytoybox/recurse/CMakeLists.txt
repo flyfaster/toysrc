@@ -12,3 +12,4 @@ target_link_libraries (prefix_to_postfix
 	Boost::regex Boost::program_options Boost::filesystem Boost::system Boost::unit_test_framework
 	${CMAKE_THREAD_LIBS_INIT})
 
+add_executable(close_pair close_pair.cpp)
