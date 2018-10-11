@@ -160,17 +160,18 @@ topsort(graph* g)
 
 )";
 
+// Prim MST (add edge) is slower than Kruskal’s algorithm (delete edge)
 const char* MST_KRUSKAL=R"(
 MST-KRUSKAL(G, w)
-	A = set(); // edge set of the MST
+	mst = set(); // edge set of the MST
 	for v : G.V
 		make_set(v)
 	sort(G.E) into nondecreasing order by w
-	for edge(u,v) : G.E 
+	for edge(u,v) : G.E // process edge with min w first
 		if find_set(u) != find_set(v)
-			A.insert(edge(u,v))
+			mst.insert(edge(u,v))
 			union(u,v)
-	return A
+	return mst
 )";
 
 const char* MST_PRIM=R"(

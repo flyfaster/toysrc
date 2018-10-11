@@ -277,9 +277,9 @@ bool HasCycle(Vertex* cur)
     return false;
 }
 
-bool IsDeadlocked(vector<Vertex>* graph)
+bool IsDeadlocked(vector<Vertex>& graph)
 {
-    return any_of(begin(*graph), end(*graph), [](Vertex& vertex) {
+    return any_of(begin(graph), end(graph), [](Vertex& vertex) {
         return vertex.color == Vertex::kWhite && HasCycle(&vertex);
     });
 }
