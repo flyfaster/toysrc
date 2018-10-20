@@ -90,8 +90,12 @@ struct overloading
     rule_of_five ref;
 };
 
+constexpr char* cstr1 = "constexpr char*";
+constexpr const char* cstr2 = "constexpr const char*";
 int main(int argc, const char* [])
 {
+	cout << "constexpr char* and constexpr const char* std::is_same " << std::boolalpha << std::is_same<decltype(cstr1),decltype(cstr2)>::value << "\n";
+
     for (int i : f(argc + 1, argc + 2, argc + 3))
         cout << i << " ";
     cout << "\n";

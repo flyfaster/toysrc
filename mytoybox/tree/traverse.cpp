@@ -2,17 +2,17 @@
 #include <stack>
 #include <list>
 using namespace std;
-struct tree_node{
+struct TreeNode{
 	int data;
-	tree_node* left;
-	tree_node* right;
-	tree_node* parent;
+	TreeNode* left;
+	TreeNode* right;
+	TreeNode* parent;
 	int size;
 };
 
-vector<int> inorder(tree_node* root)
+vector<int> inorder(TreeNode* root)
 {
-    stack<tree_node*> st;
+    stack<TreeNode*> st;
     vector<int> res;
     auto curr = root;
     while (!st.empty() || curr)
@@ -33,10 +33,10 @@ vector<int> inorder(tree_node* root)
     return res;
 }
 
-vector<int> preorder(tree_node* root)
+vector<int> preorder(TreeNode* root)
 {
     vector<int> res;
-    stack<tree_node*> st;
+    stack<TreeNode*> st;
     st.push_back(root);
     while (!st.empty())
     {
@@ -52,7 +52,7 @@ vector<int> preorder(tree_node* root)
     return res;
 }
 
-tree_node* find_kth(tree_node* root, int k)
+TreeNode* find_kth(TreeNode* root, int k)
 {
     auto iter = root;
     while (iter)
@@ -70,7 +70,7 @@ tree_node* find_kth(tree_node* root, int k)
     return nullptr;
 }
 
-tree_node* successor(tree_node* root){
+TreeNode* successor(TreeNode* root){
 	auto node = root;
 	if (node->right) {
 		node = node->right;
@@ -84,7 +84,7 @@ tree_node* successor(tree_node* root){
 	return node->parent;
 }
 
-vector<int> inorder_space_o1(tree_node* root)
+vector<int> inorder_space_o1(TreeNode* root)
 {
     auto prev = root;
     auto curr = root;
@@ -116,9 +116,9 @@ vector<int> inorder_space_o1(tree_node* root)
     return res;
 }
 
-std::list<tree_node*> list_of_leaves(tree_node* root)
+std::list<TreeNode*> list_of_leaves(TreeNode* root)
 {
-    std::list<tree_node*> res;
+    std::list<TreeNode*> res;
     if (root)
     {
         if (!root->left && !root->right)

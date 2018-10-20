@@ -21,3 +21,5 @@ add_executable(lis lis.cpp)
 target_link_libraries (lis 
 	Boost::regex Boost::program_options Boost::filesystem Boost::system Boost::unit_test_framework
 	${CMAKE_THREAD_LIBS_INIT})
+	
+add_executable(uva11450 uva11450.cpp)

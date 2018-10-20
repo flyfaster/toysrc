@@ -203,3 +203,44 @@ BOOST_AUTO_TEST_CASE(check_pascal_triangle)
     	BOOST_CHECK(is_palindrome(vec));
     }
 }
+
+BOOST_AUTO_TEST_CASE(check_array)
+{
+    {
+        int nd = 0x0;
+        int narr[2][64] = {nd};
+        for (int i = 0; i < std::extent<decltype(narr), 0>::value; ++i)
+            for (int j = 0; j < std::extent<decltype(narr), 1>::value; ++j)
+            {
+                BOOST_CHECK(narr[i][j] == nd);
+            }
+    }
+
+    {
+        int nd = 0x12345678;
+        int narr[2][64] = {nd}; // only first element is non-zero, others are 0.
+        for (int i = 0; i < std::extent<decltype(narr), 0>::value; ++i)
+            for (int j = 0; j < std::extent<decltype(narr), 1>::value; ++j)
+            {
+                BOOST_CHECK_EQUAL(narr[i][j], (i + j) ? 0 : nd);
+            }
+    }
+
+    {
+        float farr[256][64] = {}; // initialize all to 0
+        for (int i = 0; i < std::extent<decltype(farr), 0>::value; ++i)
+            for (int j = 0; j < std::extent<decltype(farr), 1>::value; ++j)
+            {
+            	BOOST_CHECK_EQUAL(farr[i][j], 0);
+            }
+    }
+
+    float fd = 1.2;
+    float farr[2][64] = {fd}; // initialize first element to fd, others to 0
+    for (int i = 0; i < std::extent<decltype(farr), 0>::value; ++i)
+        for (int j = 0; j < std::extent<decltype(farr), 1>::value; ++j)
+        {
+            BOOST_CHECK_CLOSE(farr[i][j], (i + j) ? 0 : fd,
+                              std::numeric_limits<float>::epsilon() * fd);
+        }
+}

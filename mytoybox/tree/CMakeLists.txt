@@ -65,3 +65,5 @@ add_executable(bst_rank bst_rank.cpp)
 target_link_libraries (bst_rank 
 	Boost::regex Boost::program_options Boost::filesystem Boost::system Boost::unit_test_framework
 	${CMAKE_THREAD_LIBS_INIT})
+	
+add_executable(morris morris.cpp)
