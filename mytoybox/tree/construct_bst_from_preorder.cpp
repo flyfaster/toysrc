@@ -12,26 +12,27 @@
 #include <boost/test/results_reporter.hpp>
 using namespace std;
 
-struct bst_node
+struct TreeNode
 {
     int data{0};
-    bst_node* left{nullptr};
-    bst_node* right{nullptr};
-    bst_node(int d) : data{d}
+    TreeNode* left{nullptr};
+    TreeNode* right{nullptr};
+    TreeNode(int d) : data{d}
     {
     }
 };
 
-bst_node* construct_bst(vector<int> const& pre)
+TreeNode* construct_bst_preorder(vector<int> const& pre)
 {
 	if (pre.empty())
 		return nullptr;
-    stack<bst_node*> st;
-    bst_node* root = new bst_node(pre[0]);
+
+    stack<TreeNode*> st;
+    TreeNode* root = new TreeNode(pre[0]);
     st.push(root);
     for (int i = 1; i < pre.size(); ++i)
     {
-        bst_node* temp = nullptr;
+        TreeNode* temp = nullptr;
         /* Keep on popping while the next value is greater than
            stack's top value. */
         while (!st.empty() && pre[i] > st.top()->data)
@@ -42,21 +43,21 @@ bst_node* construct_bst(vector<int> const& pre)
         // Make this greater value as the right child and push it to the stack
         if (temp != nullptr)
         {
-            temp->right = new bst_node(pre[i]);
+            temp->right = new TreeNode(pre[i]);
             st.push(temp->right);
         }
         // If the next value is less than the stack's top value, make this value
         // as the left child of the stack's top node. Push the new node to stack
         else
         {
-            st.top()->left = new bst_node(pre[i]);
+            st.top()->left = new TreeNode(pre[i]);
             st.push(st.top()->left);
         }
     }
     return root;
 }
 
-void inorder(bst_node* root, vector<int>& out)
+void inorder(TreeNode* root, vector<int>& out)
 {
     if (!root)
         return;
@@ -72,7 +73,7 @@ BOOST_AUTO_TEST_CASE(check_construct_bst_from_preorder)
     int size = std::extent<decltype(arr)>::value;
     vector<int> pre;
     pre.assign(begin(arr), end(arr));
-    auto bst = construct_bst(pre);
+    auto bst = construct_bst_preorder(pre);
     vector<int> out;
     inorder(bst, out);
 
@@ -90,9 +91,9 @@ auto bst_from_preorder_inorder(vector<int> const& pre, int pre_pos,
                                vector<int> const& inorder, int start, int end)
 {
     if (start > end)
-        return std::make_tuple(static_cast<bst_node*>(nullptr), pre_pos);
+        return std::make_tuple(static_cast<TreeNode*>(nullptr), pre_pos);
 
-    auto root = new bst_node(pre[pre_pos++]);
+    auto root = new TreeNode(pre[pre_pos++]);
     if (start == end)
         return std::make_tuple(root, pre_pos);
 
@@ -105,7 +106,7 @@ auto bst_from_preorder_inorder(vector<int> const& pre, int pre_pos,
     return std::make_tuple(root, pre_pos);
 }
 
-int depth(bst_node* root)
+int depth(TreeNode* root)
 {
     if (!root)
         return 0;
@@ -133,8 +134,8 @@ auto bst_from_post_in(vector<int> const& post, int post_pos, vector<int> const& 
                       int start, int end)
 {
     if (start > end)
-        return std::make_tuple(static_cast<bst_node*>(nullptr), post_pos);
-    auto root = new bst_node(post[post_pos--]);
+        return std::make_tuple(static_cast<TreeNode*>(nullptr), post_pos);
+    auto root = new TreeNode(post[post_pos--]);
     if (start == end)
         return make_tuple(root, post_pos);
 
@@ -148,7 +149,7 @@ auto bst_from_post_in(vector<int> const& post, int post_pos, vector<int> const& 
     return make_tuple(root, post_pos);
 }
 
-void post_order_visit(bst_node* root, vector<int>& out)
+void post_order_visit(TreeNode* root, vector<int>& out)
 {
     if (!root)
         return;
@@ -157,7 +158,7 @@ void post_order_visit(bst_node* root, vector<int>& out)
     out.push_back(root->data);
 }
 
-auto is_height_balanced(bst_node* root)
+auto is_height_balanced(TreeNode* root)
 {
     if (!root)
         return make_tuple(true, -1);
