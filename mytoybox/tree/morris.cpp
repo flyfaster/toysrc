@@ -21,39 +21,34 @@ struct TreeNode
 /* traverse binary tree without recursion and without stack */
 void MorrisInorderTraversal(TreeNode* root, std::function<void(TreeNode*)> visit_func)
 {
-	if (root == nullptr)
-		return;
-
 	auto current = root;
-	TreeNode *pre = nullptr;
 
 	while (current) {
 		if (!current->left) {
 			visit_func(current);
 			current = current->right;
+			continue;
 		}
+		/* Find the inorder predecessor of current */
+		auto pre = current->left;
+		while (pre->right && pre->right != current)
+			pre = pre->right;
+
+		/* Make current as right child of its inorder
+		predecessor */
+		if (pre->right == nullptr) {
+			pre->right = current;
+			current = current->left;
+		}
+
+		/* Revert the changes made in if part to restore
+		the original tree i.e., fix the right child
+		of predecessor */
 		else {
-			/* Find the inorder predecessor of current */
-			pre = current->left;
-			while (pre->right && pre->right != current)
-				pre = pre->right;
-
-			/* Make current as right child of its inorder
-			predecessor */
-			if (pre->right == nullptr) {
-				pre->right = current;
-				current = current->left;
-			}
-
-			/* Revert the changes made in if part to restore
-			the original tree i.e., fix the right child
-			of predecessor */
-			else {
-				pre->right = nullptr;
-				visit_func(current);
-				current = current->right;
-			} /* End of if condition pre->right == nullptr */
-		} /* End of if condition current->left == nullptr*/
+			pre->right = nullptr;
+			visit_func(current);
+			current = current->right;
+		} /* End of if condition pre->right == nullptr */
 	} /* End of while */
 }
 
@@ -62,37 +57,35 @@ void MorrisPreorderTraversal(TreeNode* root, std::function<void(TreeNode*)> visi
 {
     while (root)
     {
-        // If left child is null, print the current node data. Move to
+        // If left child is null, visit the current node data. Move to
         // right child.
         if (!root->left)
         {
         	visitor(root);
             root = root->right;
+            continue;
         }
-        else
-        {
-            // Find inorder predecessor
-            TreeNode* current = root->left;
-            while (current->right && current->right != root)
-                current = current->right;
+		// Find inorder predecessor
+		TreeNode* current = root->left;
+		while (current->right && current->right != root)
+			current = current->right;
 
-            // If the right child of inorder predecessor already points to
-            // this node
-            if (current->right == root)
-            {
-                current->right = nullptr;
-                root = root->right;
-            }
+		// If the right child of inorder predecessor already points to
+		// this node
+		if (current->right == root)
+		{
+			current->right = nullptr;
+			root = root->right;
+		}
 
-            // If right child doesn't point to this node, then print this
-            // node and make right child point to this node
-            else
-            {
-            	visitor(root);
-                current->right = root;
-                root = root->left;
-            }
-        }
+		// If right child doesn't point to this node, then print this
+		// node and make right child point to this node
+		else
+		{
+			visitor(root);
+			current->right = root;
+			root = root->left;
+		}
     }
 }
 
