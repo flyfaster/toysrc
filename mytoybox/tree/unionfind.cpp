@@ -29,7 +29,7 @@ link(x, y)
 class UnionFind
 {
     vector<int> p, rank, setSize;
-    int numSets;
+    int numSets = 0;
 
 public:
     UnionFind(int N) : p(N, 0), rank(N, 0), setSize(N, 1), numSets(N)

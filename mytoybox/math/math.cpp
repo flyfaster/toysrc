@@ -4,11 +4,13 @@
 #include <iostream>
 #include <iterator>
 #include <limits>
+#include <string>
 #include <vector>
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MODULE math
 #include <boost/test/unit_test.hpp>
 #include <boost/test/results_reporter.hpp>
+#include <boost/multiprecision/cpp_int.hpp>
 
 using namespace std;
 
@@ -243,4 +245,119 @@ BOOST_AUTO_TEST_CASE(check_array)
             BOOST_CHECK_CLOSE(farr[i][j], (i + j) ? 0 : fd,
                               std::numeric_limits<float>::epsilon() * fd);
         }
+}
+
+string big_int_add(string a, string b)
+{
+    string sum;
+    int carry = 0;
+    int slen = max(a.size(), b.size());
+    for (int i = 0; i < slen; ++i)
+    {
+        int op1 = (i < a.size()) ? (a[a.size() - 1 - i] - '0') : 0;
+        int op2 = (i < b.size()) ? (b[b.size() - 1 - i] - '0') : 0;
+        int res = op1 + op2 + carry;
+        carry = res / 10;
+        res %= 10;
+        sum.push_back('0' + res);
+    }
+
+    if (carry)
+        sum.push_back('0' + carry);
+    reverse(sum.begin(), sum.end());
+    return sum;
+}
+
+string big_int_mul(string a, char one_digit)
+{
+    string sum;
+    int carry = 0;
+    int op2 = one_digit - '0';
+    if (op2==0)
+    	return "0";
+    if (op2 == 1)
+    	return a;
+
+    for (int i = 0; i < a.size(); ++i)
+    {
+        int op1 = (a[a.size() - 1 - i] - '0');
+        int res = op1 * op2 + carry;
+        carry = res / 10;
+        res %= 10;
+        sum.push_back('0' + res);
+    }
+
+    if (carry)
+        sum.push_back('0' + carry);
+    reverse(sum.begin(), sum.end());
+    return sum;
+}
+
+std::string multiply(string a, string b)
+{
+    if (a == "0" || b == "0")
+        return "0";
+
+    if (a.length() < b.length())
+        a.swap(b);
+    string sum;
+    for (char d : b)
+    {
+        if (!sum.empty())
+        	sum.push_back('0'); // multiply by 10
+        string step = big_int_mul(a, d);
+        sum = big_int_add(sum, step);
+    }
+
+    return sum;
+}
+
+std::string boost_cpp_int_multiply(size_t a, size_t b)
+{
+    boost::multiprecision::cpp_int lhs = a;
+    boost::multiprecision::cpp_int rhs = b;
+    auto big_int = lhs*rhs;
+    stringstream strm;
+    strm << big_int;
+    return strm.str();
+}
+
+BOOST_AUTO_TEST_CASE(check_multiply)
+{
+	BOOST_CHECK_EQUAL(big_int_add("0", "0"), string("0"));
+	BOOST_CHECK_EQUAL(big_int_add("5", "5"), string("10"));
+	BOOST_CHECK_EQUAL(big_int_add("50", "56"), string("106"));
+	BOOST_CHECK_EQUAL(big_int_mul("5", '5'), string("25"));
+
+    string op1 = "2";
+    string op2 = "3";
+    string exp = "6";
+    string res = "";
+    res = multiply(op1, op2);
+    BOOST_TEST_CONTEXT(op1 << " * " << op2 << "=" << res << " expect " << exp)
+    BOOST_CHECK(res == string("6"));
+    op1 = "23";
+    op2 = "0";
+    res = multiply(op1, op2);
+    exp = "0";
+    BOOST_TEST_CONTEXT(op1 << " * " << op2 << "=" << res << " expect " << exp)
+    BOOST_CHECK_EQUAL(res, string("0"));
+
+    op1 = "12";
+    op2 = "12";
+    res = multiply(op1, op2);
+    exp = boost_cpp_int_multiply(12, 12);
+    BOOST_TEST_CONTEXT(op1 << " * " << op2 << "=" << res << " expect " << exp)
+    BOOST_CHECK_EQUAL(res, exp);
+
+    op1 = "12345678";
+    op2 = "123456789";
+    res = multiply(op1, op2);
+    boost::multiprecision::cpp_int lhs = 123456789;
+    boost::multiprecision::cpp_int rhs = 12345678;
+    auto big_int = lhs * rhs;
+    exp = boost_cpp_int_multiply(123456789, 12345678);
+
+    BOOST_TEST_CONTEXT(op1 << " * " << op2 << "=" << res << " expect " << exp)
+    BOOST_CHECK_EQUAL(res, exp);
 }

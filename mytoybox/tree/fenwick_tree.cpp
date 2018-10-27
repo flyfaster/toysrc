@@ -13,9 +13,8 @@ class fenwick_tree
     vector<int> ft;
 
 public:
-    fenwick_tree(int n)
+    fenwick_tree(int n) : ft(n + 1, 0)
     {
-        ft.assign(n + 1, 0);
     }
     int rsq(int b)
     {
@@ -42,10 +41,10 @@ public:
 BOOST_AUTO_TEST_CASE(check_fenwick_tree)
 {
     cout << "BOOST_AUTO_TEST_CASE(fenwick_tree)" << endl;
-    vector<int> A{2,4,5,5,6,6,6,7,7,8,9};
+    vector<int> A{2, 4, 5, 5, 6, 6, 6, 7, 7, 8, 9};
     fenwick_tree tree(A.size());
-    for (int i=0; i<A.size(); i++)
-    	tree.adjust(A[i], 1);
+    for (int i = 0; i < A.size(); i++)
+        tree.adjust(A[i], 1);
 
     BOOST_CHECK_EQUAL(0, tree.rsq(1, 1));
     BOOST_CHECK_EQUAL(1, tree.rsq(1, 2));

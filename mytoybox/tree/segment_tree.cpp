@@ -10,7 +10,7 @@ using namespace std;
 
 class segment_tree
 {
-    vector<int> m_st;
+    vector<int> m_st;	// store index in m_raw_data
 	vector<int> m_raw_data;
     int left(int p)
     {
@@ -22,22 +22,17 @@ class segment_tree
         return (p << 1) + 1;
     }
 
-    void build(int p, int L, int R)
+    int build(int p, int L, int R) // return index of min element in m_raw_data
     {
-    	maxp = max(maxp, p);
+    	maxp = max(maxp, p);	// check how much space is in use by segment tree
         if (L == R)	// single element range
-            m_st[p] = L;
-        else
-        {
-            build(left(p), L, (L + R) / 2);
-            build(right(p), (L + R) / 2 + 1, R);
-            int p1 = m_st[left(p)];
-            int p2 = m_st[right(p)];
-            m_st[p] = (m_raw_data[p1] <= m_raw_data[p2]) ? p1 : p2;
-        }
+            return m_st[p] = L;
+        int p1 = build(left(p), L, (L + R) / 2);
+        int p2 = build(right(p), (L + R) / 2 + 1, R);
+		return m_st[p] = (m_raw_data[p1] <= m_raw_data[p2]) ? p1 : p2;
     }
 
-    int out_of_range = -1;
+    int out_of_range = -1; // -1 is invalid index to raw data array
 
     int rmq(int p, int L, int R, int qleft, int qright)
     {
