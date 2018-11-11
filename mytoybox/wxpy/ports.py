@@ -52,10 +52,9 @@ class Timer(threading.Thread):
         self.finished.set()
  
     def run(self):
-        while True:
+        while not self.finished.is_set():
             self.finished.wait(self.interval)
-            if not self.finished.is_set():
-                self.function(*self.args, **self.kwargs)
+            self.function(*self.args, **self.kwargs)
         self.finished.set()
         
 class MainWindow(wx.Frame):
@@ -63,23 +62,22 @@ class MainWindow(wx.Frame):
         wx.Frame.__init__(self, parent, title=title, size=(800,400))
         self.grid = wx.grid.Grid(self, -1)
         
-        column_labels = 'COMMAND PID USER FD TYPE DEVICE SIZE/OFF NODE NAME'.split(' ')
+        column_labels = self.get_column_labels()
         self.grid.CreateGrid(1, len(column_labels))
         for i in range(len(column_labels)):
             self.grid.SetColLabelValue(i, column_labels[i])
 
-        self.mac_get_ports()
-        selectBtn = wx.Button(self, label="Start")
-        selectBtn.Bind(wx.EVT_BUTTON, self.onStart)
+        selectBtn = wx.Button(self, label="Exit")
+        selectBtn.Bind(wx.EVT_BUTTON, self.OnExit)
         
         bagSizer    = wx.GridBagSizer(hgap=5, vgap=5)
         bagSizer.Add(self.grid, pos=(0,0),
                      flag=wx.EXPAND|wx.ALL,
                      border=1)
-        bagSizer.Add(selectBtn, pos=(0,1),
-                     flag=wx.ALL|wx.ALIGN_CENTER_VERTICAL,
+        bagSizer.Add(selectBtn, pos=(1,0),
+                     flag=wx.ALL|wx.ALIGN_CENTER_VERTICAL|wx.ALIGN_CENTER_HORIZONTAL,
                      border=1)      
-        bagSizer.AddGrowableCol(1, 0)
+        bagSizer.AddGrowableCol(0, 0)
         bagSizer.AddGrowableRow(0, 0)
         self.SetSizerAndFit(bagSizer)
         self.CreateStatusBar() # A StatusBar in the bottom of the window
@@ -100,16 +98,24 @@ class MainWindow(wx.Frame):
         self.Bind(wx.EVT_MENU, self.OnAbout, menuAbout)
         self.Bind(wx.EVT_MENU, self.OnExit, menuExit)
         self.EVT_WORK_DONE_TYPE = wx.NewEventType()
-        self.exitflag = False
         self.refreshthread = Timer(1.0, self.RefreshPorts)
         self.refreshthread.start()
         
         self.EVT_WORK_DONE = wx.PyEventBinder(self.EVT_WORK_DONE_TYPE, 1)
         self.Bind(self.EVT_WORK_DONE, self.onStart)
-        
+        self.RefreshPorts()
         
         self.Show(True)
         
+    def get_column_labels(self):
+        if platform.system() == 'Linux':
+            str_list = 'Proto Recv-Q Send-Q LocalAddress ForeignAddress State PID/ProgramName'.split()
+            cols = list(filter(None, str_list)) # remove empty strings
+            return cols
+        if platform.system() == 'Darwin':
+            column_labels = 'COMMAND PID USER FD TYPE DEVICE SIZE/OFF NODE NAME'.split(' ')
+            return column_labels
+    
     def mac_get_ports(self):
         print(datetime.datetime.now().isoformat())
         cmdstr = 'lsof -iTCP -sTCP:LISTEN -n -P'
@@ -122,6 +128,18 @@ class MainWindow(wx.Frame):
         if extra_rows > 0:
             self.grid.DeleteRows(len(lines), extra_rows)
             
+    def linux_get_ports(self):
+        print(datetime.datetime.now().isoformat())
+        cmdstr = 'netstat -tnlp'
+        result = subprocess.run(cmdstr.split(' '), stdout=subprocess.PIPE)
+        lines = result.stdout.decode('utf-8').splitlines()[1:]
+        for i in range(len(lines)):
+            if len(lines[i]) > 1:
+                self.linux_add_line(i, lines[i])
+        extra_rows = self.grid.GetNumberRows() - len(lines)
+        if extra_rows > 0:
+            self.grid.DeleteRows(len(lines), extra_rows)
+            
     def mac_add_line(self, row, line):        
         str_list = line.split(' ')
         cols = list(filter(None, str_list)) # remove empty strings
@@ -130,13 +148,23 @@ class MainWindow(wx.Frame):
                 break
             self.SetCellValue(row, col, cols[col])
             
+    def linux_add_line(self, row, line):        
+        str_list = line.split(' ')
+        cols = list(filter(None, str_list)) # remove empty strings
+        for col in range(self.grid.GetNumberCols()):
+            if col >= len(cols):
+                break
+            self.SetCellValue(row, col, cols[col])
+            
     def onStart(self, event):
-        self.mac_get_ports()
+        if platform.system() == 'Linux':
+            self.linux_get_ports()
+            pass
+        elif platform.system() == 'Darwin':
+            self.mac_get_ports()
         pass
 
     def RefreshPorts(self):
-        if self.exitflag:
-            return
         evt = TimerEvent(self.EVT_WORK_DONE_TYPE, -1)
         wx.PostEvent(self, evt)
         pass
@@ -154,9 +182,8 @@ class MainWindow(wx.Frame):
         dlg.Destroy() 
 
     def OnExit(self,e):
-        self.Unbind(self.EVT_WORK_DONE)
-        self.exitflag = True
         self.refreshthread.cancel()
+        self.Unbind(self.EVT_WORK_DONE)
         time.sleep(0.3)
         self.Close(True)
 
