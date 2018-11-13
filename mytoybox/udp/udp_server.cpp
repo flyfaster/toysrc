@@ -10,6 +10,7 @@
 #include <thread>
 #include <mutex>
 #include <memory>
+#include <limits>
 
 using boost::asio::ip::udp;
 
@@ -72,10 +73,7 @@ int udp_server_main(boost::asio::io_context& io_context, unsigned short port_num
 {
     try
     {
-        //boost::asio::io_context io_context;
-    	if (!io_context.stopped())
-    		io_context.stop();
-
+    	io_context.reset();
         udp_server server(io_context, port_num);
         io_context.run();
         std::cout << __func__ << " done with port " << port_num << "\n";
@@ -94,7 +92,12 @@ public:
     bool OnInit() override;
     void Stop()
     {
-    	io_context.stop();
+    	if (m_thread)
+    	{
+    		io_context.stop();
+    		m_thread->join();
+    		m_thread.reset();
+    	}
     }
     boost::asio::io_context io_context;
     std::unique_ptr<std::thread> m_thread;
@@ -111,6 +114,15 @@ private:
     void OnDaytime(wxCommandEvent& event);
     void OnExit(wxCommandEvent& event);
     void OnAbout(wxCommandEvent& event);
+    unsigned short GetPort()
+    {
+    	unsigned short port_num = 13;
+    	long val = 65536;
+    	m_port->GetValue().ToLong(&val);
+    	port_num = static_cast<unsigned short>(val);
+    	return port_num;
+    }
+
     wxTextCtrl* m_port;
     wxButton* m_start;
     wxButton* m_exit;
@@ -163,7 +175,7 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size) 
 	m_port = new wxTextCtrl(this, wxID_ANY,
 			"32000", wxDefaultPosition, wxDefaultSize);
 	m_daytime = new wxTextCtrl(this, wxID_ANY,
-			wxEmptyString, wxDefaultPosition, wxDefaultSize);
+			wxEmptyString, wxDefaultPosition, wxSize(240, -1));
 
     m_start = new wxButton(this, wxID_ANY, _T("Start"));
     m_start->Connect(wxEVT_COMMAND_BUTTON_CLICKED,
@@ -180,10 +192,10 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size) 
 	wxGridBagSizer *m_fgsizer = new wxGridBagSizer;
 	int row = 0;
 	m_fgsizer->Add(new wxStaticText(this, wxID_ANY, "port:"), wxGBPosition(row,0));
-	m_fgsizer->Add(m_port, wxGBPosition(row,1), wxGBSpan(1,1), wxGROW);
+	m_fgsizer->Add(m_port, wxGBPosition(row,1), wxGBSpan(1,1));
 	++row;
 	m_fgsizer->Add(m_start, wxGBPosition(row,0), wxGBSpan(1,1), wxGROW);
-	m_fgsizer->Add(m_exit, wxGBPosition(row,1), wxGBSpan(1,1), wxGROW);
+	m_fgsizer->Add(m_exit, wxGBPosition(row,1), wxGBSpan(1,1));
 	++row;
 	m_fgsizer->Add(m_get_daytime, wxGBPosition(row,0), wxGBSpan(1,1), wxGROW);
 	m_fgsizer->Add(m_daytime, wxGBPosition(row,1), wxGBSpan(1,1), wxGROW);
@@ -193,30 +205,20 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size) 
 
 void MyFrame::OnStart(wxCommandEvent& event)
 {
-	wxGetApp().Stop();
-	long val;
-	m_port->GetValue().ToLong(&val);
-	unsigned short port_num = 13;
-	port_num = static_cast<unsigned short>(val);
-	wxGetApp().m_thread.reset(new std::thread(udp_server_main, std::ref(wxGetApp().io_context), port_num));
+    wxGetApp().Stop();
 
+    wxGetApp().m_thread.reset(
+        new std::thread(udp_server_main, std::ref(wxGetApp().io_context), GetPort()));
 }
 
 void MyFrame::OnDaytime(wxCommandEvent& event)
 {
-	long val;
-	m_port->GetValue().ToLong(&val);
-	unsigned short port_num = 13;
-	port_num = static_cast<unsigned short>(val);
     try
     {
         boost::asio::io_context io_context;
-
         udp::resolver resolver(io_context);
-//        udp::endpoint receiver_endpoint =
-//            *resolver.resolve(udp::v4(), "localhost", "daytime").begin();
 
-        udp::endpoint receiver_endpoint(udp::v4(), port_num);
+        udp::endpoint receiver_endpoint(udp::v4(), GetPort());
 
         udp::socket socket(io_context);
         socket.open(udp::v4());
@@ -225,11 +227,14 @@ void MyFrame::OnDaytime(wxCommandEvent& event)
         socket.send_to(boost::asio::buffer(send_buf), receiver_endpoint);
 
         boost::array<char, 128> recv_buf;
+        memset(recv_buf.data(), 0, recv_buf.size());
         udp::endpoint sender_endpoint;
         size_t len = socket.receive_from(boost::asio::buffer(recv_buf), sender_endpoint);
 
-        std::cout.write(recv_buf.data(), len);
         m_daytime->SetValue(recv_buf.data());
+
+//        std::cout.write(recv_buf.data(), len);
+
     }
     catch (std::exception& e)
     {
@@ -240,8 +245,7 @@ void MyFrame::OnDaytime(wxCommandEvent& event)
 void MyFrame::OnExit(wxCommandEvent& event)
 {
 	wxGetApp().Stop();
-	if (wxGetApp().m_thread)
-		wxGetApp().m_thread->join();
+
     Close(true);
 }
 
