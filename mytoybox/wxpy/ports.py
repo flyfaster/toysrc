@@ -70,11 +70,19 @@ class MainWindow(wx.Frame):
         selectBtn = wx.Button(self, label="Exit")
         selectBtn.Bind(wx.EVT_BUTTON, self.OnExit)
         
+        version_txt = "pid {} python {} on {} ".format(os.getpid(), platform.python_version(), platform.system()) + wx.__file__
+        self.lbl = wx.StaticText(self,
+                            label=version_txt)
+        
         bagSizer    = wx.GridBagSizer(hgap=5, vgap=5)
         bagSizer.Add(self.grid, pos=(0,0),
                      flag=wx.EXPAND|wx.ALL,
                      border=1)
-        bagSizer.Add(selectBtn, pos=(1,0),
+        bagSizer.Add(self.lbl, pos=(1,0),
+             flag=wx.EXPAND|wx.ALL,
+             border=0)
+
+        bagSizer.Add(selectBtn, pos=(2,0),
                      flag=wx.ALL|wx.ALIGN_CENTER_VERTICAL|wx.ALIGN_CENTER_HORIZONTAL,
                      border=1)      
         bagSizer.AddGrowableCol(0, 0)
@@ -102,7 +110,7 @@ class MainWindow(wx.Frame):
         self.refreshthread.start()
         
         self.EVT_WORK_DONE = wx.PyEventBinder(self.EVT_WORK_DONE_TYPE, 1)
-        self.Bind(self.EVT_WORK_DONE, self.onStart)
+        self.Bind(self.EVT_WORK_DONE, self.DoRefreshPorts)
         self.RefreshPorts()
         
         self.Show(True)
@@ -110,14 +118,13 @@ class MainWindow(wx.Frame):
     def get_column_labels(self):
         if platform.system() == 'Linux':
             str_list = 'Proto Recv-Q Send-Q LocalAddress ForeignAddress State PID/ProgramName'.split()
-            cols = list(filter(None, str_list)) # remove empty strings
+            cols = list(filter(None, str_list))  # remove empty strings
             return cols
         if platform.system() == 'Darwin':
             column_labels = 'COMMAND PID USER FD TYPE DEVICE SIZE/OFF NODE NAME'.split(' ')
             return column_labels
     
     def mac_get_ports(self):
-        print(datetime.datetime.now().isoformat())
         cmdstr = 'lsof -iTCP -sTCP:LISTEN -n -P'
         result = subprocess.run(cmdstr.split(' '), stdout=subprocess.PIPE)
         lines = result.stdout.decode('utf-8').splitlines()[1:]
@@ -129,7 +136,6 @@ class MainWindow(wx.Frame):
             self.grid.DeleteRows(len(lines), extra_rows)
             
     def linux_get_ports(self):
-        print(datetime.datetime.now().isoformat())
         cmdstr = 'netstat -tnlp'
         result = subprocess.run(cmdstr.split(' '), stdout=subprocess.PIPE)
         lines = result.stdout.decode('utf-8').splitlines()[1:]
@@ -142,7 +148,7 @@ class MainWindow(wx.Frame):
             
     def mac_add_line(self, row, line):        
         str_list = line.split(' ')
-        cols = list(filter(None, str_list)) # remove empty strings
+        cols = list(filter(None, str_list))  # remove empty strings
         for col in range(self.grid.GetNumberCols()):
             if col >= len(cols):
                 break
@@ -150,18 +156,22 @@ class MainWindow(wx.Frame):
             
     def linux_add_line(self, row, line):        
         str_list = line.split(' ')
-        cols = list(filter(None, str_list)) # remove empty strings
+        cols = list(filter(None, str_list))  # remove empty strings
         for col in range(self.grid.GetNumberCols()):
             if col >= len(cols):
                 break
             self.SetCellValue(row, col, cols[col])
             
-    def onStart(self, event):
+    def UpdateStatus(self):
+        #self.lbl.SetLabel(datetime.datetime.now().isoformat() + " pid {} python {} on {} ".format(os.getpid(), platform.python_version(), platform.system()) + wx.__file__)
+        self.GetStatusBar().SetStatusText("Updates at " + datetime.datetime.now().isoformat())
+    def DoRefreshPorts(self, event):
         if platform.system() == 'Linux':
             self.linux_get_ports()
             pass
         elif platform.system() == 'Darwin':
             self.mac_get_ports()
+        self.UpdateStatus()
         pass
 
     def RefreshPorts(self):
@@ -176,19 +186,19 @@ class MainWindow(wx.Frame):
         self.grid.SetCellValue(row, col, txt)
         self.grid.SetReadOnly(row, col)
                             
-    def OnAbout(self,e):
-        dlg = wx.MessageDialog( self, "A tool to display open TCP ports", "About " + os.path.basename(__file__), wx.OK)
+    def OnAbout(self, e):
+        dlg = wx.MessageDialog(self, "A tool to display open TCP ports", "About " + os.path.basename(__file__), wx.OK)
         dlg.ShowModal() 
         dlg.Destroy() 
 
-    def OnExit(self,e):
+    def OnExit(self, e):
         self.refreshthread.cancel()
         self.Unbind(self.EVT_WORK_DONE)
         time.sleep(0.3)
         self.Close(True)
 
+
 if __name__ == '__main__':
-    print("python " + platform.python_version() + " on " + platform.system())
     app = wx.App(False)
     frame = MainWindow(None, "Open TCP ports")
     app.MainLoop()
