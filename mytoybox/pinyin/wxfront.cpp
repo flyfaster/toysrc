@@ -52,7 +52,7 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size) 
 	m_chinese = new wxTextCtrl(this, wxID_ANY);
 	m_pinyin = new wxTextCtrl(this, wxID_ANY,
 			wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxHSCROLL);
-	m_pinyin->SetWindowStyle(m_pinyin->GetWindowStyle() & ~wxTE_DONTWRAP | wxTE_BESTWRAP);
+	m_pinyin->SetWindowStyle((m_pinyin->GetWindowStyle() & ~wxTE_DONTWRAP) | wxTE_BESTWRAP);
 
 	wxGridBagSizer *m_fgsizer = new wxGridBagSizer;
 	int row = 0;

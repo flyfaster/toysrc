@@ -11,7 +11,7 @@
 #include <boost/iostreams/stream.hpp>
 #include <boost/iostreams/device/array.hpp>
 
-#if  !defined( __WXGTK__ ) && !defined(_MSC_VER)
+#if !defined( __WXGTK__ ) && !defined( __WXMAC__ ) && !defined(_MSC_VER)
 #include "mainwnd.h"
 #endif
 
@@ -135,7 +135,7 @@ std::basic_string<wchar_t> convert_utf8_to_utf16(const std::string& utf8) // boo
 	return utf16;
 }
 
-#if  !defined(__WXGTK__) && !defined(__WXMSW__)
+#if  !defined( __WXGTK__ ) && !defined( __WXMAC__ ) && !defined(__WXMSW__)
 int main(int argc, char* argv[])
 {
     QApplication a(argc, argv);
