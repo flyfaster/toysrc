@@ -10,6 +10,7 @@ find_package(wxWidgets COMPONENTS core base REQUIRED)
 include(${wxWidgets_USE_FILE})
 
 if(APPLE)
+# brew install nasm
 add_compile_definitions(__WXMAC__)
 elseif(UNIX)
 add_compile_definitions(__WXGTK__)
