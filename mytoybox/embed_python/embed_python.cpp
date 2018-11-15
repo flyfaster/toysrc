@@ -42,7 +42,7 @@ public:
              * previous thread state (which is not NULL). If the lock has been created,
              * the current thread must have acquired it.
              */
-		state = PyEval_SaveThread();
+	    SaveThread();
 		interpreterState = state->interp;
 		std::cout << __func__ << " done\n";
 	}
@@ -56,7 +56,7 @@ public:
 	void SaveThread()
 	{
 		++lock_cnt;
-		PyEval_SaveThread();
+		state = PyEval_SaveThread();
 	}
 
 	void RestoreThread()
@@ -278,10 +278,12 @@ int main(int argc, char* argv[])
     CPyInstance pyInstance;
 
 //	PyRun_SimpleString("print('Hello World from Embedded Python {}'.format(__import__('platform').python_version()))");
-//	call_python_func();
+    pyInstance.RestoreThread();
+	call_python_func();
+	pyInstance.SaveThread();
 //    thread_proc();
 //	std::thread thrd(thread_proc, pyInstance.interpreterState);
-	std::thread thrd(thread_proc1, std::ref(pyInstance));
-	thrd.join();
+//	std::thread thrd(thread_proc1, std::ref(pyInstance));
+//	thrd.join();
 	return 0;
 }

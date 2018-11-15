@@ -11,23 +11,23 @@ set(CMAKE_BUILD_TYPE Debug)
 #find_package(Boost REQUIRED COMPONENTS filesystem program_options unit_test_framework regex system)
 find_package(Threads)
 #find_library(PY_LIBRARY python HINTS /usr/local/Cellar/python)
-
-add_executable(embed_python  embed_python.cpp)
-
-target_include_directories(embed_python PRIVATE 
-	/usr/local/Cellar/python/3.7.0/Frameworks/Python.framework/Versions/3.7/include/python3.7m
-	/usr/local/Cellar/python/3.7.0/Frameworks/Python.framework/Versions/3.7/Headers
-	${PYTHON_INCLUDE_DIRS})
-link_directories(/usr/local/Cellar/python/3.7.0/Frameworks/Python.framework/Versions/3.7/lib)
-target_link_libraries (embed_python 
-	${PY_LIBRARY} 
-	/usr/local/Cellar/python/3.7.0/Frameworks/Python.framework/Versions/3.7/lib/python3.7/config-3.7m-darwin/libpython3.7m.a
-#	/usr/local/Cellar/python/3.7.0/Frameworks/Python.framework/Versions/3.7/lib/libpython3.7m.dylib 
-	dl
-	${CMAKE_THREAD_LIBS_INIT})
-	
 find_package(PythonLibs REQUIRED)
 include_directories(${PYTHON_INCLUDE_DIRS})
+
+# wx-config --cppflags
+find_package(wxWidgets COMPONENTS core base REQUIRED)
+include(${wxWidgets_USE_FILE})
+
+add_executable(embed_python  embed_python.cpp)
+target_link_libraries(embed_python ${PYTHON_LIBRARIES} dl
+	${CMAKE_THREAD_LIBS_INIT})
+	
+add_executable(wxembed_python  wxembed_python.cpp)
+target_link_libraries(wxembed_python 
+	${wxWidgets_LIBRARIES}
+	${PYTHON_LIBRARIES} dl
+	${CMAKE_THREAD_LIBS_INIT})
+	
 set(SOURCE_FILES sub_interpreter.cpp)
 
 add_executable(sub_interpreter ${SOURCE_FILES})

@@ -15,9 +15,12 @@
 #include <wx/clipbrd.h>
 #include <wx/gbsizer.h>
 
-class MiniWxApp: public wxApp {
-	virtual bool OnInit();
+class MiniWxApp : public wxApp
+{
+public:
+    bool OnInit() override;
 };
+
 IMPLEMENT_APP (MiniWxApp)
 
 class MyFrame: public wxFrame {
