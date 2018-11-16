@@ -123,17 +123,17 @@ private:
     	return port_num;
     }
 
+    enum
+    {
+        ID_Hello = 1
+    };
+
     wxTextCtrl* m_port;
     wxButton* m_start;
     wxButton* m_exit;
     wxButton* m_get_daytime;
     wxTextCtrl* m_daytime;
     wxDECLARE_EVENT_TABLE();
-};
-
-enum
-{
-    ID_Hello = 1
 };
 
 // clang-format off
