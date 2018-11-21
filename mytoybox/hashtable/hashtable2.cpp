@@ -161,7 +161,7 @@ struct universal_hashing
 
 private:
     static constexpr size_t w = std::numeric_limits<int>::digits;
-    size_t M;
+    size_t M=5;		   // number of bins is power of 2 (2^M)
     size_t a = 104723; // where a is a random odd positive integer with a<2^{w}
     size_t b = 104231; // b is a random non-negative integer with b<2^{w-M}
 };
