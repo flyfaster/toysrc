@@ -8,14 +8,21 @@
 
 #include <iostream>
 using namespace std;
+#ifndef _WIN32
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>
+#include <unistd.h>
+#else 
+#include <winsock2.h>
+#include <WS2tcpip.h>
+#pragma comment(lib, "Ws2_32.lib")
+#endif
+
 #include <stdio.h>
 #include <cstdlib>
 #include <cstring>
-#include <arpa/inet.h>
 #include <sys/types.h>
-#include <unistd.h>
 #include <chrono>
 
 unsigned short udp_port = 32000;
@@ -29,7 +36,7 @@ int server_main(int argc, char** argv)
     std::cout << __func__ << " recvfrom port " << udp_port << std::endl;
     sockfd = socket(AF_INET, SOCK_DGRAM, 0);
 
-    bzero(&servaddr, sizeof(servaddr));
+    memset(&servaddr, 0, sizeof(servaddr));
     servaddr.sin_family = AF_INET;
     servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
 
@@ -38,7 +45,7 @@ int server_main(int argc, char** argv)
     struct timeval tv;
     tv.tv_sec = 10;
     tv.tv_usec = 10;
-    int res = setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
+    int res = setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO, (const char *)&tv, sizeof(tv));
     if (res < 0)
     {
         std::cerr << __func__ << " failed to set timeout for socket, setsockopt return "
@@ -104,7 +111,9 @@ int client_main(int argc, char** argv)
 
 int main(int argc, char** argv)
 {
+#ifndef _WIN32
     std::cout << argv[0] << "\t pid " << getpid() << std::endl;
+#endif
     int ret = 0;
     auto start = std::chrono::high_resolution_clock::now();
     if (argc < 2) // server don't need argument

@@ -1,3 +1,4 @@
+//#define __CYGWIN__
 #include <ctime>
 #include <iostream>
 #include <string>
@@ -170,7 +171,7 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size) 
     menuBar->Append(menuHelp, "&Help");
     SetMenuBar(menuBar);
     CreateStatusBar();
-    SetStatusText("Welcome to wxWidgets!");
+    SetStatusText(wxVERSION_STRING);
 
 	m_port = new wxTextCtrl(this, wxID_ANY,
 			"32000", wxDefaultPosition, wxDefaultSize);
@@ -257,5 +258,5 @@ void MyFrame::OnAbout(wxCommandEvent& event)
 
 void MyFrame::OnHello(wxCommandEvent& event)
 {
-    wxLogMessage("Hello world from wxWidgets!");
+    wxLogMessage("Hello from " wxVERSION_STRING);
 }
