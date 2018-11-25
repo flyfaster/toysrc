@@ -8,7 +8,7 @@ wxIMPLEMENT_APP (MiniWxApp);
 bool MiniWxApp::OnInit()
 {
     wxString title;
-    title.Printf(wxT("Python pid:%lu "), wxGetProcessId());
+    title.Printf(wxT("Runcmd pid:%lu %s"), wxGetProcessId(), wxVERSION_STRING);
     MyFrame* frame = new MyFrame(title, wxDefaultPosition, wxSize(800, 600));
     frame->Show(true);
     SetTopWindow(frame);
