@@ -11,15 +11,19 @@ public:
     bool OnInit() override;
 };
 
+// clang-format off
 wxDECLARE_APP(MiniWxApp);
 wxIMPLEMENT_APP(MiniWxApp);
+// clang-format on
 
 class MyFrame : public wxFrame
 {
+	wxTimer timer;
 public:
     MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size);
     void OnQuit(wxCommandEvent& event)
     {
+    	timer.Stop();
         Close(true);
     }
     void OnAbout(wxCommandEvent& event);
@@ -30,18 +34,24 @@ public:
     }
     void OnPaint(wxPaintEvent& evt)
     {
-        wxClientDC dc(this);
+    	wxPaintDC dc(this);
         wxDateTime dt = wxDateTime::Now();
         wxString txt = dt.FormatTime();
         dc.SetTextForeground(*wxBLUE);
         dc.SetBackgroundMode(wxTRANSPARENT);
         dc.DrawText(txt, 0, 0);
     }
+    void OnTimer(wxTimerEvent & event)
+    {
+        Refresh();
+    }
 };
 
 bool MiniWxApp::OnInit()
 {
-    MyFrame* frame = new MyFrame(("Onega’s mini wxWidgets application"),
+    auto title = wxString::Format("Hello %s (pid %lu)", wxVERSION_STRING,
+                                  wxGetProcessId());
+    MyFrame* frame = new MyFrame(title,
                                  wxDefaultPosition, wxSize(450, 350));
     frame->Show(true);
     SetTopWindow(frame);
@@ -49,13 +59,13 @@ bool MiniWxApp::OnInit()
 }
 
 MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size) :
-    wxFrame(NULL, -1, title, pos, size)
+    wxFrame(NULL, -1, title, pos, size), timer(this)
 {
     wxMenuBar* menuBar = new wxMenuBar;
     wxMenu* menuFile = new wxMenu;
-    menuFile->Append(wxID_ABOUT, ("&About…"));
-    menuFile->Append(wxID_EXIT, ("E&xit"));
-    menuBar->Append(menuFile, ("&File"));
+    menuFile->Append(wxID_ABOUT, wxT("&About"));
+    menuFile->Append(wxID_EXIT, wxT("E&xit"));
+    menuBar->Append(menuFile, wxT("&File"));
     SetMenuBar(menuBar);
     Connect(wxID_EXIT, wxEVT_COMMAND_MENU_SELECTED,
             (wxObjectEventFunction) &MyFrame::OnQuit);
@@ -63,11 +73,14 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size) 
             (wxObjectEventFunction) &MyFrame::OnAbout);
     Connect(wxEVT_PAINT, wxPaintEventHandler(MyFrame::OnPaint));
     Connect(wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(MyFrame::OnEraseBackground));
+
+    Bind(wxEVT_TIMER, &MyFrame::OnTimer, this, timer.GetId());
+    timer.Start(1);
 }
 
 void MyFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
 {
-    wxString caption = ("Onega’s mini wxWidgets application.");
+    wxString caption = ("mini wxWidgets application.");
     wxString body =
         ("cl /EHsc /MD -DUNICODE=1 "
          "-ID:\\src\\wxWidgets-2.9.1\\include "

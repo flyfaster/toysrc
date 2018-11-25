@@ -3,11 +3,10 @@
 // -I/usr/local/lib/wx/include/gtk3-unicode-3.0 -I/usr/local/include/wx-3.0 -D_FILE_OFFSET_BITS=64 -DWXUSINGDLL -D__WXGTK__
 // -L/usr/local/lib -pthread   -lwx_baseu-3.0 -lwx_gtk3u_core-3.0 -lwx_gtk3u_aui-3.0 
 // g++ -I/usr/local/lib/wx/include/gtk3-unicode-3.0 -I/usr/local/include/wx-3.0 -D_FILE_OFFSET_BITS=64 -DWXUSINGDLL -D__WXGTK__ -L/usr/local/lib  -o hello hello.cpp -pthread   -lwx_baseu-3.0 -lwx_gtk3u_core-3.0 -lwx_gtk3u_aui-3.0
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-    #include <wx/wx.h>
-#endif
+#include <tchar.h>
+#include <wx/wx.h>
 
+//#pragma comment( linker, "/entry:\"mainCRTStartup\"" ) 
 class MyApp : public wxApp
 {
 public:
@@ -36,7 +35,7 @@ wxBEGIN_EVENT_TABLE(MyFrame, wxFrame)
     EVT_MENU(wxID_EXIT, MyFrame::OnExit)
 	EVT_MENU(wxID_ABOUT, MyFrame::OnAbout)
 wxEND_EVENT_TABLE()
-
+wxDECLARE_APP(MyApp);
 wxIMPLEMENT_APP(MyApp);
 // clang-format on
 

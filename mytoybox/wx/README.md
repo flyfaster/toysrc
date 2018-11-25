@@ -1,3 +1,22 @@
+#Build on Windows 10 via VC++ 17 and cmake
+```
+C:\Users\flyfaster>systeminfo | findstr /B /C:"OS Name" /C:"OS Version"
+OS Name:                   Microsoft Windows 10 Home
+OS Version:                10.0.17134 N/A Build 17134
+```
+## Install toolchain
+Install vs\_community\_\_1480592634.1543001610.exe <br>
+Install vcpkg <br>
+Unzip C:\Users\flyfaster\Downloads\cmake-3.13.0-win64-x64.zip
+## Install dependencies: boost and wxWidgets
+C:\oss\vcpkg>vcpkg install boost wxWidgets --triplet x64-windows <br>
+find_package(wxWidgets COMPONENTS xrc webview stc richtext ribbon qa propgrid media html gl core aui adv xml net base REQUIRED)
+
+## Generate project files
+c:\apps\cmake-3.13.0-win64-x64\bin\cmake.exe -DCMAKE\_GENERATOR\_PLATFORM=x64 -DCMAKE\_TOOLCHAIN\_FILE="C:\oss\vcpkg\scripts\buildsystems\vcpkg.cmake" ..
+## Build release configuration
+c:\apps\cmake-3.13.0-win64-x64\bin\cmake.exe --build . --config Release
+
 # Build via cygwin on Windows
 ## build cmake-3.13.0.tar.gz from source via cygwin
 As administrator run make install
