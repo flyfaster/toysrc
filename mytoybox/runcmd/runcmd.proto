@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package runcmd;
+
+message Commands {
+  repeated Command cmd_rec = 1;
+}
+
+message Command {
+  string working_dir = 1;
+  string cmd = 2;
+  repeated string envs = 3;
+  string output_path = 4;
+  string cmd_output = 5;
+  string start_time = 6;
+  string stop_time = 7;
+}

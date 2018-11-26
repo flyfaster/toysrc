@@ -8,6 +8,7 @@ class MiniWxApp : public wxApp
 {
 public:
     bool OnInit() override;
+    int OnExit() override;
 };
 
 // clang-format off

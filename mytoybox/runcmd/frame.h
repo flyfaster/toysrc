@@ -11,6 +11,7 @@ public:
 	void OnClear(wxCommandEvent&);
 	void OnSelectWorkingDir(wxCommandEvent& event);
 	void OnSelectOutputPath(wxCommandEvent& event);
+	void OnSelectCommand(wxCommandEvent& event);
 private:
 	wxTextCtrl *m_working_dir;
 	wxTextCtrl *m_envs;

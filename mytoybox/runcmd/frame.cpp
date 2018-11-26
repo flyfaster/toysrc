@@ -1,4 +1,23 @@
 #include "frame.h"
+#include <fstream>
+#include <chrono>  // chrono::system_clock
+#include <ctime>   // localtime
+#include <sstream> // stringstream
+#include <iomanip> // put_time
+#include <string>  // string
+#include "runcmd.pb.h"
+
+using namespace std;
+
+std::string current_time_and_date_str()
+{
+    auto now = std::chrono::system_clock::now();
+    auto in_time_t = std::chrono::system_clock::to_time_t(now);
+
+    std::stringstream ss;
+    ss << std::put_time(std::localtime(&in_time_t), "%Y-%m-%d %X");
+    return ss.str();
+}
 
 MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size) :
     wxFrame(NULL, wxID_ANY, title, pos, size)
@@ -42,8 +61,12 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size) 
 
 	m_choose_working_dir->Connect(wxEVT_COMMAND_BUTTON_CLICKED,
 			wxCommandEventHandler(MyFrame::OnSelectWorkingDir), nullptr, this);
+	m_choose_cmds->Connect(wxEVT_COMMAND_BUTTON_CLICKED,
+			wxCommandEventHandler(MyFrame::OnSelectCommand), nullptr, this);
 	m_choose_output_path->Connect(wxEVT_COMMAND_BUTTON_CLICKED,
 			wxCommandEventHandler(MyFrame::OnSelectOutputPath), nullptr, this);
+	m_run->Connect(wxEVT_COMMAND_BUTTON_CLICKED,
+			wxCommandEventHandler(MyFrame::OnRun), nullptr, this);
 
 	wxGridBagSizer *m_fgsizer = new wxGridBagSizer;
 	int row = 0;
@@ -100,8 +123,38 @@ void MyFrame::OnQuit(wxCommandEvent& event)
 	Close(true);
 }
 
+const char* persist_file = "runcmd.history";
+
 void MyFrame::OnRun(wxCommandEvent&)
 {
+	runcmd::Commands cmd_history;
+	{
+		ifstream input(persist_file, ios::in | ios::binary);
+		if (!cmd_history.ParseFromIstream(&input)) {
+//			wxLogMessage("ParseFromIstream Failed to parse commands history file");
+//			return;
+		}
+	}
+	auto cur_cmd = cmd_history.add_cmd_rec();
+	cur_cmd->set_working_dir(getenv("TMP"));
+	cur_cmd->set_output_path(__FILE__);
+	cur_cmd->set_cmd("cd");
+	const char* envs[]={"TMP", "TEMP", "PATH"};
+	for (auto env_name: envs)
+	{
+		stringstream strm;
+		strm << env_name << "=" << getenv(env_name);
+		cur_cmd->add_envs(strm.str());
+	}
+//	cur_cmd->add_envs("PATH=c:/oss/vcpkg");
+	cur_cmd->set_cmd_output("dummy placeholder");
+	cur_cmd->set_start_time(current_time_and_date_str());
+	cur_cmd->set_stop_time(current_time_and_date_str());
+	ofstream ostrm(persist_file, ios::out | ios::binary);
+	if (!cmd_history.SerializeToOstream(&ostrm))
+	{
+		wxLogMessage("SerializeToOstream Failed to commands history file");
+	}
 }
 
 void MyFrame::OnCopy(wxCommandEvent&)
@@ -110,4 +163,18 @@ void MyFrame::OnCopy(wxCommandEvent&)
 
 void MyFrame::OnClear(wxCommandEvent&)
 {
+}
+
+
+//using google::protobuf::util::TimeUtil;
+void MyFrame::OnSelectCommand(wxCommandEvent& event) {
+	runcmd::Commands cmd_history;
+	{
+		fstream input(persist_file, ios::in | ios::binary);
+		if (!cmd_history.ParseFromIstream(&input)) {
+			wxLogMessage("Failed to parse commands history file");
+			return;
+		}
+	}
+	wxLogMessage(cmd_history.DebugString().c_str());
 }
